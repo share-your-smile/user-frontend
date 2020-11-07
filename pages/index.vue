@@ -76,14 +76,23 @@
   </v-row>
 </template>
 
-<script>
+<script lang="ts">
 import Logo from '~/components/Logo.vue'
 import VuetifyLogo from '~/components/VuetifyLogo.vue'
+import Vue from 'vue'
 
-export default {
+export default Vue.extend({
+  data() {
+    return {
+      text: '' as string
+    }
+  },
   components: {
     Logo,
     VuetifyLogo
+  },
+  created() {
+    this.text = 'unko'
   }
-}
+})
 </script>

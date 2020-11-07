@@ -1,5 +1,9 @@
 import colors from 'vuetify/es5/util/colors'
 
+import dotenv from 'dotenv';
+dotenv.config();
+const USER_DATA_API_BASE_URL = process.env.USER_DATA_API_BASE_URL;
+
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
@@ -27,6 +31,9 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
+    { src: '~plugins/persistedstate.js', ssr: false },
+    { src: '~plugins/cookie-storage.js', ssr: false },
+    { src: '~plugins/user-info-utils.ts', ssr: false },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -38,6 +45,7 @@ export default {
     '@nuxt/typescript-build',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    'nuxt-typed-vuex',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -65,5 +73,12 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
+    transpile: [
+      /typed-vuex/,
+    ],
+  },
+
+  env: {
+    USER_DATA_API_BASE_URL
   }
 }
