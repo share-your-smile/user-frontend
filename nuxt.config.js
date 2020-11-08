@@ -3,6 +3,7 @@ import colors from 'vuetify/es5/util/colors'
 import dotenv from 'dotenv';
 dotenv.config();
 const USER_DATA_API_BASE_URL = process.env.USER_DATA_API_BASE_URL;
+const POST_PAGE_BASE_URL = process.env.POST_PAGE_BASE_URL;
 
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
@@ -33,7 +34,7 @@ export default {
   plugins: [
     { src: '~plugins/persistedstate.js', ssr: false },
     { src: '~plugins/cookie-storage.js', ssr: false },
-    { src: '~plugins/user-info-utils.ts', ssr: false },
+    { src: '~plugins/injection/user-info-utils.ts', ssr: false },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -79,6 +80,7 @@ export default {
   },
 
   env: {
-    USER_DATA_API_BASE_URL
+    USER_DATA_API_BASE_URL,
+    POST_PAGE_BASE_URL
   }
 }

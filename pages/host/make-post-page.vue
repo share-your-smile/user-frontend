@@ -6,25 +6,51 @@
       outlined
       rounded
       color="primary"
-      @click="resetCookie"
+      @click="generateQrcode"
     >
-      Reset Cookie
+      Generate QRcode
     </v-btn>
+    <div style="background-color:white;">
+      <div style="width: 300px;" v-html="qrcodeSVG"></div>  
+    </div>
   </div>
 </template>
 
 <script lang='ts'>
 // 参加者画像投稿用ページへのアクセス先生成ページ
 // Vuexでhostのidを取得し、
+import InitVuex from '~/plugins/mixins/sync-store-cookie';
 import Component from "vue-class-component";
-import { Vue, Watch } from "vue-property-decorator";
+import { Vue, Watch, Mixins } from "vue-property-decorator";
 
-@Component
-export default class MainPostPage extends Vue {
-  resetCookie () {
-    console.log('reset');
-    document.cookie = "my-key=; max-age=0";
-    alert(document.cookie);
+@Component({
+  middleware: 'host-authenticated'
+})
+export default class MainPostPage extends Mixins(InitVuex) {
+  qrcodeSVG = '' as string;
+
+  created () {
+    this.test();
+  }
+
+  async generateQrcode () {
+    const hostInfo: any = this.$store.getters['host/getLoginUser'];
+    const data = {
+      url: `${process.env.POST_PAGE_BASE_URL}/participants/${hostInfo.id}`
+    };
+    console.log(data);
+
+    const generateURL = `${process.env.USER_DATA_API_BASE_URL}/qrcode`;
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }
+    const res: any = await (await fetch(generateURL, options)).json();
+    this.qrcodeSVG = res.result;
+    console.log(res);
   }
 }
 </script>

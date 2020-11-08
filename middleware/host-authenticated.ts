@@ -2,7 +2,7 @@ import { Context } from '@nuxt/types'
 
 const names: string[] = [ 'host_id', 'host_name', 'host_email' ];
 
-export default ({ redirect, store, isDev }: Context) => {
+export default ({ redirect, store, isDev, route }: Context) => {
   const userInfo: any = document.cookie;
   const keys = userInfo.split('; ');
   const loginData = {
@@ -30,6 +30,9 @@ export default ({ redirect, store, isDev }: Context) => {
 
   if (loginData.id !== -1 && loginData.name !== '' && loginData.email !== '') {
     store.commit('host/login', loginData);
-    return redirect('/host/make-post-page');
+    const path: string = route.fullPath;
+    if (path.indexOf('make-post-page') === -1) {
+      return redirect('/host/make-post-page');
+    }
   }
 }
