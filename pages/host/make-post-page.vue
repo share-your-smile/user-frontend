@@ -19,19 +19,14 @@
 <script lang='ts'>
 // 参加者画像投稿用ページへのアクセス先生成ページ
 // Vuexでhostのidを取得し、
-import InitVuex from '~/plugins/mixins/sync-store-cookie';
 import Component from "vue-class-component";
 import { Vue, Watch, Mixins } from "vue-property-decorator";
 
 @Component({
   middleware: 'host-authenticated'
 })
-export default class MainPostPage extends Mixins(InitVuex) {
+export default class MainPostPage extends Vue {
   qrcodeSVG = '' as string;
-
-  created () {
-    this.test();
-  }
 
   async generateQrcode () {
     const hostInfo: any = this.$store.getters['host/getLoginUser'];
