@@ -1,4 +1,4 @@
-import { UserInfoInterface } from '~/plugins/user-info-utils';
+import { UserInfoInterface } from '~/plugins/injection/user-info-utils';
 
 declare module 'vue/types/vue' {
   interface Vue {
