@@ -14,20 +14,25 @@
     "strict": true,
     "noEmit": true,
     "experimentalDecorators": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "~/*": [
         "./*"
       ],
       "@/*": [
         "./*"
+      ],
+      "types/*": [
+        "@type/*"
       ]
     },
     "types": [
       "@types/node",
+      // "@types/jest",
       "@nuxt/types",
       "webpack-env",
-      "vuetify"
+      "vuetify",
+      "jest"
     ]
   },
   "exclude": [

@@ -15,6 +15,8 @@ module.exports = {
     '^.+\\.js$': 'babel-jest',
     '.*\\.(vue)$': 'vue-jest'
   },
+  // preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
+  setupFiles: ['./test/unit/setup.js'],
   collectCoverage: true,
   collectCoverageFrom: [
     '<rootDir>/components/**/*.vue',

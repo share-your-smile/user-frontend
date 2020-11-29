@@ -88,3 +88,10 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# jest
+debug-confirm.json
+
+# S3 deploy
+deploy.sh
+.awspublish
