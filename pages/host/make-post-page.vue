@@ -13,6 +13,8 @@
     <div style="background-color:white;">
       <div style="width: 300px;" v-html="qrcodeSVG"></div>  
     </div>
+    <a id="download" download="sample.png" :href="blobURL">ダウンロード</a>
+    <a :href="participantsURL">{{ participantsURL }}</a>
   </div>
 </template>
 
@@ -27,25 +29,71 @@ import { Vue, Watch, Mixins } from "vue-property-decorator";
 })
 export default class MainPostPage extends Vue {
   qrcodeSVG = '' as string;
+  qrcodePng = '' as string;
+  blobURL = '' as string;
+  participantsURL = '' as string;
 
-  async generateQrcode () {
+  created () {
+    this.download();
     const hostInfo: any = this.$store.getters['host/getLoginUser'];
-    const data = {
-      url: `${process.env.POST_PAGE_BASE_URL}/participants/${hostInfo.id}`
-    };
-    console.log(data);
+    this.participantsURL = `${location.origin}/participants/${hostInfo.id}`;
+  }
 
-    const generateURL = `${process.env.USER_DATA_API_BASE_URL}/qrcode`;
-    const options = {
+  getPostUrl () {
+    const hostInfo: any = this.$store.getters['host/getLoginUser'];
+    // return `${process.env.POST_PAGE_BASE_URL}/participants/${hostInfo.id}`;
+    return `${location.origin}/participants/${hostInfo.id}`;
+  }
+
+  generateRequestBody (type: string) {
+    const data = {
+      type: type,
+      url: this.getPostUrl()
+    };
+    return JSON.stringify(data);
+  }
+
+  generateOptions(type: string) {
+    return {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data)
-    }
-    const res: any = await (await fetch(generateURL, options)).json();
+      body: this.generateRequestBody(type)
+    };
+  }
+
+  async requestQrcode (options: any) {
+    const generateURL = `${process.env.USER_DATA_API_BASE_URL}/qrcode`;
+    return await (await fetch(generateURL, options)).json();
+  }
+
+  async generateQrcode () {
+    const res: any = await this.requestQrcode(this.generateOptions('svg'));
     this.qrcodeSVG = res.result;
     console.log(res);
+  }
+
+  async download () {
+    const res: any = await this.requestQrcode(this.generateOptions('base64'));
+    this.qrcodePng = `<img src="${res.result}">`;
+    
+    const test: string[] = res.result.split(',');
+    const data: string = window.atob(test[1]);
+
+    // "image/png"
+    const mimeType: string = 'image/png';
+
+    // バイナリからBlobを作成
+    for( var i=0, l=data.length, content=new Uint8Array( l ); l>i; i++ ) {
+      content[i] = data.charCodeAt( i ) ;
+    }
+
+    const blobData = new Blob( [ content ], {
+      type: mimeType ,
+    });
+    this.blobURL = window.URL.createObjectURL(blobData);
+    console.log(test);
   }
 }
 </script>

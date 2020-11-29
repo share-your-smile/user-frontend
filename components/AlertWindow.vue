@@ -34,7 +34,6 @@ export default class AlertWindow extends Vue {
   dialog: boolean = false;
 
   show() {
-    console.log('show');
     this.dialog = true;
   }
 }

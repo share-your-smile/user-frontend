@@ -58,7 +58,7 @@
 <script lang='ts'>
 // 新規ユーザー登録画面
 // MongoDBにユーザーを登録する
-// import Vue from 'vue';
+import { ComponentOptions } from 'vue';
 import Component from "vue-class-component";
 import { Vue, Watch } from "vue-property-decorator";
 
@@ -76,11 +76,15 @@ import AlertWindow from '~/components/AlertWindow.vue';
   }
 })
 export default class HostRegister extends Vue {
-  name: string = 'test';
-  email: string = 'test@gmail.com';
-  password: string = '01234567';
-  confirm_password: string = '01234567';
-  error_message: string = 'apepe no pe';
+  // name: string = 'test';
+  // email: string = 'test@gmail.com';
+  // password: string = '01234567';
+  // confirm_password: string = '01234567';
+  name: string = '';
+  email: string = '';
+  password: string = '';
+  confirm_password: string = '';
+  error_message: string = '';
   // buttonState: boolean = true;
 
   get refs(): any {
@@ -123,12 +127,12 @@ export default class HostRegister extends Vue {
         this.refs.alertWindow.show();
       } else {
         if (res.id) {
-          const userInfo: any = {
+          const resUserInfo: any = {
             name: this.name,
             email: this.email,
             id: res.id
           };
-          this.$store.commit('host/login', userInfo);
+          this.$store.commit('host/login', resUserInfo);
           this.$router.push('welcome');
         } else {
           this.error_message = 'エラーが発生しました。リトライしてください';

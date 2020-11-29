@@ -11,6 +11,7 @@ import { Vue, Watch } from "vue-property-decorator";
 
 @Component
 export default class PostImage extends Vue{
+  // ミドルウェアでリダイレクトする
   created () {
     console.log(`user is [${this.$store.getters['participants/getLoginUser']}]`);
   }

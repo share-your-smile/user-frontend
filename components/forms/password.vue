@@ -36,7 +36,9 @@ export default class FormPassword extends Vue {
     },
     passConfirm: (basePassword: string, password: string, confirm: boolean) => {
       if (confirm) {
-        if (basePassword !== password) return 'パスワードが一致しません';
+        if (basePassword !== password) {
+          return 'パスワードが一致しません';
+        }
       }
       return true;
     }

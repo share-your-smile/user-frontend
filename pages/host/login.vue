@@ -18,6 +18,7 @@
         rounded
         :disabled="buttonState"
         color="primary"
+        class="login-button"
         @click="check"
       >
         ログイン
@@ -86,7 +87,6 @@ export default class HostLogin extends Vue {
             this.error_message = 'エラーが発生しました。リトライしてください'
             break;
         }
-        console.log(this.error_message);
         this.refs.alertWindow.show();
       } else {
         if (res.name) {
@@ -97,7 +97,6 @@ export default class HostLogin extends Vue {
           };
           this.$store.commit('host/login', userInfo);
           this.$router.push('make-post-page');
-          // console.log(this.$store.getters['user/getLoginUser']);
         } else {
           this.error_message = 'エラーが発生しました。リトライしてください';
           this.refs.alertWindow.show();
@@ -105,6 +104,5 @@ export default class HostLogin extends Vue {
       }
     }
   }
-
 }
 </script>

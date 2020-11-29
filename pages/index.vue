@@ -73,6 +73,7 @@
         </v-card-actions>
       </v-card>
     </v-col>
+    <NuxtLink to='/host/login'>ホストユーザー</NuxtLink>
   </v-row>
 </template>
 
