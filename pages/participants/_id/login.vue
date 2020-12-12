@@ -30,7 +30,8 @@ import AlertWindow from '~/components/AlertWindow.vue';
   components: {
     FormUser,
     AlertWindow
-  }
+  },
+  middleware: 'participants-authenticated'
 })
 export default class ParticipantsLogin extends Vue {
   name: string = 'test';
@@ -42,7 +43,8 @@ export default class ParticipantsLogin extends Vue {
   }
   
   register () {
-    this.$store.commit('participants/login', this.name);
+    const registerName = this.name;
+    this.$store.commit('participants/login', registerName);
     this.$router.push('post-image');
   }
   

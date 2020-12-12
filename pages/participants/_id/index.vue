@@ -8,7 +8,9 @@
 import Component from "vue-class-component";
 import { Vue, Watch } from "vue-property-decorator";
 
-@Component
+@Component({
+  middleware: 'participants-authenticated'
+})
 export default class Participants extends Vue {
   created() {
     console.log(this.$route.params.id);
