@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>Post Image</h1>
+    <h2>you are {{ participantsName }}</h2>
   </div>
 </template>
 
@@ -10,12 +11,15 @@ import Component from "vue-class-component";
 import { Vue, Watch } from "vue-property-decorator";
 
 @Component({
+  layout: 'participants_default',
   middleware: 'participants-authenticated'
 })
 export default class PostImage extends Vue{
   // ミドルウェアでリダイレクトする
+  participantsName: string = '';
+
   created () {
-    console.log(`user is [${this.$store.getters['participants/getLoginUser']}]`);
+    this.participantsName = this.$store.getters['participants/getLoginUser'];
   }
 };
 </script>

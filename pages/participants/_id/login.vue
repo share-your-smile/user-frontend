@@ -31,6 +31,7 @@ import AlertWindow from '~/components/AlertWindow.vue';
     FormUser,
     AlertWindow
   },
+  layout: 'participants_default',
   middleware: 'participants-authenticated'
 })
 export default class ParticipantsLogin extends Vue {
