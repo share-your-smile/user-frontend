@@ -7,8 +7,8 @@ export const state = () => ({
 export type RootState = ReturnType<typeof state>
 
 export const mutations = mutationTree(state, {
-  login(state, name) {
-    state.name = name;
+  login(state, registName) {
+    state.name = registName;
   },
   logout(state) {
     state.name = '';

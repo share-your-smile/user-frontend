@@ -16,7 +16,6 @@ export default ({ store, req, isDev }) => {
           ],
           storage: {
             getItem: (key) => {
-              console.log('getItem');
               const result = process.client ? Cookies.getJSON(key) : cookie.parse(req.headers.cookie || '')[key];
               if (typeof result === 'object') {
                 const userInfoCookie = result['host'];
@@ -24,9 +23,9 @@ export default ({ store, req, isDev }) => {
               }
             },
             setItem: (key, value) => {
-              console.log('setItem');
               if(typeof value === 'string') {
                 const jsonValue = JSON.parse(value);
+                console.log(jsonValue);
                 if (typeof jsonValue === 'object') {
                   const hostId = jsonValue['host']['id'];
                   const hostEmail = jsonValue['host']['email'];

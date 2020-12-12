@@ -34,8 +34,8 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    { src: '~plugins/persistedstate.js', ssr: false },
-    { src: '~plugins/cookie-storage.js', ssr: false },
+    { src: '~plugins/cookie-storage/host.js', ssr: false },
+    { src: '~plugins/cookie-storage/participants.js', ssr: false },
     { src: '~plugins/injection/user-info-utils.ts', ssr: false },
     { src: '~plugins/injection/s3-connect.ts', ssr: false }
   ],

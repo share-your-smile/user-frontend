@@ -9,7 +9,9 @@
 import Component from "vue-class-component";
 import { Vue, Watch } from "vue-property-decorator";
 
-@Component
+@Component({
+  middleware: 'participants-authenticated'
+})
 export default class PostImage extends Vue{
   // ミドルウェアでリダイレクトする
   created () {
