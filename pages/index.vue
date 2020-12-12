@@ -1,99 +1,180 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <div class="text-center">
-        <logo />
-        <vuetify-logo />
-      </div>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
+  <v-container>
+    <v-row justify="center" align="center">
+      <v-col>
+        <NuxtLink to='/host/login'>ホストユーザー</NuxtLink>
+        <v-btn depressed @click="testSdk">AWS SDK Test</v-btn>
+        <v-file-input
+          label="file input"
+          @change="testUploadedSdk"
+          ref="file"
+        >
+          AWS SDK upload Test
+        </v-file-input>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <h2>Current Camera</h2>
+        <div class="border">
+          <vue-web-cam
+            ref="webcam"
+            :device-id="deviceId"
+            width="100%"
+            @started="onStarted"
+            @stopped="onStopped"
+            @error="onError"
+            @cameras="onCameras"
+            @camera-change="onCameraChange"
+          />
+        </div>
+
+        <div class="row">
+          <div class="col-md-12" style="background-color: white;">
+            <select v-model="camera">
+              <option selected>-- Select Device --</option>
+              <option
+                v-for="device in devices"
+                :key="device.deviceId"
+                :value="device.deviceId"
+              >
+                {{ device.label }}
+              </option>
+            </select>
           </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-    <NuxtLink to='/host/login'>ホストユーザー</NuxtLink>
-  </v-row>
+          <div class="col-md-12">
+            <v-btn @click="onCapture">
+              Capture Photo
+            </v-btn>
+            <v-btn :disabled="!isGetCapture" @click="uploadCapture">
+              Upload Camera
+            </v-btn>
+            <v-btn @click="onStop">
+              Stop Camera
+            </v-btn>
+            <v-btn @click="onStart">
+              Start Camera
+            </v-btn>
+          </div>
+        </div>
+      </v-col>
+      <v-col>
+        <div class="col-md-6">
+          <h2>Captured Image</h2>
+          <figure class="figure">
+            <img :src="img" class="img-responsive" />
+          </figure>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row>
+      <img ref="debugImg" :src="imageSrc">
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
-import Vue from 'vue'
+import { Component, Vue, Watch } from 'vue-property-decorator';
 
-export default Vue.extend({
-  data() {
-    return {
-      text: '' as string
+@Component({ components: {}})
+export default class Index extends Vue {
+  text: string = '';
+  imageSrc: string = '';
+  isUploaded: boolean = false;
+  fr: any = '';
+
+  // image server test
+  async testSdk() {
+    console.log(this.$s3Connect.getTestString());
+    
+    const num: Number = 1;
+
+    await this.$s3Connect.getImagesList('resized-media');
+
+    const res = await this.$s3Connect.getImage('resized-media', '20201206173714_testuser.jpeg');
+    this.imageSrc = URL.createObjectURL(res);
+    this.isUploaded = true;
+  };
+
+  async testUploadedSdk(file: any) {
+    console.log(file);
+    if (file !== undefined && file !== null) {
+      if (file.name.lastIndexOf('.') <= 0) return
+      this.fr = new FileReader();
+      // これでheicだろうがなんだろうがbase64データになる
+      // this.fr.readAsArrayBuffer(file);
+      this.fr.readAsDataURL(file);
+      this.fr.addEventListener('load', this.loadedFile);
     }
-  },
-  components: {
-    Logo,
-    VuetifyLogo
-  },
-  created() {
-    this.text = 'unko'
   }
-})
+
+  async loadedFile () {
+    // console.log(this.fr.result);
+    // this.imageSrc = this.fr.result;
+    const res = await this.$s3Connect.uploadImage('media', this.fr.result);
+    console.log(res);
+  }
+
+  // web cam test
+  '$refs': {
+    webcam: any
+  };
+  img: any = null;
+  camera: any = null;
+  deviceId: any = null;
+  devices: any = [];
+  isGetCapture: boolean = false;
+
+  get device() {
+    return this.devices.find(
+      (n: { deviceId: any }) => n.deviceId === this.deviceId
+    );
+  }
+
+  @Watch('camera')
+  onCameraChanged(val: any) {
+    this.deviceId = val
+  }
+
+  @Watch('devices')
+  onDeviceChanged() {
+    const first = this.devices[0]
+    if (first) {
+      this.camera = first.deviceId
+      this.deviceId = first.deviceId
+    }
+  }
+  onCapture() {
+    this.img = this.$refs.webcam.capture();
+    this.isGetCapture = true;
+  }
+  onStarted(stream: any) {
+    console.log('On Started Event', stream)
+  }
+  onStopped(stream: any) {
+    console.log('On Stopped Event', stream)
+  }
+  onStop() {
+    this.$refs.webcam.stop()
+  }
+  onStart() {
+    this.$refs.webcam.start()
+  }
+  onError(error: any) {
+    console.log('On Error Event', error)
+  }
+  onCameras(cameras: any) {
+    this.devices = cameras
+    console.log('On Cameras Event', cameras)
+  }
+  onCameraChange(deviceId: any) {
+    this.deviceId = deviceId
+    this.camera = deviceId
+    console.log('On Camera Change Event', deviceId)
+  }
+  async uploadCapture() {
+    console.log('uploadCapture');
+    const res = await this.$s3Connect.uploadImage('media', this.img);
+  }
+}
 </script>

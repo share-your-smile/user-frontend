@@ -95,3 +95,5 @@ debug-confirm.json
 # S3 deploy
 deploy.sh
 .awspublish
+
+gulpfile.js

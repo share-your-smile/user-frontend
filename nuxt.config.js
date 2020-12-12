@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 const USER_DATA_API_BASE_URL = process.env.USER_DATA_API_BASE_URL;
 const POST_PAGE_BASE_URL = process.env.POST_PAGE_BASE_URL;
+const POST_BUCKET_NAME = process.env.POST_BUCKET_NAME;
+const GET_BUCKET_NAME = process.env.GET_BUCKET_NAME;
 
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
@@ -35,6 +37,7 @@ export default {
     { src: '~plugins/persistedstate.js', ssr: false },
     { src: '~plugins/cookie-storage.js', ssr: false },
     { src: '~plugins/injection/user-info-utils.ts', ssr: false },
+    { src: '~plugins/injection/s3-connect.ts', ssr: false }
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -51,13 +54,14 @@ export default {
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
+    'vue-web-cam/nuxt'
   ],
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: true,
+      dark: false,
       themes: {
         dark: {
           primary: colors.blue.darken2,
@@ -81,6 +85,8 @@ export default {
 
   env: {
     USER_DATA_API_BASE_URL,
-    POST_PAGE_BASE_URL
+    POST_PAGE_BASE_URL,
+    POST_BUCKET_NAME,
+    GET_BUCKET_NAME
   }
 }
