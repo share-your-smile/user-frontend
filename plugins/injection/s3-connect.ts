@@ -43,7 +43,7 @@ export class S3Connect {
   }
 
   // アップロード先BUCKETは固定
-  async uploadImage(userId: string, fileBuffer: string) {
+  async uploadImage(userId: string, poster: string, fileBase64: string) {
     const url: string = `${this.baseUrl}/api/${userId}/image`;
 
     // const bl = new Blob([fileBuffer], {'type': 'image/png'});
@@ -58,8 +58,8 @@ export class S3Connect {
     // };
 
     const data = {
-      image: fileBuffer,
-      poster: 'testuser'
+      image: fileBase64,
+      poster: poster
     };
     const params = {
       method: 'POST',

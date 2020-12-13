@@ -1,7 +1,42 @@
 <template>
   <div>
     <h1>Post Image</h1>
-    <h2>you are {{ participantsName }}</h2>
+    <v-container>
+      <v-row>
+        <v-col>
+          <v-file-input
+            accept="image/*"
+            label="写真を選択"
+            prepend-icon="mdi-image"
+            @change="selectedFile"
+            ref="file"
+          >
+            
+          </v-file-input>
+        </v-col>
+        <v-col>
+          <v-btn
+            depressed
+          >
+            撮影する
+          </v-btn>
+          <v-btn
+            depressed
+            :disabled="isImage"
+            @click="uploadFile"
+          >
+            画像を投稿する
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-img
+          ref="debugImg"
+          :src="imageSrc"
+          max-width="600"
+        ></v-img>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -17,9 +52,41 @@ import { Vue, Watch } from "vue-property-decorator";
 export default class PostImage extends Vue{
   // ミドルウェアでリダイレクトする
   participantsName: string = '';
+  fr: any = '';
+  imageSrc: string = '';
+  // isImage: boolean = false;
+
+  get isImage () {
+    return (this.imageSrc === '') ? true : false;
+  }
 
   created () {
     this.participantsName = this.$store.getters['participants/getLoginUser'];
+  }
+
+  async selectedFile(file: any) {
+    console.log(file);
+    if (file !== undefined && file !== null) {
+      if (file.name.lastIndexOf('.') <= 0) return
+      this.fr = new FileReader();
+      // これでheicだろうがなんだろうがbase64データになる
+      // this.fr.readAsArrayBuffer(file);
+      this.fr.readAsDataURL(file);
+      this.fr.addEventListener('load', this.loadedFile);
+    }
+  }
+
+  async loadedFile () {
+    // console.log(this.fr.result);
+    // this.imageSrc = this.fr.result;
+
+    this.imageSrc = this.fr.result;
+    
+  }
+
+  async uploadFile () {
+    const res = await this.$s3Connect.uploadImage('media', this.participantsName, this.fr.result);
+    console.log(res);
   }
 };
 </script>
