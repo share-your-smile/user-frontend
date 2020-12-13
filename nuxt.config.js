@@ -1,4 +1,6 @@
 import colors from 'vuetify/es5/util/colors'
+import fs from 'fs';
+import path from 'path';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -10,6 +12,13 @@ const GET_BUCKET_NAME = process.env.GET_BUCKET_NAME;
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
+
+  server: {
+    https: {
+      key: fs.readFileSync(path.join(__dirname, './cert/localhost-key.pem')),
+      cert: fs.readFileSync(path.join(__dirname, './cert/localhost.pem')),
+    },
+  },
 
   // Target (https://go.nuxtjs.dev/config-target)
   target: 'static',

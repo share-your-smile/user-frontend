@@ -97,3 +97,5 @@ deploy.sh
 .awspublish
 
 gulpfile.js
+
+cert/
