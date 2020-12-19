@@ -50,7 +50,7 @@ import AlertWindow from '~/components/AlertWindow.vue';
   middleware: 'host-authenticated'
 })
 export default class HostLogin extends Vue {
-  email: string = 'test@gmail.com';
+  email: string = 'first_test@gmail.com';
   password: string = 'password';
   error_message: string = '';
 

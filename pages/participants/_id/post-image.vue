@@ -29,12 +29,28 @@
           </v-btn>
         </v-col>
       </v-row>
-      <v-row>
-        <v-img
-          ref="debugImg"
-          :src="imageSrc"
-          max-width="600"
-        ></v-img>
+      <v-row
+        justify="center"
+        align-content="center"
+        style="height: 600px;"
+      >
+        <v-col
+          outlined
+          style="border: solid; height:inherit"
+        justify="center"
+        align-content="center"
+        >
+          <v-layout
+            align-content-center 
+            justify-center
+          >
+            <v-img
+              ref="debugImg"
+              :src="imageSrc"
+              max-width="600"
+            ></v-img>
+          </v-layout>
+        </v-col>
       </v-row>
     </v-container>
   </div>

@@ -2,14 +2,16 @@
   <v-container>
     <v-row justify="center" align="center">
       <v-col>
-        <NuxtLink to='/host/login'>ホストユーザー</NuxtLink>
+        <nuxt-link to='/host/login'>ホストユーザー</nuxt-link>
+        <nuxt-link to='/participants'>参加者</nuxt-link>
+      </v-col>
+      <v-col>
         <v-btn depressed @click="testSdk">AWS SDK Test</v-btn>
         <v-file-input
           label="file input"
           @change="testUploadedSdk"
           ref="file"
         >
-          AWS SDK upload Test
         </v-file-input>
       </v-col>
     </v-row>
@@ -129,6 +131,10 @@ export default class Index extends Vue {
     return this.devices.find(
       (n: { deviceId: any }) => n.deviceId === this.deviceId
     );
+  }
+
+  mounted() {
+    // this.onStop();
   }
 
   @Watch('camera')

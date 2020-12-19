@@ -14,7 +14,7 @@
       <div style="width: 300px;" v-html="qrcodeSVG"></div>  
     </div>
     <a id="download" download="sample.png" :href="blobURL">ダウンロード</a>
-    <a :href="participantsURL">{{ participantsURL }}</a>
+    <a :href="participantsURL">参加者ページ</a>
   </div>
 </template>
 
