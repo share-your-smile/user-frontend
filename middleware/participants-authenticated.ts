@@ -17,7 +17,7 @@ export default ({ redirect, store, isDev, route}: Context) => {
 
   const path: string = route.fullPath;
   const paths: string[] = path.split('/');
-  const prefixPath = `/${paths[1]}/${paths[2]}`;
+  const prefixPath = `/${paths[1]}/${paths[2]}/${paths[3]}`;
   
   if (participantsName !== '') {
     // ログインできていれば、投稿ページに飛ばす

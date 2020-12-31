@@ -29,6 +29,8 @@
     "types": [
       "@types/node",
       // "@types/jest",
+      "@types/js-cookie",
+      "@types/cookie",
       "@nuxt/types",
       "webpack-env",
       "vuetify",

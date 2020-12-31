@@ -1,6 +1,6 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import MakePostPage from '@/pages/host/make-post-page.vue';
+import MakePostPage from '@/pages/host/_id/top.vue';
 
 const localVue = createLocalVue();
 

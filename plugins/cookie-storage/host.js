@@ -3,8 +3,8 @@ import * as Cookies from 'js-cookie'
 import cookie from 'cookie'
  
 export default ({ store, req, isDev }) => {
-  if (process.client) {
-    window.onNuxtReady((nuxt) => {
+  // if (process.client) {
+    // window.onNuxtReady((nuxt) => {
       createPersistedState({
           key: [
             'host_id',
@@ -16,16 +16,34 @@ export default ({ store, req, isDev }) => {
           ],
           storage: {
             getItem: (key) => {
-              const result = process.client ? Cookies.getJSON(key) : cookie.parse(req.headers.cookie || '')[key];
-              if (typeof result === 'object') {
-                const userInfoCookie = result['host'];
+              const userInfoCookie = {
+                id: 0,
+                name: '',
+                email: ''
+              };
+              if (process.client) {
+                for (let i=0; i < key.length; i++) {
+                  const result = Cookies.getJSON(key[i]);
+                  switch(i) {
+                    case 0:
+                      userInfoCookie.id = result;
+                      break;
+                    case 1:
+                      userInfoCookie.name = result;
+                      break;
+                    case 2:
+                      userInfoCookie.email = result;
+                      break;
+                    default: break;
+                  }
+                }
                 store.commit('host/login', userInfoCookie);
               }
             },
             setItem: (key, value) => {
               if(typeof value === 'string') {
                 const jsonValue = JSON.parse(value);
-                console.log(jsonValue);
+                // console.log(jsonValue);
                 if (typeof jsonValue === 'object') {
                   const hostId = jsonValue['host']['id'];
                   const hostEmail = jsonValue['host']['email'];
@@ -43,6 +61,6 @@ export default ({ store, req, isDev }) => {
             }
           }
       })(store)
-    });
-  }
+    // });
+  // }
 }

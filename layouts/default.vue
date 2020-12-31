@@ -1,31 +1,46 @@
 <template>
-  <v-app>
+  <v-app >
     <v-app-bar
       :clipped-left="clipped"
+      class="headerSYS"
       fixed
       app
     >
-      <v-toolbar-title class="titleStyle" v-text="title" />
+      <v-toolbar-title @click="goToTop" class="titleStyle" v-text="title" />
       <v-spacer />
-      <v-menu>
+      <v-menu
+        offset-y
+      >
         <template v-slot:activator="{ on }">
           <v-btn
             icon
             v-on="on"
           >
-            <v-icon>mdi-account</v-icon>
+            <v-icon
+            >mdi-account</v-icon>
           </v-btn>
         </template>
         <v-list>
-          <v-list-item v-for="item in account_item" :key="item.title">
+          <v-list-item
+            v-for="item in account_item"
+            :key="item.title"
+            link
+          >
             <v-list-item-title @click="changeLoginStatus">{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
     </v-app-bar>
-    <v-main>
+    <v-main
+      class="base"
+    >
+      <hero
+        v-if="showHero"
+      />
+
       <v-container>
-        <nuxt />
+        <nuxt 
+        />
       </v-container>
     </v-main>
     <v-footer
@@ -39,6 +54,8 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
+
+import Hero from "~/components/Hero.vue";
 
 @Component({ components: {}})
 export default class Default extends Vue {
@@ -61,52 +78,63 @@ export default class Default extends Vue {
   right: boolean = true;
   rightDrawer: boolean = false;
   title: string = 'Share Your Smile';
-  account_item: any[] = [
+  account_item: any[] = [];
+  tmp_account_item: any[] = [
     {
       title: 'ログイン' as string,
     },
     {
       title: '設定' as string,
-    },
-    {
-      title: this.$nuxt.$route.name!
     }
   ];
   pageTitle: string = this.$nuxt.$route.name!;
+  showHero: boolean = false;
+  
 
   @Watch('$route')
   pageTransition(to: any, from: any) {
     if(to.path !== from.path) {
       this.pageTitle = this.$nuxt.$route.name!;
-      this.account_item[2].title = this.pageTitle;
+      // this.account_item[2].title = this.pageTitle;
       this.loginState();
     }
+    this.changeHero();
   }
 
   mounted() {
     this.loginState();
+    this.changeHero();
+  }
+
+  changeHero() {
+    if (this.$nuxt.$route.name === 'index') {
+      this.showHero = true;
+    } else {
+      this.showHero = false;
+    }
   }
 
   loginState() {
-    // const hostInfo: any = this.$store.getters['host/getLoginUser'];
-    // console.log('hostInfo');
-    // console.log(hostInfo);
-    // console.log(this.pageTitle);
-    // if ( hostInfo.name !== '' ) {
-    //   this.account_item[0].title = 'ログアウト';
-    // } else {
-    //   this.account_item[0].title = 'ログイン';
-    // }
-
-    const page: string = this.$nuxt.$route.name!;
-
-    console.log(page);
-
-    if (page.indexOf('login') === -1 && page.indexOf('register') === -1) {
-      this.account_item[0].title = 'ログアウト';
+    const hostInfo: any = this.$store.getters['host/getLoginUser'];
+    this.tmp_account_item = [
+      {
+        title: ''
+      },
+      {
+        title: '設定'
+      }
+    ];
+    if ( hostInfo.name !== '' ) {
+      this.tmp_account_item[0].title = 'ログアウト';
+      const loginUser = {
+        title: hostInfo.name
+      };
+      this.tmp_account_item.unshift(loginUser);
     } else {
-      this.account_item[0].title = 'ログイン';
+      this.tmp_account_item[0].title = 'ログイン';
     }
+    this.account_item = this.tmp_account_item;
+
   }
 
   changeLoginStatus() {
@@ -117,13 +145,48 @@ export default class Default extends Vue {
       this.$router.push('/host/login');
     }
   }
+
+  goToTop() {
+    this.$router.push('/');
+  }
 }
 </script>
 
 <style scoped>
-  .titleStyle {
-    font-family: Quicksand,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-    font-weight: lighter;
-    font-size: 2rem;
-  }
+.titleStyle {
+  font-family: 'myFont',Quicksand,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-weight: bold;
+  /* font-size: 2rem; */
+}
+
+body {
+  background-color: black;
+  /* background-image : url("Snow.jpg"); */
+  background: linear-gradient(-135deg, #E4A972, #9941D8);
+  background-size: cover;
+  color: white;
+  height: 100vh;
+  width: 100%;
+  /* font-family: 'Noto Sans Japanese', sans-serif; */
+  font-family: 'MyFont';
+}
+
+.headerSYS {
+  background-color: black;
+  /* background-image : url("Snow.jpg"); */
+  background: linear-gradient(-135deg, #E4A972, #9941D8);
+  background-size: cover;
+  color: lightgray;
+  font-family: 'myFont';
+  /* text-shadow:
+    1px 0 0 black,
+    0 1px 0 black,
+    -1px 0 0 black,
+    0 -1px 0 black */
+}
+
+.base {
+  font-family:'myFont';
+  background-color: rgb(241, 241, 241);
+}
 </style>

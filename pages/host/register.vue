@@ -1,53 +1,72 @@
 <template>
-  <div>
-    <h1>新規登録ページ</h1>
-    <v-btn depressed
-      color="primary"
-      outlined
-      @click="$router.push('login')"
+  <div
+    class="login_top"
+  >
+    <v-container
+      class="container"
     >
-      ログイン
-    </v-btn>
-    <v-form
-      ref="form"
-      lazy-validation
-    >
-      <form-user 
-        v-bind:name="name"
-        @update:name="name=$event"
-      />
-      <form-email
-        v-bind:email="email"
-        @update:email="email=$event"
-      />
-      <form-password
-        v-bind:password="password"
-        @update:password="password=$event"
-      />
-      <form-password
-        v-bind:password="confirm_password"
-        v-bind:confirm="true"
-        v-bind:base-password="password"
-        @update:password="confirm_password=$event"
-      />
-      <v-btn depressed
-        outlined
-        rounded
-        :disabled="buttonState"
-        color="primary"
-        @click="checkPass"
+      <v-row
+        justify="center"
       >
-        登録
-      </v-btn>
-      <v-btn depressed
-        outlined
-        rounded
-        color="warning"
-        @click="resetValidate"
+        <sub-title v-bind:title="title.register" />
+      </v-row>
+
+      <v-row
+        justify="center"
       >
-        validate reset
-      </v-btn>
-    </v-form>
+        <v-col
+          class="text-right"
+        >
+          <v-btn depressed
+            color="primary"
+            outlined
+            @click="$router.push('login')"
+          >
+            ログイン
+          </v-btn>
+          <v-form
+            ref="form"
+            lazy-validation
+          >
+            <form-user 
+              v-bind:name="name"
+              @update:name="name=$event"
+            />
+            <form-email
+              v-bind:email="email"
+              @update:email="email=$event"
+            />
+            <form-password
+              v-bind:password="password"
+              @update:password="password=$event"
+            />
+            <form-password
+              v-bind:password="confirm_password"
+              v-bind:confirm="true"
+              v-bind:base-password="password"
+              @update:password="confirm_password=$event"
+            />
+            <v-btn depressed
+              outlined
+              rounded
+              :disabled="buttonState"
+              color="secondary"
+              @click="checkPass"
+            >
+              登録
+            </v-btn>
+            <!-- <v-btn depressed
+              outlined
+              rounded
+              color="warning"
+              @click="resetValidate"
+            >
+              validate reset
+            </v-btn> -->
+          </v-form>
+        </v-col>
+      </v-row>
+    </v-container>
     <alert-window
       v-bind:error_message="error_message"
       ref="alertWindow"
@@ -66,6 +85,7 @@ import FormUser from '~/components/forms/name.vue';
 import FormEmail from '~/components/forms/email.vue';
 import FormPassword from '~/components/forms/password.vue';
 import AlertWindow from '~/components/AlertWindow.vue';
+import SubTitle from '~/components/SubTitle.vue';
 
 @Component({
   components: {
@@ -86,6 +106,9 @@ export default class HostRegister extends Vue {
   confirm_password: string = '';
   error_message: string = '';
   // buttonState: boolean = true;
+  title: any = {
+    register: '新規登録'
+  };
 
   get refs(): any {
     // eslint-disable-next-line
@@ -113,27 +136,24 @@ export default class HostRegister extends Vue {
         email: this.email,
         password: this.password
       };
-      const res: any = await this.$userInfoInterface.registerUser(reqUserInfo);
-      if (res.error_message) {
-        switch (res.error_message) {
-          case 'SAME_USER_EXIST':
-            this.error_message = '同じメールアドレスのユーザが登録されています';
-            break;
-          default:
-            this.error_message = 'エラーが発生しました。リトライしてください';
-            break;
-        }
-        // this.dialog = true;
-        this.refs.alertWindow.show();
-      } else {
+      try {
+        await this.$store.dispatch('host/registerUserInfo',reqUserInfo);
+        const res = this.$store.getters['host/getLoginUser'];
+        
         if (res.id) {
-          const resUserInfo: any = {
-            name: this.name,
-            email: this.email,
-            id: res.id
-          };
-          this.$store.commit('host/login', resUserInfo);
-          this.$router.push('welcome');
+          this.$router.push(`${res.id}/welcome`);
+        }
+      } catch(error) {
+        if (error.response.data.error_message) {
+          switch (error.response.data.error_message) {
+            case 'SAME_USER_EXIST':
+              this.error_message = '同じメールアドレスのユーザが登録されています';
+              break;
+            default:
+              this.error_message = 'エラーが発生しました。リトライしてください';
+              break;
+          }
+          this.refs.alertWindow.show();
         } else {
           this.error_message = 'エラーが発生しました。リトライしてください';
           this.refs.alertWindow.show();
@@ -151,3 +171,18 @@ export default class HostRegister extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.login_top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  height: 85vh;
+}
+
+.container {
+  width: 40%;
+  background-color: white;
+}
+</style>

@@ -31,8 +31,13 @@ export default ({ redirect, store, isDev, route }: Context) => {
   if (loginData.id !== -1 && loginData.name !== '' && loginData.email !== '') {
     store.commit('host/login', loginData);
     const path: string = route.fullPath;
-    if (path.indexOf('make-post-page') === -1) {
-      return redirect('/host/make-post-page');
+    if (path.indexOf('top') === -1) {
+      return redirect(`/host/${loginData.id}/top`);
+    }
+  } else {
+    const path: string = route.fullPath;
+    if (path.indexOf('top') !== -1) {
+      return redirect(`/host/login`);
     }
   }
 }

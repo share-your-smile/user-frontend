@@ -1,0 +1,10 @@
+@font-face {
+  font-family: 'myFont'; // <-好きな名前をつけれます。
+  src: url('../font/Mamelon-5-Hi-Regular.otf') format("opentype");
+}
+
+$body-font-family: 'myFont';
+
+html {
+  font-family: 'myFont';
+}

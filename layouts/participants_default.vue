@@ -2,24 +2,28 @@
   <v-app>
     <v-app-bar
       :clipped-left="clipped"
+      class="headerSYS"
       fixed
       app
     >
-      <v-toolbar-title class="titleStyle" v-text="dispTitle" />
+      <v-toolbar-title class="titleStyle" v-text="title" />
       <v-spacer />
       <v-menu>
         <template v-slot:activator="{ on }">
           <v-btn
             :disabled="isLoginPage"
+            rounded
+            small
             v-on="on"
             @click="changeParticipantsName"
-          >
-            {{ changeName }}
-          </v-btn>
+            v-text="changeName"
+          />
         </template>
       </v-menu>
     </v-app-bar>
-    <v-main>
+    <v-main
+      class="base"
+    >
       <v-container>
         <nuxt />
       </v-container>
@@ -43,7 +47,7 @@ export default class Default extends Vue {
   title: string = 'Share Your Smile';
   name: string = '';
   dispTitle: string = 'Share Your Smile';
-  changeName: string = '名前を変更する';
+  changeName: string = '名前を変更';
   pageTitle: string = this.$nuxt.$route.name!;
   isLoginPage: boolean = false;
 
@@ -87,9 +91,40 @@ export default class Default extends Vue {
 </script>
 
 <style scoped>
-  .titleStyle {
-    font-family: Quicksand,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-    font-weight: lighter;
-    font-size: 2rem;
-  }
+.titleStyle {
+  font-family: 'myFont', Quicksand,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-weight: bold;
+  /* font-size: 2rem; */
+}
+
+body {
+  background-color: black;
+  /* background-image : url("Snow.jpg"); */
+  background: linear-gradient(-135deg, #E4A972, #9941D8);
+  background-size: cover;
+  color: white;
+  height: 100vh;
+  width: 100%;
+  /* font-family: 'Noto Sans Japanese', sans-serif; */
+  font-family: 'MyFont';
+}
+
+.headerSYS {
+  background-color: black;
+  /* background-image : url("Snow.jpg"); */
+  background: linear-gradient(-135deg, #E4A972, #9941D8);
+  background-size: cover;
+  color: lightgray;
+  font-family: 'myFont';
+  /* text-shadow:
+    1px 0 0 black,
+    0 1px 0 black,
+    -1px 0 0 black,
+    0 -1px 0 black */
+}
+
+.base {
+  font-family:'myFont';
+  background-color: rgb(241, 241, 241);
+}
 </style>

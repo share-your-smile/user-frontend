@@ -1,9 +1,19 @@
 <template>
-  <v-container>
+<div>
+
+  <!-- 概要紹介 -->
+  <abstract />
+
+  <!-- 使い方紹介 -->
+  <how-to-use />
+
+  <v-container class="index_top">
+    
     <v-row justify="center" align="center">
       <v-col>
         <nuxt-link to='/host/login'>ホストユーザー</nuxt-link>
         <nuxt-link to='/participants'>参加者</nuxt-link>
+        <v-btn @click="getList">画像リスト取得</v-btn>
       </v-col>
       <v-col>
         <v-btn depressed @click="testSdk">AWS SDK Test</v-btn>
@@ -19,7 +29,7 @@
       <v-col>
         <h2>Current Camera</h2>
         <div class="border">
-          <vue-web-cam
+          <!-- <vue-web-cam
             ref="webcam"
             :device-id="deviceId"
             width="100%"
@@ -28,7 +38,7 @@
             @error="onError"
             @cameras="onCameras"
             @camera-change="onCameraChange"
-          />
+          /> -->
         </div>
 
         <div class="row">
@@ -73,12 +83,18 @@
       <img ref="debugImg" :src="imageSrc">
     </v-row>
   </v-container>
+</div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
+import * as Cookies from 'js-cookie';
+import cookie from 'cookie';
 
-@Component({ components: {}})
+import Abstract from "~/components/Abstract.vue";
+import HowToUse from "~/components/HowToUse.vue";
+
+@Component({ components: {Abstract}})
 export default class Index extends Vue {
   text: string = '';
   imageSrc: string = '';
@@ -87,15 +103,15 @@ export default class Index extends Vue {
 
   // image server test
   async testSdk() {
-    console.log(this.$s3Connect.getTestString());
+    // console.log(this.$s3Connect.getTestString());
     
-    const num: Number = 1;
+    // const num: Number = 1;
 
-    await this.$s3Connect.getImagesList('resized-media');
+    // await this.$s3Connect.getImagesList('resized-media');
 
-    const res = await this.$s3Connect.getImage('resized-media', '20201206173714_testuser.jpeg');
-    this.imageSrc = URL.createObjectURL(res);
-    this.isUploaded = true;
+    // const res = await this.$s3Connect.getImage('resized-media', '20201206173714_testuser.jpeg');
+    // this.imageSrc = URL.createObjectURL(res);
+    // this.isUploaded = true;
   };
 
   async testUploadedSdk(file: any) {
@@ -113,8 +129,8 @@ export default class Index extends Vue {
   async loadedFile () {
     // console.log(this.fr.result);
     // this.imageSrc = this.fr.result;
-    const res = await this.$s3Connect.uploadImage('media', this.fr.result);
-    console.log(res);
+    // const res = await this.$s3Connect.uploadImage('media', this.fr.result);
+    // console.log(res);
   }
 
   // web cam test
@@ -135,6 +151,7 @@ export default class Index extends Vue {
 
   mounted() {
     // this.onStop();
+    // this.$refs.webcam.stop()
   }
 
   @Watch('camera')
@@ -179,8 +196,29 @@ export default class Index extends Vue {
     console.log('On Camera Change Event', deviceId)
   }
   async uploadCapture() {
-    console.log('uploadCapture');
-    const res = await this.$s3Connect.uploadImage('media', this.img);
+    // console.log('uploadCapture');
+    // const res = await this.$s3Connect.uploadImage('media', this.img);
+  }
+  async getList () {
+    await this.$store.dispatch('imagesList/getImagesList', 'resized-media');
+    const list = this.$store.getters['imagesList/getList'];
+    list.forEach((item: string) => {
+      console.log(item);
+    });
   }
 }
 </script>
+
+<style scoped>
+.index_top {
+  /* font-family: 'myFont'; */
+}
+
+.back {
+  background: url('/top.JPG');
+  background-size: cover;
+  background-position: center center;
+  width: 100%;
+  height: 50vh;
+}
+</style>

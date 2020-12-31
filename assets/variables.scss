@@ -2,3 +2,14 @@
 //
 // The variables you want to modify
 // $font-size-root: 20px;
+.body-class {
+  background-color: black;
+  /* background-image : url("Snow.jpg"); */
+  background: linear-gradient(-135deg, #E4A972, #9941D8);
+  background-size: cover;
+  color: white;
+  height: 100vh;
+  width: 100%;
+  /* font-family: 'Noto Sans Japanese', sans-serif; */
+  font-family: 'MyFont';
+}

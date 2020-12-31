@@ -28,7 +28,7 @@ export default ({store, req, isDev}) => {
           setItem: (key, value) => {
             if(typeof value === 'string') {
               const jsonValue = JSON.parse(value);
-              console.log(jsonValue);
+              // console.log(jsonValue);
               if (typeof jsonValue === 'object') {
                 const participantsName = jsonValue['participants']['name'];
                 Cookies.set(key[0], participantsName, { expires: 365, secure: !isDev });
