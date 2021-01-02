@@ -31,6 +31,8 @@
       // "@types/jest",
       "@types/js-cookie",
       "@types/cookie",
+      "@types/sharp",
+      "@types/exif",
       "@nuxt/types",
       "webpack-env",
       "vuetify",

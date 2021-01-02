@@ -1,5 +1,6 @@
 <template>
   <v-text-field
+    outlined
     v-model="innerVal"
     :rules="[
       rules.required,
@@ -30,7 +31,7 @@ export default class FormPassword extends Vue {
   showPassword: boolean = false;
 
   rules: Object = {
-    required: (value: string) => !!value || 'Required.',
+    required: (value: string) => !!value || '入力してください',
     pass: (value: string) => {
       return (value && value.length ) >= 8 || '8文字以上のパスワードを設定してください';
     },

@@ -1,5 +1,6 @@
 <template>
   <v-text-field
+    outlined
     v-model="innerVal"
     :rules="[rules.required]"
     label="お名前"
@@ -15,7 +16,7 @@ export default class HostUser extends Vue{
   name!: string;
   
   rules: Object = {
-    required: (value: string) => !!value || 'Required.'
+    required: (value: string) => !!value || '入力してください'
   }
 
   get innerVal () {

@@ -5,6 +5,7 @@
       class="headerSYS"
       fixed
       app
+      v-show="false"
     >
       <v-toolbar-title class="titleStyle" v-text="title" />
       <v-spacer />
@@ -126,5 +127,6 @@ body {
 .base {
   font-family:'myFont';
   background-color: rgb(241, 241, 241);
+  padding: 0px!important;
 }
 </style>

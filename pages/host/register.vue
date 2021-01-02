@@ -2,69 +2,86 @@
   <div
     class="login_top"
   >
-    <v-container
-      class="container"
-    >
-      <v-row
-        justify="center"
-      >
-        <sub-title v-bind:title="title.register" />
-      </v-row>
-
-      <v-row
-        justify="center"
-      >
+    <v-container>
+      <v-row>
         <v-col
-          class="text-right"
-        >
-          <v-btn depressed
-            color="primary"
-            outlined
-            @click="$router.push('login')"
-          >
-            ログイン
-          </v-btn>
-          <v-form
-            ref="form"
-            lazy-validation
-          >
-            <form-user 
-              v-bind:name="name"
-              @update:name="name=$event"
-            />
-            <form-email
-              v-bind:email="email"
-              @update:email="email=$event"
-            />
-            <form-password
-              v-bind:password="password"
-              @update:password="password=$event"
-            />
-            <form-password
-              v-bind:password="confirm_password"
-              v-bind:confirm="true"
-              v-bind:base-password="password"
-              @update:password="confirm_password=$event"
-            />
-            <v-btn depressed
-              outlined
-              rounded
-              :disabled="buttonState"
-              color="secondary"
-              @click="checkPass"
+          cols=0
+          md=2
+          lg=3
+          xl=4  
+        />
+        <v-col>
+          <v-container>
+            <v-row
+              justify="center"
             >
-              登録
-            </v-btn>
-            <!-- <v-btn depressed
-              outlined
-              rounded
-              color="warning"
-              @click="resetValidate"
+              <sub-title v-bind:title="title.register" />
+            </v-row>
+
+            <v-row
+              justify="center"
             >
-              validate reset
-            </v-btn> -->
-          </v-form>
+              <v-col
+                class="text-right"
+              >
+                <v-btn depressed
+                  color="primary"
+                  rounded
+                  @click="$router.push('login')"
+                >
+                  ログイン
+                </v-btn>
+                <div style="height:30px;" />
+                <v-form
+                  ref="form"
+                  lazy-validation
+                >
+                  <form-user 
+                    v-bind:name="name"
+                    @update:name="name=$event"
+                  />
+                  <form-email
+                    v-bind:email="email"
+                    @update:email="email=$event"
+                  />
+                  <form-password
+                    v-bind:password="password"
+                    @update:password="password=$event"
+                  />
+                  <form-password
+                    v-bind:password="confirm_password"
+                    v-bind:confirm="true"
+                    v-bind:base-password="password"
+                    @update:password="confirm_password=$event"
+                  />
+                  <v-btn depressed
+                    outlined
+                    rounded
+                    :disabled="buttonState"
+                    color="secondary"
+                    @click="checkPass"
+                  >
+                    登録
+                  </v-btn>
+                  <!-- <v-btn depressed
+                    outlined
+                    rounded
+                    color="warning"
+                    @click="resetValidate"
+                  >
+                    validate reset
+                  </v-btn> -->
+                </v-form>
+              </v-col>
+            </v-row>
+          </v-container>
         </v-col>
+        <v-col
+          cols=0
+          md=2
+          lg=3
+          xl=4
+        />
       </v-row>
     </v-container>
     <alert-window
@@ -182,7 +199,7 @@ export default class HostRegister extends Vue {
 }
 
 .container {
-  width: 40%;
-  background-color: white;
+  /* width: 40%;
+  background-color: white; */
 }
 </style>

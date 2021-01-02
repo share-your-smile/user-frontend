@@ -24,7 +24,7 @@
           height="250px"
         >
           <v-card-title
-            
+            style="text-align:center;"
           >
             {{index}}
           </v-card-title>

@@ -8,8 +8,25 @@
       />
     </v-row>
     <v-row>
-      <v-col>
-        
+      <v-col
+        cols=12
+        md=6
+        lg=6
+        xl=6
+      >
+        <div
+          v-html="words.description"
+        />
+      </v-col>
+      <v-col
+        cols=12
+        md=6
+        lg=6
+        xl=6
+      >
+        <v-img
+          src="/568004_s.jpg"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -24,7 +41,7 @@ import SubTitle from "~/components/SubTitle.vue";
 export default class Abstract extends Vue {
   words: any = {
     title: "Share Your Smileとは",
-    description: "PCとネット環境があれば、どこでも使用可能！<br>みんなが撮った写真をその場で共有して",
+    description: "PCとネット環境があれば、どこでも使用可能！<br>みんなが撮った写真をその場で共有して盛り上がろう。<br>参加者の手持ち無沙汰な時間を削減できます！",
   }
   
 }

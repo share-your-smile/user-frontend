@@ -1,13 +1,15 @@
 <template>
-  <div v-on:click="startSlideShow" class="opening_content">
-    <div v-if="!isStartCountdown">
-      <div class="start_phrase">Let's share your smile!</div>
-      <!-- <button class="startButton">スライドショーをはじめます！</button> -->
+  <v-container>
+    <div v-on:click="startSlideShow" class="opening_content">
+      <div v-if="!isStartCountdown">
+        <div class="start_phrase">Let's share your smile!</div>
+        <!-- <button class="startButton">スライドショーをはじめます！</button> -->
+      </div>
+      <div v-if="isStartCountdown">
+        <div class="start_phrase">{{dispCount}}</div>
+      </div>
     </div>
-    <div v-if="isStartCountdown">
-      <div class="start_phrase">{{dispCount}}</div>
-    </div>
-  </div>
+  </v-container>
 </template>
 
 <script lang="ts">

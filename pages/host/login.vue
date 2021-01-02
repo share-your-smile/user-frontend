@@ -2,46 +2,62 @@
   <div
     class="login_top"
   >
-    <v-container
-      class="container"
-    >
-      <v-row
-        justify="center"
-      >
-
-        <sub-title v-bind:title="title.login" />
-      </v-row>
-
-      <v-row
-        justify="center"
-      >
+    <v-container>
+      <v-row>
         <v-col
-          class="text-right"
-        >
-          <v-form
-            ref="form"
-            lazy-validation
-          >
-            <form-email
-              v-bind:email="email"
-              @update:email="email=$event"
-            />
-            <form-password
-              v-bind:password="password"
-              @update:password="password=$event"
-            />
-            <v-btn depressed
-              outlined
-              rounded
-              :disabled="buttonState"
-              color="secondary"
-              class="login-button"
-              @click="check"
+          cols=0
+          md=2
+          lg=3
+          xl=4  
+        />
+        <v-col>
+          <v-container>
+            <v-row
+              justify="center"
             >
-              ログイン
-            </v-btn>
-          </v-form>
+
+              <sub-title v-bind:title="title.login" />
+            </v-row>
+
+            <v-row
+              justify="center"
+            >
+              <v-col
+                class="text-right"
+              >
+                <v-form
+                  ref="form"
+                  lazy-validation
+                >
+                  <form-email
+                    v-bind:email="email"
+                    @update:email="email=$event"
+                  />
+                  <form-password
+                    v-bind:password="password"
+                    @update:password="password=$event"
+                  />
+                  <v-btn depressed
+                    outlined
+                    rounded
+                    :disabled="buttonState"
+                    color="secondary"
+                    class="login-button"
+                    @click="check"
+                  >
+                    ログイン
+                  </v-btn>
+                </v-form>
+              </v-col>
+            </v-row>
+          </v-container>
         </v-col>
+        <v-col
+          cols=0
+          md=2
+          lg=3
+          xl=4
+        />
       </v-row>
     </v-container>
     <alert-window
@@ -135,10 +151,5 @@ export default class HostLogin extends Vue {
   align-items: center;
   top: 0;
   height: 85vh;
-}
-
-.container {
-  width: 40%;
-  background-color: white;
 }
 </style>

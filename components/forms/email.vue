@@ -1,5 +1,6 @@
 <template>
   <v-text-field
+    outlined
     v-model="innerVal"
     :rules="[rules.required, rules.email]"
     label="メールアドレス"
@@ -15,7 +16,7 @@ export default class FormEmail extends Vue {
   email!: string;
 
   rules: Object = {
-    required: (value: string) => !!value || 'Required.',
+    required: (value: string) => !!value || '入力してください',
     email: (value: string) => {
       const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       return pattern.test(value) || '正しいメールアドレスを記入してください'
