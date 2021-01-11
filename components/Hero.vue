@@ -6,6 +6,17 @@
       <v-row
         justify="center"
       >
+        <v-col
+          cols=6
+        >
+        <v-img
+          src="/logo/sys_title.png"
+        />
+        </v-col>
+      </v-row>
+      <v-row
+        justify="center"
+      >
         <div
           class="descri"
           v-html="description"
