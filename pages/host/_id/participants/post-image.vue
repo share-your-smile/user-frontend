@@ -13,28 +13,6 @@
     <v-row
       justify="center"
     >
-      <!-- <v-col
-        cols=6
-        class="outer"
-      >
-          <v-icon
-            left
-          >
-            mdi-camera
-          </v-icon>
-        <v-btn
-          depressed
-          small
-          rounded
-          text
-          color="accent"
-          class="text-body-1"
-          style="font-family:'myFont'!important"
-          v-text="title.takePicture"
-        >
-        </v-btn>
-      </v-col> -->
-      <!-- <v-spacer cols=6 /> -->
       <v-col
         cols=3
         class="outer"
@@ -113,109 +91,14 @@
       </v-col>
     </v-row>
 
-    <!-- <canvas
-      :width="canvasVal.width"
-      :height="canvasVal.height"
-      ref="canvas" 
-    /> -->
-
-    <canvas v-show="true" ref="canvas" />
+    <canvas v-show="false" ref="canvas" />
 
     <v-img
+      v-show="false"
       ref="debug"
       :src="imageSrcDebug"
     ></v-img>
 
-    <!-- <v-row>
-      <v-col
-        style="height:400px;"  
-      >
-        <div
-          class="image_frame outer"
-          @click="startCamera"
-        >
-          <v-row
-            justify="center"
-          >
-            <v-col
-            >
-              <div
-                class="frame_icon"
-              >
-                <v-icon
-                  left
-                  x-large
-                  class="frame_icon"
-                  style="color:rgb(200,200,200);"
-                >
-                  mdi-camera
-                </v-icon>
-              </div>
-              <div class="frame_icon"
-                  style="text-align:center;">
-                <span
-                  style="color:rgb(200,200,200);"
-                  v-text="title.takePicture"
-                />
-              </div>
-            </v-col>
-          </v-row>
-        </div>
-      </v-col>
-    </v-row> -->
-
-    <!-- <v-container>
-      <v-row>
-        <v-col>
-          <v-file-input
-            accept="image/*"
-            label="写真を選択"
-            prepend-icon="mdi-image"
-            @change="selectedFile"
-            ref="file"
-          >
-            
-          </v-file-input>
-        </v-col>
-        <v-col>
-          <v-btn
-            depressed
-          >
-            撮影する
-          </v-btn>
-          <v-btn
-            depressed
-            :disabled="isImage"
-            @click="uploadFile"
-          >
-            画像を投稿する
-          </v-btn>
-        </v-col>
-      </v-row>
-      <v-row
-        justify="center"
-        align-content="center"
-        style="height: 600px;"
-      >
-        <v-col
-          outlined
-          style="border: solid; height:inherit"
-        justify="center"
-        align-content="center"
-        >
-          <v-layout
-            align-content-center 
-            justify-center
-          >
-            <v-img
-              ref="debugImg"
-              :src="imageSrc"
-              max-width="600"
-            ></v-img>
-          </v-layout>
-        </v-col>
-      </v-row>
-    </v-container> -->
   </v-container>
 </template>
 
@@ -294,126 +177,9 @@ export default class PostImage extends Vue{
     this.title.participants = this.$store.getters['participants/getLoginUser'];
   }
 
-  startCamera() {
-    console.log(`カメラ起動`);
-  }
-
-  getOrientation(buffer: ArrayBuffer) {
-    const dv = new DataView(buffer);
-    if (dv.getUint16(2) !== 65505) {
-      return 0;
-    }
-    const littleEndian = dv.getUint8(12) === 73;
-    const count = dv.getUint16(20, littleEndian);
-    for (let i = 0; i < count; i++) {
-      const start = 22 + i * 12;
-      const tag = dv.getUint16(start, littleEndian);
-      if (tag === 274) {
-        const value = dv.getUint16(start + 8, littleEndian);
-        return value;
-      }
-    }
-    return 0;
-  }
-
   arrayBufferToDataURL(arrBuf: any) {
     const blob = new Blob([arrBuf], { type: 'image/jpeg' });
     return window.URL.createObjectURL(blob);
-  }
-
-  embedImageTag(dataURL: any) {
-    const img = new Image();
-    img.src = dataURL;
-    img.width = 200;
-    document.body.appendChild(img);
-    console.log(dataURL);
-    return img;
-  }
-
-  createTransformedCanvas(orientation: number, img: any) {
-    // const canvas = document.createElement('canvas');
-    const canvas = this.refs.canvas;
-    const ctx = canvas.getContext('2d')!;
-    const scaleRate = this.refs.canWrapper.clientWidth / img.width;
-    const scaleHeight = scaleRate * img.height;
-    if ([5,6,7,8].indexOf(orientation) > -1) {
-      // canvas.width = img.height;
-      // canvas.height = img.width;
-      canvas.width = this.canvasVal.width;
-      canvas.height = scaleHeight;
-    } else {
-      // canvas.width = img.width;
-      // canvas.height = img.height;
-      canvas.width = this.canvasVal.width;
-      canvas.height = scaleHeight;
-    }
-    switch (orientation) {
-      case 2: ctx.transform(-1, 0, 0, 1, img.width, 0); break;
-      case 3: ctx.transform(-1, 0, 0, -1, img.width, img.height); break;
-      case 4: ctx.transform(1, 0, 0, -1, 0, img.height); break;
-      case 5: ctx.transform(0, 1, 1, 0, 0, 0); break;
-      case 6: ctx.transform(0, 1, -1, 0, img.height, 0); break;
-      case 7: ctx.transform(0, -1, -1, 0, img.height, img.width); break;
-      case 8: ctx.transform(0, -1, 1, 0, 0, img.width); break;
-      default: break;
-    }
-
-    
-    // // ctx.scale(scaleRate, scaleRate);
-
-    // canvas.width = this.canvasVal.width;
-    // canvas.height = scaleHeight;
-    // this.canvasVal.height = scaleHeight;
-
-    // console.log(this.refs.canWrapper.clientWidth);
-    // ctx.scale(1, 1);
-    ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, this.refs.canWrapper.clientWidth, scaleHeight);
-    // ctx.drawImage(img, 0, 0);
-    return canvas;
-  }
-
-  getExif(img: any) {
-    console.log(img);
-    // EXIF.getData(img, () => {
-    //   console.log(img.exifdata);
-    //   const orientation = img.exifdata.Orientation;
-    //   console.log(`orientation ${orientation}`);
-    //   console.log(img);
-    //   const canvas = this.createTransformedCanvas(orientation, img);
-    //   window.URL.revokeObjectURL(img.src);
-    //   this.imageSrc = canvas.toDataURL('image/jpeg');
-    // })
-  }
-
-  loadedFileOri() {
-    console.log(this.reader.result);
-
-    // const orientation = this.getOrientation(this.reader.result);
-    const img = new Image();
-    img.src = this.arrayBufferToDataURL(this.reader.result);
-    img.addEventListener('load', async () => {
-      this.getExif(img);
-    })
-    
-
-    // if (orientation === 0 || orientation === 1) {
-    //   const data = this.arrayBufferToDataURL(this.reader.result);
-    //   const img = this.embedImageTag(data);
-    //   img.addEventListener('load', () => {
-    //     window.URL.revokeObjectURL(data);
-    //   })
-    // } else {
-
-      // const img = new Image();
-      // img.src = this.arrayBufferToDataURL(this.reader.result);
-      // img.addEventListener('load', async () => {
-      //   const canvas = this.createTransformedCanvas(orientation, img);
-      //   window.URL.revokeObjectURL(img.src);
-      //   this.imageSrc = canvas.toDataURL('image/jpeg');
-      //   // console.log(canvas.toDataURL('image/jpeg'));
-      //   // this.embedImageTag(canvas.toDataURL('image/jpeg'));
-      // })
-    // }
   }
 
   // maxを1000pxとして、サイズを補正する
@@ -469,15 +235,27 @@ export default class PostImage extends Vue{
       this.fr.readAsArrayBuffer(file);
       this.fr.addEventListener('load', this.loadedFile);
     }
-
-    // if (file !== undefined && file !== null) {
-    //   this.reader = new FileReader();
-    //   this.reader.addEventListener('load', this.loadedFileOri);
-    //   this.reader.readAsArrayBuffer(file);
-    // }
   }
 
   imageSrcDebug: any = '';
+
+  rotate(direction: string) {
+    if (direction === 'anti') {
+      switch(this.rotateVal.degree) {
+        case   0: this.rotateVal.degree = 270; break;
+        case  90: this.rotateVal.degree =   0; break;
+        case 180: this.rotateVal.degree =  90; break;
+        case 270: this.rotateVal.degree = 180; break;
+      }
+    } else {
+      switch(this.rotateVal.degree) {
+        case   0: this.rotateVal.degree =  90; break;
+        case  90: this.rotateVal.degree = 180; break;
+        case 180: this.rotateVal.degree = 270; break;
+        case 270: this.rotateVal.degree =   0; break;
+      }
+    }
+  }
 
   async getImageData() {
     const canvas = this.refs.canvas;
@@ -508,10 +286,7 @@ export default class PostImage extends Vue{
     let cw = canvas.width;
     let ch = canvas.height;
     
-    let rotating = true;            
-    // store current data to an image
-    // const myImageData: any = new Image();
-    // myImageData.src = canvas.toDataURL();
+    let rotating = true;
 
     const myImageData: any = await this.load(canvas.toDataURL());
 
@@ -539,86 +314,6 @@ export default class PostImage extends Vue{
     // clear the temporary image
     // myImageData = null;
     rotating = false;
-
-    // if ([5,6,7,8].indexOf(orientation) > -1) {
-    //   canvas.width = img.height;
-    //   canvas.height = img.width;
-    // } else {
-    //   canvas.width = img.width;
-    //   canvas.height = img.height;
-    // }
-    // switch (orientation) {
-    //   case 2: ctx.transform(-1, 0, 0, 1, img.width, 0); break;
-    //   case 3: ctx.transform(-1, 0, 0, -1, img.width, img.height); break;
-    //   case 4: ctx.transform(1, 0, 0, -1, 0, img.height); break;
-    //   case 5: ctx.transform(0, 1, 1, 0, 0, 0); break;
-    //   case 6: ctx.transform(0, 1, -1, 0, img.height, 0); break;
-    //   case 7: ctx.transform(0, -1, -1, 0, img.height, img.width); break;
-    //   case 8: ctx.transform(0, -1, 1, 0, 0, img.width); break;
-    //   default: break;
-    // }
-    // ctx.drawImage(img, 0, 0);
-  }
-
-  rotate(direction: string) {
-    if (direction === 'anti') {
-      switch(this.rotateVal.degree) {
-        case   0: this.rotateVal.degree = 270; break;
-        case  90: this.rotateVal.degree =   0; break;
-        case 180: this.rotateVal.degree =  90; break;
-        case 270: this.rotateVal.degree = 180; break;
-      }
-    } else {
-      switch(this.rotateVal.degree) {
-        case   0: this.rotateVal.degree =  90; break;
-        case  90: this.rotateVal.degree = 180; break;
-        case 180: this.rotateVal.degree = 270; break;
-        case 270: this.rotateVal.degree =   0; break;
-      }
-    }
-  }
-
-  canRotate(direction: string) {
-    const canvas = this.refs.canvas;
-    const ctx = canvas.getContext('2d')!;
-
-    let cw = canvas.width;
-    let ch = canvas.height;
-    
-    let rotating = true;            
-    // store current data to an image
-    let myImageData: any = new Image();
-    myImageData.src = canvas.toDataURL();
-
-    myImageData.onload = function () {
-        // reset the canvas with new dimensions
-        canvas.width = ch;
-        canvas.height = cw;
-        cw = canvas.width;
-        ch = canvas.height;
-
-        ctx.save();
-
-        console.log(`${cw} ${ch}`);
-        // translate and rotate
-        // ctx.translate(cw / 2, ch / 2);
-        if (direction === 'redo') {
-          ctx.translate(cw, ch / cw);
-          ctx.rotate(Math.PI / 2);
-        } else if(direction === 'undo') {
-          console.log('undo');
-          ctx.translate(cw / ch, ch);
-          ctx.rotate(3/2 * Math.PI);
-        }
-        // draw the previows image, now rotated
-        ctx.drawImage(myImageData, 0, 0);               
-        ctx.restore();
-
-        // clear the temporary image
-        myImageData = null;
-
-        rotating = false;               
-    }
   }
 
   async uploadFile (src: string) {
@@ -636,8 +331,6 @@ export default class PostImage extends Vue{
   // ②canvas画像からbase64データを取得
   // ③base64データをアップロードする
   async uploadImage() {
-    console.log('get data');
-    console.log(this.rotateVal.degree);
 
     switch(this.rotateVal.degree) {
       case   0: await this.rotateCanvas(1); break;

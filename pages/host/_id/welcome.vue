@@ -33,7 +33,9 @@ import { Vue, Watch } from "vue-property-decorator";
 
 import SubTitle from '~/components/SubTitle.vue';
 
-@Component
+@Component({
+  layout: 'host_default',
+})
 export default class Welcome extends Vue {
   title: any = {
     thanks: '登録ありがとうございます！'

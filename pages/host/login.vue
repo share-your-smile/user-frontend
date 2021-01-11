@@ -37,16 +37,23 @@
                     v-bind:password="password"
                     @update:password="password=$event"
                   />
-                  <v-btn depressed
+                  <v-btn
+                    v-if="!loginState"
+                    depressed
                     outlined
                     rounded
                     :disabled="buttonState"
-                    color="secondary"
+                    color="primary"
                     class="login-button"
                     @click="check"
                   >
-                    ログイン
+                    <span>ログイン</span>
                   </v-btn>
+                  <v-progress-circular
+                    v-else
+                    indeterminate
+                    color="primary"
+                  />
                 </v-form>
               </v-col>
             </v-row>
@@ -79,6 +86,7 @@ import AlertWindow from '~/components/AlertWindow.vue';
 import SubTitle from '~/components/SubTitle.vue';
 
 @Component({
+  layout: 'host_default',
   components: {
     FormEmail,
     FormPassword,
@@ -92,7 +100,8 @@ export default class HostLogin extends Vue {
   error_message: string = '';
   title: any = {
     login: 'ログイン'
-  }
+  };
+  loginState: boolean = false;
 
   get refs(): any {
     // eslint-disable-next-line
@@ -110,6 +119,7 @@ export default class HostLogin extends Vue {
 
   async check () {
     if (this.refs.form.validate()) {
+      this.loginState = true;
       const reqUserInfo: any = {
         email: this.email,
         password: this.password
@@ -121,6 +131,7 @@ export default class HostLogin extends Vue {
           this.$router.push(`${res.id}/top`);
         }
       } catch(error) {
+        this.loginState = false;
         if (error.response.data.error_message) {
           switch (error.response.data.error_message) {
             case 'NO_USER':

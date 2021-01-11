@@ -1,20 +1,53 @@
 <template>
   <div>
     <!-- slide show -->
-    <section v-show="isSlideShow" class="slides">
+    <section v-if="isSlideShow" class="slides">
+
+      <v-btn
+        @click="debugAdd()"
+        depressed
+      >デバッグ</v-btn>
 
       <div class="slides_phrase">Share your smile!!</div>
 
-      <section v-for="(image, index, key) in images" class="slide" v-bind:class="{'is-active' : image.active }" :key="key">
-        <div v-if="!image.finishShow" class="slide__content">
-          <figure class="slide__figure">
-            <div class="slide__img" v-bind:style="{ 'background-image': image.url, 'background-size': 'contain', 'background-repeat': 'no-repeat' }"></div>
+      <section
+        v-for="(image, index, key) in images"
+        class="slide"
+        v-bind:class="{'is-active' : image.active }"
+        :key="key"
+      >
+        <div
+          v-if="!image.finishShow"
+          class="slide__content"
+        >
+          <figure
+            class="slide__figure"
+          >
+            <div
+              class="slide__img"
+              v-bind:style="{ 'background-image': image.url, 'background-size': 'contain', 'background-repeat': 'no-repeat' }"
+            />
             <!-- <img class="slide__img" :src="image.url"> -->
           </figure>
-          <header class="slide__header">
-            <h2 class="slide__title">
-              <span class="title-line"><span>{{ image.name.last }}</span></span>
-              <span class="title-line"><span>{{ image.name.first }}</span></span>
+          <header
+            class="slide__header"
+          >
+            <h2
+              class="slide__title"
+            >
+              <span
+                class="title-line"
+              ><span>
+                {{ image.name.last }}
+                </span>
+              </span>
+              <span
+                class="title-line"
+              >
+                <span>
+                  {{ image.name.first }}
+                </span>
+              </span>
             </h2>
           </header>
         </div>
@@ -62,6 +95,8 @@ export default class SlideMain extends Vue {
       first: 'momoka'
     }
   };
+  listLen: number = 0;
+  lowerNumber: number = 0;
 
   mounted () {
     this.startSlideShow()
@@ -84,44 +119,44 @@ export default class SlideMain extends Vue {
   }
 
   async startSlideShow () {
-    this.changeSlide()
-    await this.getImageJson()
-    this.isSlideShow = true
+    this.changeSlide();
+    await this.getImageJson();
+    this.isSlideShow = true;
     // change slide loop
-    this.slideLoop = setInterval(function (this: SlideMain) { this.changeSlide() }.bind(this), 6000)
+    this.slideLoop = setInterval(function (this: SlideMain) { this.changeSlide() }.bind(this), 6000);
     // check new post loop
-    this.newPostLoop = setInterval(function (this: SlideMain) { this.getImageJson() }.bind(this), 2000)
+    this.newPostLoop = setInterval(function (this: SlideMain) { this.getImageJson() }.bind(this), 10000);
   };
 
   changeSlide () {
     if (this.images.length !== 0) {
       // debug
       // this.nextSlide()
-      var dispIndex = -1
-      var nowDispArryNum = 0
-      var nextDispArryNum = 0
+      var dispIndex = -1;
+      var nowDispArryNum = 0;
+      var nextDispArryNum = 0;
 
       // ①ランダム表示枚数の中で乱数を発生させる
       // ②現在の登録数
       if (this.images.length < this.showNumber) { // showNumber以下の登録数
         do {
-          dispIndex = Math.floor(Math.random() * (this.images.length)) + 1
-        } while (dispIndex === -1 || dispIndex === this.showNum)
-        console.log(dispIndex)
+          dispIndex = Math.floor(Math.random() * (this.images.length)) + 1;
+        } while (dispIndex === -1 || dispIndex === this.showNum);
+        console.log(dispIndex);
       } else {
         do {
-          var random = Math.floor(Math.random() * (this.showNumber))
-          // console.log(random)
-          dispIndex = this.images.length - random
-          // console.log(dispIndex)
-        } while (dispIndex === -1 || dispIndex === this.showNum)
+          let random = Math.floor(Math.random() * (this.showNumber));
+          // console.log(`random ${random}`);
+          dispIndex = this.images.length - random;
+          console.log(`dispIndex ${dispIndex}`);
+        } while (dispIndex === -1 || dispIndex === this.showNum);
       }
 
-      for (var arryNum = 0; arryNum < this.images.length; arryNum++) {
-        if (this.images[arryNum].post_no === dispIndex) { // 新しく表示するものをtrueに
+      for (let arryNum = 0; arryNum < this.images.length; arryNum++) {
+        if (this.images[arryNum].post_no + 1 - this.lowerNumber === dispIndex) { // 新しく表示するものをtrueに
           // console.log('next disp : ' + arryNum)
           nextDispArryNum = arryNum
-        } else if (this.images[arryNum].post_no === this.showNum) { // これまで表示されていたものはfalseに
+        } else if (this.images[arryNum].post_no + 1 - this.lowerNumber === this.showNum) { // これまで表示されていたものはfalseに
           // console.log('hide disp : ' + arryNum)
           nowDispArryNum = arryNum
         }
@@ -138,99 +173,176 @@ export default class SlideMain extends Vue {
     try {
       await this.$store.dispatch('imagesList/getImagesList', 'resized-media');
       const list = this.$store.getters['imagesList/getList'];
-      console.log(list[3]);
-      this.setImages(list);
+      await this.setImages(list);
+      this.listLen = list.length;
     } catch {
       
     }
-
-    // var _self = this
-    // const method = 'POST'
-    // const headers = {
-    //   'Accept': 'application/json',
-    //   'Content-Type': 'application/json'
-    // }
-    // fetch(this.$images_list_url, {method, headers})
-    //   .then(function (response) {
-    //     return response.json()
-    //   })
-    //   .then(function (data) {
-    //     _self.setImages(data)
-    //   })
   };
 
-  setImages (data: string[]) {
+  debugAdd() {
+    const debugList: any = [
+      "resized-media/20201206015942_testuser.png",
+      "resized-media/20201206111259_testuser.png",
+      "resized-media/20201206115533_testuser.png",
+      "resized-media/20201206173714_testuser.jpeg",
+      "resized-media/20201206195957_testuser.png",
+      "resized-media/20201206215113_testuser.jpeg",
+      "resized-media/20201206220016_testuser.jpeg",
+      "resized-media/20201214120702_test.jpeg",
+      "resized-media/20201214122545_test.jpeg",
+      "resized-media/20201218180741_gorigori-kun.jpeg",
+      "resized-media/20201218180752_gorigori-kun.jpeg",
+      "resized-media/20210102145533_test.png",
+      "resized-media/20210102154326_test.png",
+      "resized-media/20210102161238_test.png",
+      "resized-media/20210102162125_なは.png",
+      "media/20210102161238_test.png",
+      "media/20210102162125_なは.png",
+    ];
+    this.setImages(debugList);
+  }
+
+  async setImages (data: string[]) {
     // imagesに既に値が格納されているか？
-    if (this.images.length === 0) { // initialize images
-      for (var i = 0; i < data.length; i++) {
-        this.setImageInfo(data[i], i);
+    if (this.listLen === 0) { // initialize images
+      const results = [];
+      this.lowerNumber = (data.length > this.showNumber) ? (data.length - this.showNumber) : 0;
+      console.log(`lower number ${this.lowerNumber}`);
+      for (let i = this.lowerNumber; i < data.length; i++) {
+        results.push(this.setImageInfo(data[i], i));
       }
+      await Promise.all(results);
+      console.log('loading finish');
 
       // set the first image
       var firstShowNum = 0
       if (this.showNumber > this.images.length) {
-        firstShowNum = 1
+        firstShowNum = 1;
       } else {
-        firstShowNum = this.images.length - this.showNumber + 1
+        firstShowNum = this.images.length - this.showNumber + 1;
       }
       // 最初に表示するスライドを設定 + 表示枚数以上だった場合、古いものはすべて表示終了に倒す
       for (var arryNum = 0; arryNum < this.images.length; arryNum++) {
         if (this.images[arryNum].post_no === firstShowNum) {
-          this.images[arryNum].active = true
-          this.showNum = firstShowNum
+          this.images[arryNum].active = true;
+          this.showNum = firstShowNum;
         } else if (this.images[arryNum].post_no < firstShowNum) {
-          this.images[arryNum].finishShow = true
+          this.images[arryNum].finishShow = true;
         }
       }
     } else { // update images
-      if (this.images.length < data.length) {
-        this.addImages(data)
+    console.log(`list length ${this.listLen}: data length ${data.length}`);
+      if (this.listLen < data.length) {
+        this.addImages(data);
       }
     }
   };
 
-  addImages (data: any) {
+  async addImages (imageFiles: any) {
     // console.log('add images')
 
     // 複数枚が更新された場合を想定し、更新された画像データは一旦配列に格納する
-    var unregisterdImages = []
+    let unregisterdImages: any = [];
+    let oldestImageNumbers: number[] = [];
+    let newImages: any = [];
+
+    // fileNamesの末尾から新しく取得された分を取得する
+    for(let i = imageFiles.length; i > this.listLen; i--) {
+      let unregisterdImage = {
+        imageFile: imageFiles[i-1],
+        num: i-1
+      };
+      unregisterdImages.push(unregisterdImage);
+    }
+
+    for(let i = 0; i < this.images.length; i++) {
+      console.log(`[${i}]:post_no${this.images[i].post_no}`);
+    }
+
+    // 古い分を取得する
+    for(let i = 0; i < this.images.length; i++) {
+      if (this.images[i].post_no < (imageFiles.length - this.showNumber)) {
+        oldestImageNumbers.push(i);
+        console.log(this.images[i].post_no);
+      }
+    }
+
+    console.log(unregisterdImages);
+    console.log(oldestImageNumbers.sort());
+
+    if (unregisterdImages.length === oldestImageNumbers.length) {
+      // 古い分を削除
+      for(let i = oldestImageNumbers.length; i > 0; i--) {
+        this.images.splice(oldestImageNumbers[i-1], 1);
+      }
+
+      this.images.forEach((image: any) => {
+        console.log(image.post_no);
+      });
+
+      const results = [];
+
+      for(let i = 0; i < unregisterdImages.length; i++) {
+        const image = await this.setImageInfo(unregisterdImages[i].imageFile, unregisterdImages[i].num);
+        newImages.push(image);
+      }
+
+      console.log(newImages);
+
+      this.refs.refNewPost.setNewImagesInfo(newImages);
+      this.showNewPost();
+    }
+
+    
 
     // json取得処理の結果、新しい配列が含まれていた場合、ここの処理を行う
     // 追加配列をimages配列に追加し、各種パラメータの更新を行う
-    for (var dArryNum = 0; dArryNum < data.length; dArryNum++) {
-      var isNewImage = true
-      for (var iArryNum = 0; iArryNum < this.images.length; iArryNum++) {
-        if (data[dArryNum].post_no === this.images[iArryNum].post_no) {
-          isNewImage = false
-        }
-      }
-      if (isNewImage === true) {
-        // regist to unregisterd images array
-        const unregisteredImage = {
-          data: data[dArryNum],
-          no: dArryNum
-        }
-        unregisterdImages.push(unregisteredImage)
-      }
-    }
+    // for (var dArryNum = 0; dArryNum < data.length; dArryNum++) {
+    //   var isNewImage = true
+    //   for (var iArryNum = 0; iArryNum < this.images.length; iArryNum++) {
+    //     if (data[dArryNum].post_no === this.images[iArryNum].post_no) {
+    //       isNewImage = false
+    //     }
+    //   }
+    //   if (isNewImage === true) {
+    //     // regist to unregisterd images array
+    //     const unregisteredImage = {
+    //       data: data[dArryNum],
+    //       no: dArryNum
+    //     }
+    //     unregisterdImages.push(unregisteredImage)
+    //   }
+    // }
 
-    for (let index = 0; index < unregisterdImages.length; index++) {
-      // images配列へセット + 最低番号以下の画像を非表示にする
-      this.setImageInfo(unregisterdImages[index].data, unregisterdImages[index].no);
-    }
-    this.refs.refNewPost.setNewImagesInfo(unregisterdImages)
-    this.showNewPost();
+    // for (let index = 0; index < unregisterdImages.length; index++) {
+    //   // images配列へセット + 最低番号以下の画像を非表示にする
+    //   this.setImageInfo(unregisterdImages[index].data, unregisterdImages[index].no);
+    // }
+    // this.refs.refNewPost.setNewImagesInfo(unregisterdImages)
+    // this.showNewPost();
 
-    // 表示される最低の番号 ex) 総枚数=25,表示枚数=10の場合、25-10+1=16
-    var lowerLimitNum = this.images.length + 1 - this.showNumber
+    // // 表示される最低の番号 ex) 総枚数=25,表示枚数=10の場合、25-10+1=16
+    // var lowerLimitNum = this.images.length + 1 - this.showNumber
 
-    // 新規投稿画像が格納できたら、古いものは非表示に倒す
-    for (var arryNum = 0; arryNum < this.images.length; arryNum++) {
-      if (this.images[arryNum].post_no < lowerLimitNum) {
-        this.images[arryNum].finishShow = true
-      }
-    }
+    // // 新規投稿画像が格納できたら、古いものは非表示に倒す
+    // for (var arryNum = 0; arryNum < this.images.length; arryNum++) {
+    //   if (this.images[arryNum].post_no < lowerLimitNum) {
+    //     this.images[arryNum].finishShow = true
+    //   }
+    // }
   };
+
+  loadDataURI(fileData: any) {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (e) => reject(e);
+      fileReader.readAsDataURL(fileData);
+    })
+  }
 
   // 画像のタイトルから、名前とファイルパスを取得する
   async setImageInfo (fileName: string, no: number) {
@@ -238,21 +350,25 @@ export default class SlideMain extends Vue {
 
     if (names[1].indexOf('_') !== -1) {
       const fileData = await this.$s3Connect.getImage(names[0], names[1]);
-      const fileDataUrl = URL.createObjectURL(fileData);
+      // const fileDataUrl = URL.createObjectURL(fileData);
+      const fileDataURI = await this.loadDataURI(fileData);
+
       const tmpName = names[1].split('_')[1];
       const posterName = tmpName.split('.')[0];
       let image = {
-        url: `url("${fileDataUrl}")`,
+        url: `url("${fileDataURI}")`,
         // url: 'assets/slideImg/' + d_image.src,
         name: {
           last: posterName,
-          first: ''
+          first: no
         },
         post_no: no,
         active: false,
         finishShow: false
       }
-      this.images.push(image)
+      this.images.push(image);
+      console.log(`${no} done`);
+      return image;
     }
 
 
@@ -296,7 +412,7 @@ export default class SlideMain extends Vue {
 }
 </script>
 
-<style scoped>
+<style>
 .slides-nav {
   z-index: 99;
   /* position: fixed; */

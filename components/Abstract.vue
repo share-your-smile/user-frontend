@@ -7,6 +7,9 @@
         v-bind:title="words.title"
       />
     </v-row>
+    <v-row
+      style="height:80px"
+    />
     <v-row>
       <v-col
         cols=12

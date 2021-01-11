@@ -61,7 +61,20 @@
               class="justify-center"
             >QRコードを参加者に配布してください</v-card-title>
             <div class="outer">
-              <div style="width: 300px; height: 300px" v-html="qrcodeSVG"></div>
+              <div
+                class="outer qrcode-area"
+                v-if="qrcodeSVG === ''"
+              >
+                <v-progress-circular
+                  indeterminate
+                  color="primary"
+                />
+              </div>
+              <div
+                v-else
+                class="qrcode-area"
+                v-html="qrcodeSVG"
+              />
             </div>
           </v-card>
         </v-col>
@@ -127,6 +140,7 @@ import { Vue, Watch, Mixins } from "vue-property-decorator";
 import HowToUse from "~/components/HowToUse.vue";
 
 @Component({
+  layout: 'host_default',
   middleware: 'host-authenticated'
 })
 export default class MainPostPage extends Vue {
@@ -228,5 +242,10 @@ export default class MainPostPage extends Vue {
 
 .colcol {
   background-color: yellowgreen;
+}
+
+.qrcode-area {
+  width: 300px;
+  height: 300px;
 }
 </style>

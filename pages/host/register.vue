@@ -54,23 +54,22 @@
                     v-bind:base-password="password"
                     @update:password="confirm_password=$event"
                   />
-                  <v-btn depressed
+                  <v-btn
+                    v-if="!loginState"
+                    depressed
                     outlined
                     rounded
                     :disabled="buttonState"
-                    color="secondary"
+                    color="primary"
                     @click="checkPass"
                   >
                     登録
                   </v-btn>
-                  <!-- <v-btn depressed
-                    outlined
-                    rounded
-                    color="warning"
-                    @click="resetValidate"
-                  >
-                    validate reset
-                  </v-btn> -->
+                  <v-progress-circular
+                    v-else
+                    indeterminate
+                    color="primary"
+                  />
                 </v-form>
               </v-col>
             </v-row>
@@ -105,6 +104,7 @@ import AlertWindow from '~/components/AlertWindow.vue';
 import SubTitle from '~/components/SubTitle.vue';
 
 @Component({
+  layout: 'host_default',
   components: {
     FormUser,
     FormEmail,
@@ -126,6 +126,7 @@ export default class HostRegister extends Vue {
   title: any = {
     register: '新規登録'
   };
+  loginState: boolean = false;
 
   get refs(): any {
     // eslint-disable-next-line
@@ -147,6 +148,7 @@ export default class HostRegister extends Vue {
   async checkPass () {
     // validateチェックOKでtrueが帰ってくる
     if (this.refs.form.validate()) {
+      this.loginState = true;
       // ユーザ追加要求
       const reqUserInfo: any = {
         name: this.name,
@@ -161,6 +163,7 @@ export default class HostRegister extends Vue {
           this.$router.push(`${res.id}/welcome`);
         }
       } catch(error) {
+        this.loginState = false;
         if (error.response.data.error_message) {
           switch (error.response.data.error_message) {
             case 'SAME_USER_EXIST':

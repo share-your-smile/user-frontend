@@ -8,7 +8,7 @@
         <div class="slide__content">
           <!-- img -->
           <figure class="slide__figure">
-            <div class="slide__img" v-bind:style="{ 'background-image': newPost.url, 'background-size': 'contain', 'background-repeat': 'no-repeat' }"></div>
+            <div class="slide__img" v-bind:style="{ 'background-image': imageUrl, 'background-size': 'contain', 'background-repeat': 'no-repeat' }"></div>
           </figure>
 
           <!-- name -->
@@ -48,21 +48,26 @@ export default class NewPost extends Vue {
   nowShowImageNum: number = 0;
   isShowNewImage: boolean = false;
 
+  get imageUrl() {
+    console.log(this.newPost.url);
+    return this.newPost.url;
+  }
+
   // 新規画像配列を受け取る。dataに格納し、まずひとつ目画像をセット
   setNewImagesInfo (newImages: any) {
-    this.newImages = newImages
+    this.newImages = newImages;
 
     // 画像枚数を登録
-    this.nowShowImageNum = this.newImages.length
+    this.nowShowImageNum = this.newImages.length;
 
-    this.startShowNewPost()
+    this.startShowNewPost();
   };
 
   setShowImage () {
-    var name = this.newImages[this.nowShowImageNum - 1].title.split(' ')
-    // this.newPost.url = 'url("' + this.$images_url + this.newImages[this.nowShowImageNum - 1].src + '")'
-    this.newPost.name.last = name[1]
-    this.newPost.name.first = name[0]
+    const newImage = this.newImages[this.nowShowImageNum - 1];
+    this.newPost.url = newImage.url;
+    this.newPost.name.last = newImage.name.last;
+    this.newPost.name.first = newImage.name.first;
 
     // 画像枚数をデクリメント
     this.nowShowImageNum--
@@ -85,7 +90,7 @@ export default class NewPost extends Vue {
 
   startShowNewPost () {
     this.setShowImage()
-    setTimeout(function (this: NewPost) { this.changeImage() }.bind(this), 4000)
+    setTimeout(function (this: NewPost) { this.changeImage() }.bind(this), 4000);
   }
 }
 </script>

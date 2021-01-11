@@ -3,6 +3,7 @@
     <v-app-bar
       :clipped-left="clipped"
       class="headerSYS"
+      color="primary"
       fixed
       app
     >
@@ -174,7 +175,7 @@ body {
 .headerSYS {
   background-color: black;
   /* background-image : url("Snow.jpg"); */
-  background: linear-gradient(-135deg, #E4A972, #9941D8);
+  /* background: linear-gradient(-135deg, #E4A972, #9941D8); */
   background-size: cover;
   color: lightgray;
   font-family: 'myFont';
