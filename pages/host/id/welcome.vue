@@ -42,7 +42,7 @@ export default class Welcome extends Vue {
   };
 
   toMakePage () {
-    this.$router.push('top');
+    this.$router.push('top/');
   }
 }
 </script>

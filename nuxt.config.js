@@ -20,13 +20,17 @@ export default {
     },
   },
 
+  router: {
+    trailingSlash: true,
+  },
+
   // Target (https://go.nuxtjs.dev/config-target)
   target: 'static',
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    titleTemplate: '%s - user-frontend',
-    title: 'user-frontend',
+    titleTemplate: '%s | Share Your Smile',
+    title: 'Share Your Smile',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },

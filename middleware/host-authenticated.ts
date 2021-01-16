@@ -32,12 +32,12 @@ export default ({ redirect, store, isDev, route }: Context) => {
     store.commit('host/login', loginData);
     const path: string = route.fullPath;
     if (path.indexOf('top') === -1) {
-      return redirect(`/host/${loginData.id}/top`);
+      return redirect(`/host/${loginData.id}/top/`);
     }
   } else {
     const path: string = route.fullPath;
     if (path.indexOf('top') !== -1) {
-      return redirect(`/host/login`);
+      return redirect(`/host/login/`);
     }
   }
 }

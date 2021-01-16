@@ -157,14 +157,14 @@ export default class MainPostPage extends Vue {
   created () {
     this.download();
     const hostInfo: any = this.$store.getters['host/getLoginUser'];
-    this.participantsURL = `${location.origin}/host/${hostInfo.id}/participants`;
+    this.participantsURL = `${location.origin}/host/id/participants/?id=${hostInfo.id}`;
     this.generateQrcode();
   }
 
   getPostUrl () {
     const hostInfo: any = this.$store.getters['host/getLoginUser'];
     // return `${process.env.POST_PAGE_BASE_URL}/participants/${hostInfo.id}`;
-    return `${location.origin}/host/${hostInfo.id}/participants`;
+    return `${location.origin}/host/id/participants/?id=${hostInfo.id}`;
   }
 
   generateRequestBody (type: string) {
@@ -220,7 +220,7 @@ export default class MainPostPage extends Vue {
 
   goToSlideShow() {
     const hostInfo: any = this.$store.getters['host/getLoginUser'];
-    this.$router.push(`slide-show/start`);
+    this.$router.push(`../slide-show/start/`);
   }
 }
 </script>

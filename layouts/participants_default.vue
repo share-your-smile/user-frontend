@@ -77,7 +77,7 @@ export default class Default extends Vue {
 
   changeParticipantsName() {
     this.$store.commit('participants/logout');
-    this.$router.push('login');
+    this.$router.push('login/');
   }
 
   checkLoginStatus(path: string) {

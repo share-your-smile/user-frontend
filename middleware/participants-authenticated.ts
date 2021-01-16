@@ -15,20 +15,28 @@ export default ({ redirect, store, isDev, route}: Context) => {
     }
   });
 
-  const path: string = route.fullPath;
-  const paths: string[] = path.split('/');
+  const fullPath: string = route.fullPath;
+  const path: string[] = fullPath.split('?');
+  const paths: string[] = path[0].split('/');
   const prefixPath = `/${paths[1]}/${paths[2]}/${paths[3]}`;
+
+  const queryKey = path[1].split('=')[0];
+  const queryValue = path[1].split('=')[1];
+
+  console.log(route.fullPath);
   
   if (participantsName !== '') {
     // ログインできていれば、投稿ページに飛ばす
     store.commit('participants/login', participantsName);
-    if (path.indexOf('post-image') === -1) {
-      return redirect(`${prefixPath}/post-image`);
+    if (path[0].indexOf('post-image') === -1) {
+      console.log('post image');
+      return redirect(`${prefixPath}/post-image/`);
     }
   } else {
     // ログインできていなければ、ログインページに飛ばす
-    if (path.indexOf('login') === -1) {
-      return redirect(`${prefixPath}/login`);
+    if (path[0].indexOf('login') === -1) {
+      console.log('login');
+      return redirect({ path: `${prefixPath}/login/`, query: { id: queryValue } });
     }
   }
 }

@@ -95,8 +95,8 @@ import SubTitle from '~/components/SubTitle.vue';
   middleware: 'host-authenticated'
 })
 export default class HostLogin extends Vue {
-  email: string = 'first_test@gmail.com';
-  password: string = 'password';
+  email: string = process.env.NODE_ENV === 'development' ? 'first_test@gmail.com' : '';
+  password: string = process.env.NODE_ENV === 'development' ? 'password' : '';
   error_message: string = '';
   title: any = {
     login: 'ログイン'
@@ -128,7 +128,7 @@ export default class HostLogin extends Vue {
         await this.$store.dispatch('host/getUserInfo',reqUserInfo);
         const res = this.$store.getters['host/getLoginUser'];
         if (res.name) {
-          this.$router.push(`${res.id}/top`);
+          this.$router.push({ path: `/top/`, query: { id: res.id} });
         }
       } catch(error) {
         this.loginState = false;

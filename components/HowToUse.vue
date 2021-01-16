@@ -9,35 +9,28 @@
     </v-row>
     <v-spacer></v-spacer>
 
-    <v-row
+    <!-- <v-row
       justify="center"
-      v-for="index in procedure"
-      :key="index"
+      v-for="index in procedures"
+      :key="index.title"
     >
       <v-col
-        cols="12"
-        md="6"
-        lg="6"
-        xl="6"
+        cols=12
+        md=6
+        lg=6
+        xl=6
         class="centering"
       >
-        <!-- <v-card
-          height="250px"
-        >
-          <v-card-title
-            style="text-align:center;"
-          > -->
-          <div class="title_size">{{index.title}}</div>
-          <!-- </v-card-title>
-        </v-card> -->
+        <div class="title_size">{{index.title}}</div>
       </v-col>
       <v-col
-        cols="12"
-        md="6"
-        lg="6"
-        xl="6"
+        cols=12
+        md=6
+        lg=6
+        xl=6
       >
         <v-card
+          
           width="100%"
           class="centering"
         >
@@ -45,6 +38,29 @@
             class="img_frame"
             :src="index.src"
           />
+        </v-card>
+      </v-col>
+    </v-row> -->
+
+    <v-row>
+      <v-col
+        v-for="procedure in procedures"
+        :key="procedure.title"
+        col=12
+        md=4
+        lg=4
+        xl=4
+      >
+        <v-card>
+          <v-card-title>{{procedure.title}}</v-card-title>
+          <v-card-text
+            v-html="procedure.text"
+          />
+          <div style="padding:30px 0px">
+            <v-img
+              :src="procedure.src"
+            />
+          </div>
         </v-card>
       </v-col>
     </v-row>
@@ -58,27 +74,27 @@ import SubTitle from '~/components/SubTitle.vue';
 
 @Component({})
 export default class HowToUse extends Vue {
-  procedure: any = [
+  procedures: any = [
     {
-      title: "①：QRコードを参加者に配布",
-      src: '/howToUse/4223371.jpg'
+      title: "QRコードを共有" as string,
+      text: "QRコードをダウンロードして招待状に載せたり、イベント会場に貼り出しましょう。" as string,
+      src: '/howToUse/share.jpg' as string
     },
     {
-      title: "②：イベントをスタート！",
-      src: '/howToUse/20943684.jpg'
+      title: "写真を投稿" as string,
+      text: "出席者の皆さんに、その場で撮った写真や思い出の写真などを投稿してもらいましょう。" as string,
+      src: '/howToUse/post.png' as string
     },
     {
-      title: "③：投稿した写真が表示されます！",
-      src: '/howToUse/howtouse2.jpg'
+      title: "写真が共有されます" as string,
+      text: "投稿された写真が順次表示されます！皆さんが楽しめる素敵な会を演出しましょう！" as string,
+      src: '/howToUse/show.png' as string
     }
   ];
   title: any = {
-    howTo: 'How to Use'
+    howTo: '使い方' as string
   };
 
-  mounted() {
-
-  }
 }
 </script>
 
@@ -91,10 +107,5 @@ export default class HowToUse extends Vue {
 
 .title_size {
   font-size: 25px;
-}
-
-.img_frame {
-  margin: 10px;
-  width: calc(100% - 20px);
 }
 </style>

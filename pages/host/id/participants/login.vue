@@ -73,9 +73,12 @@ export default class ParticipantsLogin extends Vue {
   }
   
   register () {
+    console.log(this.$route.fullPath);
+    const query = this.$route.fullPath.split('?')[1];
+    const queryValue = query.split('=')[1];
     const registerName = this.name;
     this.$store.commit('participants/login', registerName);
-    this.$router.push('post-image');
+    this.$router.push({ path: 'post-image/', query: { id: queryValue} });
   }
   
 };

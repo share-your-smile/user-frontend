@@ -27,7 +27,7 @@
                 <v-btn depressed
                   color="primary"
                   rounded
-                  @click="$router.push('login')"
+                  @click="$router.push('login/')"
                 >
                   ログイン
                 </v-btn>
@@ -160,7 +160,7 @@ export default class HostRegister extends Vue {
         const res = this.$store.getters['host/getLoginUser'];
         
         if (res.id) {
-          this.$router.push(`${res.id}/welcome`);
+          this.$router.push({ path: `welcome/`, query: { id: res.id } });
         }
       } catch(error) {
         this.loginState = false;

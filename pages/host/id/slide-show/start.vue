@@ -71,7 +71,7 @@ export default class SlideStart extends Vue {
       }.bind(this), 1000);
     } else {
       console.log('start!!');
-      this.$router.push('main');
+      this.$router.push(`../main/`);
     }
   }
 
