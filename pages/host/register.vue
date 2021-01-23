@@ -27,7 +27,7 @@
                 <v-btn depressed
                   color="primary"
                   rounded
-                  @click="$router.push('login/')"
+                  @click="$router.push('/host/login/')"
                 >
                   ログイン
                 </v-btn>
@@ -65,6 +65,18 @@
                   >
                     登録
                   </v-btn>
+
+                  <v-btn
+                    v-if="!loginState"
+                    depressed
+                    outlined
+                    rounded
+                    color="primary"
+                    @click="checkWithNuxtAuth"
+                  >
+                    test
+                  </v-btn>
+
                   <v-progress-circular
                     v-else
                     indeterminate
@@ -143,6 +155,17 @@ export default class HostRegister extends Vue {
       }
     }
     return true;
+  }
+
+  async checkWithNuxtAuth() {
+    const userData = {
+      email: 'first_test@gmail.com',
+      password: 'password',
+    };
+    const res = await this.$auth.loginWith('local', { data: userData });
+    console.log(res);
+    console.log(this.$auth);
+    console.log(this.$store.state.auth.user);
   }
 
   async checkPass () {

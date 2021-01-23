@@ -1,7 +1,6 @@
 <template>
   <v-app >
     <v-app-bar
-      :clipped-left="clipped"
       class="headerSYS"
       color="primary"
       fixed
@@ -61,6 +60,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
+import { mapGetters } from 'vuex';
 
 import Hero from "~/components/Hero.vue";
 import ConfirmDialog from "~/components/ConfirmDialog.vue";
@@ -124,6 +124,7 @@ export default class Default extends Vue {
   mounted() {
     this.loginState();
     this.changeHero();
+    console.log(this.$auth.user);
   }
 
   changeHero() {
@@ -137,9 +138,10 @@ export default class Default extends Vue {
   loginState() {
     this.showItems = [];
     const hostInfo: any = this.$store.getters['host/getLoginUser'];
-    if ( hostInfo.name !== '' ) {
-      console.log(hostInfo.name);
-      this.settingItems.loginUser.text = hostInfo.name;
+    console.log(this.$store.$auth.loggedIn);
+    if ( this.$store.$auth.loggedIn ) {
+      console.log(this.$store.$auth.user);
+      this.settingItems.loginUser.text = this.$store.$auth.user;
       this.showItems.push(this.settingItems.loginUser);
       this.showItems.push(this.settingItems.logout);
       this.showItems.push(this.settingItems.contact);
@@ -160,9 +162,8 @@ export default class Default extends Vue {
   }
 
   onClickLoginUser() {
-    const hostInfo = this.$store.getters['host/getLoginUser'];
-    if (hostInfo.name) {
-      this.$router.push({ path: `/host/id/top/`, query: { id: hostInfo.id } });
+    if (this.$store.$auth.loggedIn) {
+      this.$router.push({ path: `/host/id/top/` });
     }
   }
 

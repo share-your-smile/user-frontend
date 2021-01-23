@@ -27,6 +27,31 @@ export default {
   // Target (https://go.nuxtjs.dev/config-target)
   target: 'static',
 
+  auth: {
+    redirect: {
+      login: '/login',
+      logout: '/login',
+      callback: false,
+      home: false,
+    },
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: `${process.env.USER_DATA_API_BASE_URL}/login`,
+            method: 'post',
+            propertyName: 'token',
+          },
+          user: {
+            url: `${process.env.USER_DATA_API_BASE_URL}/user`,
+            method: 'get',
+            propertyName: 'user',
+          }
+        }
+      }
+    }
+  },
+
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
     titleTemplate: '%s | Share Your Smile',
@@ -51,10 +76,11 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    { src: '~plugins/cookie-storage/host.js', ssr: false },
-    { src: '~plugins/cookie-storage/participants.js', ssr: false },
+    // { src: '~plugins/cookie-storage/host.js', ssr: false },
+    // { src: '~plugins/cookie-storage/participants.js', ssr: false },
     { src: '~plugins/injection/user-info-utils.ts', ssr: false },
-    { src: '~plugins/injection/s3-connect.ts', ssr: false }
+    { src: '~plugins/injection/s3-connect.ts', ssr: false },
+    { src: '~plugins/axios.ts', ssr: false },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -71,7 +97,9 @@ export default {
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
-    'vue-web-cam/nuxt'
+    'vue-web-cam/nuxt',
+    '@nuxtjs/axios',
+    '@nuxtjs/auth-next',
   ],
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)

@@ -28,6 +28,8 @@ export default ({ redirect, store, isDev, route }: Context) => {
     }
   })
 
+  console.log(store);
+
   if (loginData.id !== -1 && loginData.name !== '' && loginData.email !== '') {
     store.commit('host/login', loginData);
     const path: string = route.fullPath;

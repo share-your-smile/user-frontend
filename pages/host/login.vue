@@ -92,7 +92,7 @@ import SubTitle from '~/components/SubTitle.vue';
     FormPassword,
     AlertWindow
   },
-  middleware: 'host-authenticated'
+  // middleware: 'host-authenticated'
 })
 export default class HostLogin extends Vue {
   email: string = process.env.NODE_ENV === 'development' ? 'first_test@gmail.com' : '';
@@ -125,8 +125,11 @@ export default class HostLogin extends Vue {
         password: this.password
       };
       try {
-        await this.$store.dispatch('host/getUserInfo',reqUserInfo);
-        const res = this.$store.getters['host/getLoginUser'];
+        
+        const res: any = await this.$auth.loginWith('local', { data: reqUserInfo });
+
+        // await this.$store.dispatch('host/getUserInfo',reqUserInfo);
+        // const res = this.$store.getters['host/getLoginUser'];
         if (res.name) {
           this.$router.push({ path: `/top/`, query: { id: res.id} });
         }

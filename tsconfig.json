@@ -34,6 +34,8 @@
       "@types/sharp",
       "@types/exif",
       "@nuxt/types",
+      "@nuxtjs/axios",
+      "@nuxtjs/auth-next",
       "webpack-env",
       "vuetify",
       "jest"
