@@ -72,7 +72,7 @@
                     outlined
                     rounded
                     color="primary"
-                    @click="checkWithNuxtAuth"
+                    @click="checkPass"
                   >
                     test
                   </v-btn>

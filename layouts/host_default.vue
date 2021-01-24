@@ -137,10 +137,8 @@ export default class Default extends Vue {
 
   loginState() {
     this.showItems = [];
-    const hostInfo: any = this.$store.getters['host/getLoginUser'];
-    console.log(this.$store.$auth.loggedIn);
     if ( this.$store.$auth.loggedIn ) {
-      console.log(this.$store.$auth.user);
+      console.log(`login user : ${this.$store.$auth.user}`);
       this.settingItems.loginUser.text = this.$store.$auth.user;
       this.showItems.push(this.settingItems.loginUser);
       this.showItems.push(this.settingItems.logout);
@@ -158,7 +156,7 @@ export default class Default extends Vue {
   }
 
   onClickLogin() {
-    this.$router.push('/host/login');
+    this.$router.push('/host/login/');
   }
 
   onClickLoginUser() {
@@ -181,8 +179,8 @@ export default class Default extends Vue {
   }
 
   onClickOK() {
-    this.$store.commit('host/logout/');
-    this.$router.push('/host/login/');
+    this.$store.$auth.logout();
+    // this.$router.push('/host/login/');
   }
 
 }

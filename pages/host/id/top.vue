@@ -144,82 +144,79 @@ import HowToUse from "~/components/HowToUse.vue";
   middleware: 'host-authenticated'
 })
 export default class MainPostPage extends Vue {
-  qrcodeSVG = '' as string;
   qrcodePng = '' as string;
   blobURL = '' as string;
-  participantsURL = '' as string;
   title: any = {
     qrcode: 'QR code',
     slideShow: 'Start SlideShow!'
   };
+
+  get qrcodeSVG() {
+    return this.$store.getters['qrcode/svg'];
+  }
+
+  get participantsURL() {
+    return this.$store.getters['qrcode/url'];
+  }
   
 
   created () {
     this.download();
-    const hostInfo: any = this.$store.getters['host/getLoginUser'];
-    this.participantsURL = `${location.origin}/host/id/participants/?id=${hostInfo.id}`;
     this.generateQrcode();
   }
 
   getPostUrl () {
-    const hostInfo: any = this.$store.getters['host/getLoginUser'];
-    // return `${process.env.POST_PAGE_BASE_URL}/participants/${hostInfo.id}`;
-    return `${location.origin}/host/id/participants/?id=${hostInfo.id}`;
-  }
-
-  generateRequestBody (type: string) {
-    const data = {
-      type: type,
-      url: this.getPostUrl()
-    };
-    return JSON.stringify(data);
+    return `${location.origin}/host/id/participants/`;
   }
 
   generateOptions(type: string) {
     return {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: this.generateRequestBody(type)
+      type: type,
+      url: this.getPostUrl()
     };
   }
 
   async requestQrcode (options: any) {
     const generateURL = `${process.env.USER_DATA_API_BASE_URL}/qrcode`;
-    return await (await fetch(generateURL, options)).json();
+    if (options.type === 'svg') {
+      this.$store.dispatch('qrcode/fetchSvg', options);
+    } else {
+      this.$store.dispatch('qrcode/fetchPng', options);
+    }
   }
 
   async generateQrcode () {
-    const res: any = await this.requestQrcode(this.generateOptions('svg'));
-    this.qrcodeSVG = res.result;
-    console.log(res);
+    await this.requestQrcode(this.generateOptions('svg'));
   }
 
   async download () {
-    const res: any = await this.requestQrcode(this.generateOptions('base64'));
-    this.qrcodePng = `<img src="${res.result}">`;
-    
-    const test: string[] = res.result.split(',');
-    const data: string = window.atob(test[1]);
+    try {
+      await this.requestQrcode(this.generateOptions('base64'));
+      const png = this.$store.getters['qrcode/png'];
+      this.qrcodePng = `<img src="${png}">`;
+      
+      const test: string[] = png.split(',');
+      const data: string = window.atob(test[1]);
 
-    // "image/png"
-    const mimeType: string = 'image/png';
+      // "image/png"
+      const mimeType: string = 'image/png';
 
-    // バイナリからBlobを作成
-    for( var i=0, l=data.length, content=new Uint8Array( l ); l>i; i++ ) {
-      content[i] = data.charCodeAt( i ) ;
+      // バイナリからBlobを作成
+      for( var i=0, l=data.length, content=new Uint8Array( l ); l>i; i++ ) {
+        content[i] = data.charCodeAt( i ) ;
+      }
+
+      const blobData = new Blob( [ content ], {
+        type: mimeType ,
+      });
+      this.blobURL = window.URL.createObjectURL(blobData);
+    } catch(err) {
+      console.log(err);
     }
-
-    const blobData = new Blob( [ content ], {
-      type: mimeType ,
-    });
-    this.blobURL = window.URL.createObjectURL(blobData);
-    console.log(test);
   }
 
   goToSlideShow() {
-    const hostInfo: any = this.$store.getters['host/getLoginUser'];
+    // スライドショーは全部同じパスにする？
     this.$router.push(`../slide-show/start/`);
   }
 }

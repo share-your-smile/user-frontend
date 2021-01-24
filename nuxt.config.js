@@ -30,7 +30,7 @@ export default {
   auth: {
     redirect: {
       login: '/login',
-      logout: '/login',
+      logout: '/',
       callback: false,
       home: false,
     },
@@ -78,6 +78,7 @@ export default {
   plugins: [
     // { src: '~plugins/cookie-storage/host.js', ssr: false },
     // { src: '~plugins/cookie-storage/participants.js', ssr: false },
+    { src: '~plugins/axios.ts', ssr: false },
     { src: '~plugins/injection/user-info-utils.ts', ssr: false },
     { src: '~plugins/injection/s3-connect.ts', ssr: false },
     { src: '~plugins/axios.ts', ssr: false },
