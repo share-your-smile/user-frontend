@@ -125,14 +125,14 @@ import SubTitle from '~/components/SubTitle.vue';
   }
 })
 export default class HostRegister extends Vue {
-  // name: string = 'test';
-  // email: string = 'test@gmail.com';
-  // password: string = '01234567';
-  // confirm_password: string = '01234567';
-  name: string = '';
-  email: string = '';
-  password: string = '';
-  confirm_password: string = '';
+  name: string = process.env.NODE_ENV === 'development' ? 'test' : '';
+  email: string = process.env.NODE_ENV === 'development' ? 'first_test@gmail.com' : '';
+  password: string = process.env.NODE_ENV === 'development' ? '01234567' : '';
+  confirm_password: string = process.env.NODE_ENV === 'development' ? '01234567' : '';
+  // name: string = '';
+  // email: string = '';
+  // password: string = '';
+  // confirm_password: string = '';
   error_message: string = '';
   // buttonState: boolean = true;
   title: any = {
@@ -168,6 +168,19 @@ export default class HostRegister extends Vue {
     console.log(this.$store.state.auth.user);
   }
 
+  async registerUser(params: any) {
+    return await new Promise((resolve, reject) => {
+      this.$axios
+        .$post(`/api/v1/user`, params)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        })
+    })
+  }
+
   async checkPass () {
     // validateチェックOKでtrueが帰ってくる
     if (this.refs.form.validate()) {
@@ -179,12 +192,11 @@ export default class HostRegister extends Vue {
         password: this.password
       };
       try {
-        await this.$store.dispatch('host/registerUserInfo',reqUserInfo);
-        const res = this.$store.getters['host/getLoginUser'];
-        
-        if (res.id) {
-          this.$router.push({ path: `welcome/`, query: { id: res.id } });
-        }
+        // await this.$store.dispatch('host/registerUserInfo',reqUserInfo);
+        // const res = this.$store.getters['host/getLoginUser'];
+        await this.registerUser(reqUserInfo);
+        await this.$auth.loginWith('local', { data: reqUserInfo });
+        this.$router.push({ path: `/host/id/welcome/` });
       } catch(error) {
         this.loginState = false;
         if (error.response.data.error_message) {

@@ -35,9 +35,9 @@ export const actions = actionTree({state}, {
     // 登録済みユーザーの情報を取得する
     async fetchSvg(context, data) {
       return await new Promise((resolve, reject) => {
-        axios.post(`${process.env.USER_DATA_API_BASE_URL}/qrcode`,data)
+        this.$axios.$post(`/api/v1/qrcode`,data)
         .then((res) => {
-          context.commit('setQrcode', res.data);
+          context.commit('setQrcode', res);
           resolve(res);
         })
         .catch((error) => {
@@ -47,9 +47,9 @@ export const actions = actionTree({state}, {
     },
     async fetchPng(context, data) {
       return await new Promise((resolve, reject) => {
-        axios.post(`${process.env.USER_DATA_API_BASE_URL}/qrcode`,data)
+        this.$axios.$post(`/api/v1/qrcode`,data)
         .then((res) => {
-          context.commit('setQrcodePng', res.data);
+          context.commit('setQrcodePng', res);
           resolve(res);
         })
         .catch((error) => {

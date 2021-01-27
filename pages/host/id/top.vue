@@ -141,7 +141,7 @@ import HowToUse from "~/components/HowToUse.vue";
 
 @Component({
   layout: 'host_default',
-  middleware: 'host-authenticated'
+  middleware: 'host-authenticated',
 })
 export default class MainPostPage extends Vue {
   qrcodePng = '' as string;
@@ -179,9 +179,9 @@ export default class MainPostPage extends Vue {
   async requestQrcode (options: any) {
     const generateURL = `${process.env.USER_DATA_API_BASE_URL}/qrcode`;
     if (options.type === 'svg') {
-      this.$store.dispatch('qrcode/fetchSvg', options);
+      await this.$store.dispatch('qrcode/fetchSvg', options);
     } else {
-      this.$store.dispatch('qrcode/fetchPng', options);
+      await this.$store.dispatch('qrcode/fetchPng', options);
     }
   }
 
