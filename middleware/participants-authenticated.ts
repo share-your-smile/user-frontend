@@ -18,10 +18,15 @@ export default ({ redirect, store, isDev, route}: Context) => {
   const fullPath: string = route.fullPath;
   const path: string[] = fullPath.split('?');
   const paths: string[] = path[0].split('/');
-  const prefixPath = `/${paths[1]}/${paths[2]}/${paths[3]}`;
+  const prefixPath = `/${paths[1]}/${paths[2]}`;
 
-  const queryKey = path[1].split('=')[0];
-  const queryValue = path[1].split('=')[1];
+  let queryValue = '';
+  if (path[1]) {
+    const queryKey = path[1].split('=')[0];
+    queryValue = path[1].split('=')[1];
+  } else {
+    queryValue = '';
+  }
 
   console.log(route.fullPath);
   

@@ -166,7 +166,7 @@ export default class MainPostPage extends Vue {
   }
 
   getPostUrl () {
-    return `${location.origin}/host/id/participants/`;
+    return `${location.origin}/participants/login/`;
   }
 
   generateOptions(type: string) {

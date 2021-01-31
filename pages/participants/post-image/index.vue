@@ -317,8 +317,13 @@ export default class PostImage extends Vue{
   }
 
   async uploadFile (src: string) {
-    const res = await this.$s3Connect.uploadImage('media', this.participantsName, src);
-    console.log(res);
+    // const res = await this.$s3Connect.uploadImage('media', this.participantsName, src);
+    const params = {
+      userId: 'media',
+      poster: this.participantsName,
+      image: src,
+    };
+    await this.$store.dispatch('imagesList/uploadImage', params);
   }
 
   refreshImages() {
@@ -342,11 +347,15 @@ export default class PostImage extends Vue{
 
     const imgSrc = await this.getImageData();
     
-    await this.uploadFile(imgSrc);
+    try {
+      await this.uploadFile(imgSrc);
+      console.log('refresh OK!');
+    } catch(err) {
+
+    }
 
     // await this.refreshImages();
 
-    console.log('refresh OK!');
   }
 };
 </script>

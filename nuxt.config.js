@@ -38,18 +38,22 @@ export default {
       local: {
         endpoints: {
           login: {
-            url: `${process.env.USER_DATA_API_BASE_URL}/login`,
+            url: `/api/v1/login`,
             method: 'post',
             propertyName: 'token',
           },
           user: {
-            url: `${process.env.USER_DATA_API_BASE_URL}/user`,
+            url: `/api/v1/user`,
             method: 'get',
             propertyName: 'user',
           }
         }
       }
     }
+  },
+
+  axious: {
+    baseURL: `${process.env.USER_DATA_API_BASE_URL}`
   },
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
@@ -77,7 +81,7 @@ export default {
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
     // { src: '~plugins/cookie-storage/host.js', ssr: false },
-    // { src: '~plugins/cookie-storage/participants.js', ssr: false },
+    { src: '~plugins/cookie-storage/participants.js', ssr: false },
     { src: '~plugins/axios.ts', ssr: false },
     { src: '~plugins/injection/user-info-utils.ts', ssr: false },
     { src: '~plugins/injection/s3-connect.ts', ssr: false },

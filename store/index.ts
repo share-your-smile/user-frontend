@@ -4,6 +4,8 @@ import { getAccessorType } from 'nuxt-typed-vuex'
 // ここで import しておきます。
 import * as host from '~/store/host'
 import * as participants from '~/store/participants'
+import * as imagesList from '~/store/imagesList'
+import * as qrcode from '~/store/qrcode'
 
 // ここでは、state, getters, mutations, actions の記法は省略しています。
 // 記法については、後ほど記述する store/age.ts を参照してください。
@@ -32,6 +34,8 @@ export const accessorType = getAccessorType({
   modules: {
     // import したサブモジュールはここに記述します。
     host,
-    participants
+    participants,
+    imagesList,
+    qrcode,
   },
 })

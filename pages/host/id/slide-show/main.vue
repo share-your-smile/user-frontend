@@ -232,7 +232,7 @@ export default class SlideMain extends Vue {
         }
       }
     } else { // update images
-    console.log(`list length ${this.listLen}: data length ${data.length}`);
+      console.log(`list length ${this.listLen}: data length ${data.length}`);
       if (this.listLen < data.length) {
         this.addImages(data);
       }
@@ -349,7 +349,13 @@ export default class SlideMain extends Vue {
     let names = fileName.split('/');
 
     if (names[1].indexOf('_') !== -1) {
-      const fileData = await this.$s3Connect.getImage(names[0], names[1]);
+      // const fileData = await this.$s3Connect.getImage(names[0], names[1]);
+      const params = {
+        userId: names[0],
+        fileName: names[1],
+        isResizedBucket: false,
+      }
+      const fileData = await this.$store.dispatch('imagesList/fetchImage', params);
       // const fileDataUrl = URL.createObjectURL(fileData);
       const fileDataURI = await this.loadDataURI(fileData);
 
