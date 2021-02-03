@@ -13,12 +13,12 @@ export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
 
-  server: {
-    https: {
-      key: fs.readFileSync(path.join(__dirname, './cert/localhost-key.pem')),
-      cert: fs.readFileSync(path.join(__dirname, './cert/localhost.pem')),
-    },
-  },
+  // server: {
+  //   https: {
+  //     key: fs.readFileSync(path.join(__dirname, './cert/localhost-key.pem')),
+  //     cert: fs.readFileSync(path.join(__dirname, './cert/localhost.pem')),
+  //   },
+  // },
 
   router: {
     trailingSlash: true,

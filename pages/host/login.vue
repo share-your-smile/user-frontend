@@ -131,19 +131,21 @@ export default class HostLogin extends Vue {
         }
       } catch(error) {
         this.loginState = false;
-        if (error.response.data.error_message) {
-          switch (error.response.data.error_message) {
-            case 'NO_USER':
-              this.error_message = 'ユーザーが登録されていません';
-              break;
-            case 'PASSWORD_UNMATCH':
-              this.error_message = 'パスワードが一致しません';
-              break;
-            default:
-              this.error_message = 'エラーが発生しました。リトライしてください'
-              break;
-          }
-          this.refs.alertWindow.show();
+        if (error.response) {
+          if (error.response.data.error_message) {
+            switch (error.response.data.error_message) {
+              case 'NO_USER':
+                this.error_message = 'ユーザーが登録されていません';
+                break;
+              case 'PASSWORD_UNMATCH':
+                this.error_message = 'パスワードが一致しません';
+                break;
+              default:
+                this.error_message = 'エラーが発生しました。リトライしてください'
+                break;
+            }
+            this.refs.alertWindow.show();
+          } 
         } else {
           this.error_message = 'エラーが発生しました。リトライしてください';
           this.refs.alertWindow.show();

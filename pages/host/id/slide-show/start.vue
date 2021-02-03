@@ -78,7 +78,7 @@ export default class SlideStart extends Vue {
   async startSlideShow () {
     try {
       this.nowState = this.states.loading;
-      await this.$store.dispatch('imagesList/getImagesList', 'resized-media');
+      await this.$store.dispatch('imagesList/getImagesList', 'resized');
       const list = this.$store.getters['imagesList/getList'];
       console.log(list);
       this.nowState = this.states.countdown;

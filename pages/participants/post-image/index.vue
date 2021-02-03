@@ -319,7 +319,7 @@ export default class PostImage extends Vue{
   async uploadFile (src: string) {
     // const res = await this.$s3Connect.uploadImage('media', this.participantsName, src);
     const params = {
-      userId: 'media',
+      userId: this.$store.getters['participants/getHostId'],
       poster: this.participantsName,
       image: src,
     };

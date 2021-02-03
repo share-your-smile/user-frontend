@@ -91,8 +91,8 @@ export default class SlideMain extends Vue {
   newPost: any = { // 新規投稿画像データ
     url: '',
     name: {
-      last: 'samukawa',
-      first: 'momoka'
+      last: '',
+      first: ''
     }
   };
   listLen: number = 0;
@@ -129,7 +129,7 @@ export default class SlideMain extends Vue {
   };
 
   changeSlide () {
-    if (this.images.length !== 0) {
+    if (this.images.length > 1) {
       // debug
       // this.nextSlide()
       var dispIndex = -1;
@@ -161,17 +161,19 @@ export default class SlideMain extends Vue {
           nowDispArryNum = arryNum
         }
       }
-      this.images[nowDispArryNum].active = false
-      this.images[nextDispArryNum].active = true
-      this.showNum = dispIndex
+      this.images[nowDispArryNum].active = false;
+      this.images[nextDispArryNum].active = true;
+      this.showNum = dispIndex;
       // console.log(this.images[dispIndex].islongwidth)
       this.changeAction()
+    } else if (this.images.length === 1) {
+      this.images[0].active = true;
     }
   };
 
   async getImageJson () {
     try {
-      await this.$store.dispatch('imagesList/getImagesList', 'resized-media');
+      await this.$store.dispatch('imagesList/getImagesList', 'resized');
       const list = this.$store.getters['imagesList/getList'];
       await this.setImages(list);
       this.listLen = list.length;
@@ -216,18 +218,18 @@ export default class SlideMain extends Vue {
       console.log('loading finish');
 
       // set the first image
-      var firstShowNum = 0
+      let firstShowNum = 0
       if (this.showNumber > this.images.length) {
-        firstShowNum = 1;
+        firstShowNum = 0;
       } else {
-        firstShowNum = this.images.length - this.showNumber + 1;
+        firstShowNum = this.images.length - this.showNumber - 1;
       }
       // 最初に表示するスライドを設定 + 表示枚数以上だった場合、古いものはすべて表示終了に倒す
-      for (var arryNum = 0; arryNum < this.images.length; arryNum++) {
+      for (let arryNum = 0; arryNum < this.images.length; arryNum++) {
         if (this.images[arryNum].post_no === firstShowNum) {
           this.images[arryNum].active = true;
           this.showNum = firstShowNum;
-        } else if (this.images[arryNum].post_no < firstShowNum) {
+        } else if (this.images[arryNum].post_no <= firstShowNum) {
           this.images[arryNum].finishShow = true;
         }
       }
