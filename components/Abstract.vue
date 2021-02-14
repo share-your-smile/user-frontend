@@ -47,7 +47,7 @@ import SubTitle from "~/components/SubTitle.vue";
 export default class Abstract extends Vue {
   words: any = {
     title: "Share Your Smileとは",
-    description1: "ブラウザだけでできるリアルタイムスライドショーアプリです。QRコードを配布するだけで撮った写真をその場でスライドショーに！<br>結婚式やイベントにご活用ください！",
+    description1: "ブラウザだけでできる<strong>リアルタイムスライドショーアプリ</strong>です。<br>QRコードを配布するだけで撮った写真をその場でスライドショーに！<br><strong>結婚式</strong>や<strong>イベント</strong>にご活用ください！",
     description: "PCとネット環境があれば、どこでも使用可能！<br>みんなが撮った写真をその場で共有して盛り上がろう。<br>参加者の手持ち無沙汰な時間を削減できます！",
   }
   

@@ -1,7 +1,7 @@
 <template>
   <v-container>
       <div style="text-align:right"
-        v-text="title.participants"
+        v-text="`${title.participants} さん`"
       />
 
     <v-row
@@ -10,86 +10,131 @@
       <sub-title v-bind:title="title.postImage" />
     </v-row>
 
+    <!-- <v-row>
+      <v-btn @click="debug" style="z-index:800;"> debug button </v-btn>
+    </v-row> -->
+
+    <!-- <v-expand-x-transition> -->
+    <v-dialog
+      v-model="isShow"
+      persistent
+      transition="scroll-x-transition"
+      max-width="500px"
+    >
+      <v-card
+      >
+        <div style="height:40px;" />
+        <v-card-text
+          style="font-family:'myFont!important"
+          class="text-h3 text-center"
+        >Nice Smile!</v-card-text>
+        <!-- <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            style="font-family:'myFont!important"
+            @click="isShow = false"
+          >
+            Next Smile
+          </v-btn>
+        </v-card-actions> -->
+      </v-card>
+    </v-dialog>
+    <!-- </v-expand-x-transition> -->
+
     <v-row
       justify="center"
     >
       <v-col
-        cols=3
+        cols=12
         class="outer"
+        style="z-index:800;"
       >
         <v-file-input
-          label="写真を選択"
+          label="select smile"
           prepend-icon="mdi-camera"
           @change="selectedFile"
-          hide-input
           ref="file"
           color="primary"
         />
       </v-col>
-      <v-col
-        cols=3
-      >
+    </v-row>
+
+    <!-- <v-row
+      style="width: 100%;height: 100px"
+    ></v-row> -->
+    
+    
+
+    <!-- 撮影・選択された画像を表示する -->
+    <div
+      class="canvas_wrapper sample_box2_3"
+      :style="{width: imgFrame.width, height: frameHeight}"
+      style="position: relative;"
+      ref="canWrapper"
+    >
+      <div class="operation-icon-container">     
         <v-btn
           :disabled="!editState"
-          depressed
           @click="rotate('anti')"
-          rounded
+          fab
+          small
+          color="primary"
         >
-          <v-icon>mdi-undo</v-icon>
+          <v-icon dark>mdi-undo</v-icon>
         </v-btn>
-      </v-col>
-      <v-col
-        cols=3
-      >
+
         <v-btn
           :disabled="!editState"
-          depressed
           @click="rotate('')"
-          rounded
+          fab
+          small
+          color="primary"
         >
           <v-icon>mdi-redo</v-icon>
         </v-btn>
-      </v-col>
-      <v-col
-        cols=3
-      >
+
         <v-btn
           :disabled="!editState"
-          depressed
           @click="uploadImage"
-          rounded
           color="primary"
+          fab
+          small
         >
           <v-icon>mdi-cloud-upload</v-icon>
         </v-btn>
-      </v-col>
-    </v-row>
+      </div>
 
-    <v-row
-      style="width: 100%;height: 100px"
-    ></v-row>
-
-    <!-- 撮影・選択された画像を表示する -->
-    <v-row>
-      <v-col
-        class="canvas_wrapper"
-        :style="{width: imgFrame.width, height: frameHeight}"
-        ref="canWrapper"
-      >
-        <v-layout
-          align-content-center 
-          justify-center
+      <!-- <div> -->
+        <div
+          class="img-frame"
         >
           <v-img
-            class="sample_box2_3"
+            class=""
             ref="thumbnail"
             :src="imageSrc"
-            :max-width="imgFrame.width"
+            :width="canvasVal.width"
+            :height="canvasVal.width"
+            contain
             :style="{ transform: rotateDegree, 'transform-origin': rotateVal.position}"
-          ></v-img>
-        </v-layout>
-      </v-col>
-    </v-row>
+          >
+            <template v-if="posting">
+              <v-row
+                class="fill-height ma-0"
+                align="center"
+                justify="center"
+              >
+                <v-progress-circular
+                  color="primary"
+                  indeterminate
+                ></v-progress-circular>
+              </v-row>
+            </template>
+          </v-img>
+        </div>
+      <!-- </div> -->
+    </div>
 
     <canvas v-show="false" ref="canvas" />
 
@@ -98,6 +143,7 @@
       ref="debug"
       :src="imageSrcDebug"
     ></v-img>
+
 
   </v-container>
 </template>
@@ -142,6 +188,17 @@ export default class PostImage extends Vue{
   editState: boolean = false;
   mainImage: any = '';
   befUploadImage: any = '';
+  posting: boolean = false;
+
+  isShow: boolean = false;
+  debug() {
+    this.isShow = true;
+    this.posting = true;
+    setTimeout(function(this: PostImage) {
+      this.isShow = false;
+      this.posting = false;
+    }.bind(this), 2000);
+  }
 
   get refs(): any {
     // eslint-disable-next-line
@@ -153,7 +210,9 @@ export default class PostImage extends Vue{
   }
 
   get frameHeight() {
-    return `${this.imgFrame.height}px`;
+    // return `${this.imgFrame.height}px`;
+    const height = window.innerHeight - 250;
+    return `${height}px`;
   }
 
   get rotateDegree() {
@@ -171,6 +230,8 @@ export default class PostImage extends Vue{
     console.log(this.refs.canWrapper.clientWidth);
     console.log(this.refs.canWrapper.clientHeight);
     this.imgFrame.height = this.refs.canWrapper.clientWidth;
+    window.scrollTo(0, 56);
+    console.log(`inner height : ${window.innerHeight}`);
   }
 
   setName() {
@@ -226,14 +287,19 @@ export default class PostImage extends Vue{
   }
 
   async selectedFile(file: any) {
-    console.log(file);
+    if (file) {
+      console.log(file);
 
-    if (file !== undefined && file !== null) {
-      if (file.name.lastIndexOf('.') <= 0) return
-      this.fr = new FileReader();
-      // this.fr.readAsDataURL(file);
-      this.fr.readAsArrayBuffer(file);
-      this.fr.addEventListener('load', this.loadedFile);
+      if (file !== undefined && file !== null) {
+        if (file.name.lastIndexOf('.') <= 0) return
+        this.fr = new FileReader();
+        // this.fr.readAsDataURL(file);
+        this.fr.readAsArrayBuffer(file);
+        this.fr.addEventListener('load', this.loadedFile);
+      }
+    } else {
+      console.log('delete');
+      this.deleteImageData();
     }
   }
 
@@ -331,11 +397,22 @@ export default class PostImage extends Vue{
     window.URL.revokeObjectURL(this.befUploadImage.src);
   }
 
+  deleteImageData() {
+    // イメージの消去
+    this.imageSrc = '';
+    // canvas貼り付けようのURLオブジェクト削除
+    window.URL.revokeObjectURL(this.mainImage.src);
+
+    this.editState = false;
+  }
+
   // 画像のアップロード
   // ①現在の向きに合わせてcanvasをrotationする
   // ②canvas画像からbase64データを取得
   // ③base64データをアップロードする
   async uploadImage() {
+
+    this.posting = true;
 
     switch(this.rotateVal.degree) {
       case   0: await this.rotateCanvas(1); break;
@@ -350,6 +427,12 @@ export default class PostImage extends Vue{
     try {
       await this.uploadFile(imgSrc);
       console.log('refresh OK!');
+      this.posting = false;
+      this.deleteImageData();
+      this.isShow = true;
+      setTimeout(function(this: PostImage) {
+        this.isShow = false;
+      }.bind(this), 2000);
     } catch(err) {
 
     }
@@ -367,12 +450,12 @@ export default class PostImage extends Vue{
   align-items: center;
 }
 
-.image_frame {
-  width: inherit;
-  height: inherit;
-  border: solid;
-  border-color: rgb(200,200,200);
-  border-style: dashed;
+.img-frame {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .frame_icon {
@@ -390,11 +473,20 @@ export default class PostImage extends Vue{
 }
 
 .sample_box2_3 {
-    padding: 1em 1.5em;
-    margin: 2em 0;
-    background-color: #ffc6c6;/*背景色*/
-    box-shadow: 0 0 0 8px #ffc6c6;/*背景色外側*/
-    border: 2px dashed #ffffff;/*線*/
-    color: #000000;/*文字色*/
+  /* padding: 1em 1.5em;
+  margin: 2em 0;
+  background-color: #ffc6c6;
+  box-shadow: 0 0 0 8px #ffc6c6;
+  border: 2px dashed #ffffff;
+  color: #000000; */
+  background-color: 	#FFF9E6;
+  box-shadow: 2px 2px 2px 2px rgba(0,0,0,0.4);
+}
+
+.operation-icon-container {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  z-index: 600;
 }
 </style>

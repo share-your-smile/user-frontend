@@ -1,42 +1,42 @@
 <template>
   <div class="host_top_top">
-    <!-- <v-container>
+
+
+    <v-container>
+
       <v-row
         justify="center"
       >
         <sub-title
-          v-bind:title="title.howTo"
+          v-bind:title="title.slideShow"
         />
       </v-row>
-      <v-spacer></v-spacer>
+
+      <v-row
+        style="height:60px;"
+      ></v-row>
 
       <v-row
         justify="center"
       >
-        <v-col
-          cols="12"
-          md="4"
-          lg="4"
-          xl="4"
-          v-for="index in procedure"
-          :key="index"
+        <v-btn
+          depressed
+          rounded
+          x-large
+          outlined
+          color="primary"
+          class="text-h5"
+          style="font-family:'myFont'!important"
+          @click="goToSlideShow"
         >
-          <v-card
-            height="250px"
-          >
-            <v-card-title
-              
-            >
-              {{index}}
-            </v-card-title>
-          </v-card>
-        </v-col>
+          スライドショーを開始する！
+        </v-btn>
       </v-row>
-    </v-container> -->
 
-    <how-to-use />
+      <v-row
+        style="height:60px;"
+      ></v-row>
 
-    <v-container>
       <v-row
         justify="center"
       >
@@ -59,7 +59,7 @@
           >
             <v-card-title
               class="justify-center"
-            >QRコードを参加者に配布してください</v-card-title>
+            >このQRコードを参加者に配布してください</v-card-title>
             <div class="outer">
               <div
                 class="outer qrcode-area"
@@ -88,6 +88,7 @@
           <v-btn depressed
             rounded
             x-large
+            outlined
             color="primary"
             class="text-h5"
             style="font-family:'myFont'!important"
@@ -98,36 +99,11 @@
         </v-col>
       </v-row>
 
-      <v-row
-        justify="center"
-      >
-        <sub-title
-          v-bind:title="title.slideShow"
-        />
-      </v-row>
-
-      <v-row
-        style="height:60px;"
-      ></v-row>
-
-      <v-row
-        justify="center"
-      >
-        <v-btn
-          depressed
-          rounded
-          x-large
-          color="primary"
-          class="text-h5"
-          style="font-family:'myFont'!important"
-          @click="goToSlideShow"
-        >
-          スライドショーを開始する！
-        </v-btn>
-      </v-row>
-
       <a :href="participantsURL">参加者ページ</a>
     </v-container>
+    
+    <how-to-use />
+
   </div>
 </template>
 

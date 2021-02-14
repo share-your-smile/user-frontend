@@ -3,10 +3,10 @@
     <!-- slide show -->
     <section v-if="isSlideShow" class="slides">
 
-      <v-btn
+      <!-- <v-btn
         @click="debugAdd()"
         depressed
-      >デバッグ</v-btn>
+      >デバッグ</v-btn> -->
 
       <div class="slides_phrase">Share your smile!!</div>
 
@@ -41,13 +41,13 @@
                 {{ image.name.last }}
                 </span>
               </span>
-              <span
+              <!-- <span
                 class="title-line"
               >
                 <span>
                   {{ image.name.first }}
                 </span>
-              </span>
+              </span> -->
             </h2>
           </header>
         </div>
@@ -262,9 +262,10 @@ export default class SlideMain extends Vue {
       console.log(`[${i}]:post_no${this.images[i].post_no}`);
     }
 
+    const threshold = imageFiles.length - this.showNumber;
     // 古い分を取得する
     for(let i = 0; i < this.images.length; i++) {
-      if (this.images[i].post_no < (imageFiles.length - this.showNumber)) {
+      if (this.images[i].post_no < threshold) {
         oldestImageNumbers.push(i);
         console.log(this.images[i].post_no);
       }
@@ -273,6 +274,9 @@ export default class SlideMain extends Vue {
     console.log(unregisterdImages);
     console.log(oldestImageNumbers.sort());
 
+    // showNumber以下の場合の条件分岐を足す。
+
+    // 新規で追加された画像と、削除予定の画像数が正しければ、次の処理にすすむ
     if (unregisterdImages.length === oldestImageNumbers.length) {
       // 古い分を削除
       for(let i = oldestImageNumbers.length; i > 0; i--) {
@@ -283,56 +287,18 @@ export default class SlideMain extends Vue {
         console.log(image.post_no);
       });
 
-      const results = [];
-
-      for(let i = 0; i < unregisterdImages.length; i++) {
-        const image = await this.setImageInfo(unregisterdImages[i].imageFile, unregisterdImages[i].num);
-        newImages.push(image);
-      }
-
-      console.log(newImages);
-
-      this.refs.refNewPost.setNewImagesInfo(newImages);
-      this.showNewPost();
     }
 
-    
+    for(let i = 0; i < unregisterdImages.length; i++) {
+      const image = await this.setImageInfo(unregisterdImages[i].imageFile, unregisterdImages[i].num);
+      newImages.push(image);
+    }
 
-    // json取得処理の結果、新しい配列が含まれていた場合、ここの処理を行う
-    // 追加配列をimages配列に追加し、各種パラメータの更新を行う
-    // for (var dArryNum = 0; dArryNum < data.length; dArryNum++) {
-    //   var isNewImage = true
-    //   for (var iArryNum = 0; iArryNum < this.images.length; iArryNum++) {
-    //     if (data[dArryNum].post_no === this.images[iArryNum].post_no) {
-    //       isNewImage = false
-    //     }
-    //   }
-    //   if (isNewImage === true) {
-    //     // regist to unregisterd images array
-    //     const unregisteredImage = {
-    //       data: data[dArryNum],
-    //       no: dArryNum
-    //     }
-    //     unregisterdImages.push(unregisteredImage)
-    //   }
-    // }
+    console.log(newImages);
 
-    // for (let index = 0; index < unregisterdImages.length; index++) {
-    //   // images配列へセット + 最低番号以下の画像を非表示にする
-    //   this.setImageInfo(unregisterdImages[index].data, unregisterdImages[index].no);
-    // }
-    // this.refs.refNewPost.setNewImagesInfo(unregisterdImages)
-    // this.showNewPost();
+    this.refs.refNewPost.setNewImagesInfo(newImages);
+    this.showNewPost();
 
-    // // 表示される最低の番号 ex) 総枚数=25,表示枚数=10の場合、25-10+1=16
-    // var lowerLimitNum = this.images.length + 1 - this.showNumber
-
-    // // 新規投稿画像が格納できたら、古いものは非表示に倒す
-    // for (var arryNum = 0; arryNum < this.images.length; arryNum++) {
-    //   if (this.images[arryNum].post_no < lowerLimitNum) {
-    //     this.images[arryNum].finishShow = true
-    //   }
-    // }
   };
 
   loadDataURI(fileData: any) {
@@ -378,25 +344,6 @@ export default class SlideMain extends Vue {
       console.log(`${no} done`);
       return image;
     }
-
-
-    
-
-    // set image info
-    // var image = {
-    //   url: 'url("' + this.$images_url + dataImage.src + '")',
-    //   // url: 'assets/slideImg/' + d_image.src,
-    //   name: {
-    //     last: name[1],
-    //     first: name[0]
-    //   },
-    //   post_no: dataImage.post_no,
-    //   active: false,
-    //   finishShow: false
-    // }
-
-    // add image to images
-    // this.images.push(image)
   };
 
   showNewPost () { // start new post enter animation
@@ -648,6 +595,7 @@ export default class SlideMain extends Vue {
 .slides_phrase {
   padding: 0.5%;
   position: absolute;
+  color: lightgray;
   top: 0px;
   right: 0px;
   font-size: 3.7em;

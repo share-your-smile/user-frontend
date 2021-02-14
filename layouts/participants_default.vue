@@ -3,8 +3,10 @@
     <v-app-bar
       :clipped-left="clipped"
       class="headerSYS"
+      color="secondary"
       fixed
       app
+      v-show="isShow"
     >
       <v-toolbar-title class="titleStyle" v-text="title" />
       <v-spacer />
@@ -50,6 +52,14 @@ export default class Default extends Vue {
   changeName: string = '名前を変更';
   pageTitle: string = this.$nuxt.$route.name!;
   isLoginPage: boolean = false;
+  isShow: boolean = false;
+  scrollY: number = 0;
+  
+  @Watch('scrollY')
+  scrolling (newValue: number, oldValue: number) {
+    console.log(newValue < oldValue);
+    this.$set(this, 'isShow', newValue < oldValue)
+  }
 
   @Watch('$route')
   pageTransition(to: any, from: any) {
@@ -63,6 +73,10 @@ export default class Default extends Vue {
   mounted() {
     this.setName();
     this.checkLoginStatus(this.$nuxt.$route.name!);
+    window.addEventListener('scroll', this.onScroll)
+    window.addEventListener('load', () => {
+      this.onScroll()
+    })
   }
 
   setName() {
@@ -75,9 +89,15 @@ export default class Default extends Vue {
     }
   }
 
+  onScroll () {
+    this.$set(this, 'scrollY', window.pageYOffset)
+    // this.scrollY = window.pageXOffset;
+  }
+
   changeParticipantsName() {
     this.$store.commit('participants/logout');
-    this.$router.push('/participants/login/');
+    const hostId = this.$store.getters['participants/getHostId'];
+    this.$router.push({ path: '/participants/login/', query: { id: hostId }});
   }
 
   checkLoginStatus(path: string) {
@@ -112,10 +132,10 @@ body {
 .headerSYS {
   background-color: black;
   /* background-image : url("Snow.jpg"); */
-  background: linear-gradient(-135deg, #E4A972, #9941D8);
+  /* background: linear-gradient(-135deg, #E4A972, #9941D8); */
   background-size: cover;
-  color: lightgray;
-  font-family: 'myFont';
+  color: gray;
+  font-family: 'MyFont';
   /* text-shadow:
     1px 0 0 black,
     0 1px 0 black,

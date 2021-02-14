@@ -2,7 +2,7 @@
   <v-app >
     <v-app-bar
       class="headerSYS"
-      color="primary"
+      color="secondary"
       fixed
       app
     >
@@ -20,13 +20,33 @@
             >mdi-account</v-icon>
           </v-btn>
         </template>
-        <v-list>
+        <v-list v-if="this.$store.$auth.loggedIn">
+          <v-list-item @click="onClickLoginUser">
+            <v-list-item-content>
+              <v-list-item-title class="title" style="font-family:'MyFont'!important;font-weight:bold;text-align:center;">
+                <span class="marker">
+                {{ this.$store.$auth.user }}
+                </span>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+        <v-divider v-if="this.$store.$auth.loggedIn"></v-divider>
+        <v-list
+          nav
+          dense
+        >
           <v-list-item
             v-for="item in showItems"
             :key="item.text"
             link
             @click="item.func"
           >
+            <v-list-item-icon>
+              <v-icon>
+                {{ item.icon }}
+              </v-icon>
+            </v-list-item-icon>
             <v-list-item-title>{{ item.text }}</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -85,23 +105,33 @@ export default class Default extends Vue {
   settingItems: any = {
     login: {
       text: 'ログイン',
+      icon: 'mdi-login',
       func: this.onClickLogin
     },
     logout: {
       text: 'ログアウト',
+      icon: 'mdi-logout',
       func: this.onClickLogout
     },
     register: {
       text: '新規登録',
+      icon: 'mdi-account-plus',
       func: this.onClickRegister
     },
-    loginUser: {
-      text: '',
+    topPage: {
+      text: 'ホーム',
+      icon: 'mdi-home',
       func: this.onClickLoginUser
     },
     contact: {
       text: 'お問い合わせ',
+      icon: 'mdi-email',
       func: this.onClickContact
+    },
+    selfIntro: {
+      text: 'このアプリについて',
+      icon: 'mdi-emoticon-excited',
+      func: this.handleClickSelfIntro,
     }
   };
   pageTitle: string = this.$nuxt.$route.name!;
@@ -139,16 +169,17 @@ export default class Default extends Vue {
     this.showItems = [];
     if ( this.$store.$auth.loggedIn ) {
       console.log(`login user : ${this.$store.$auth.user}`);
-      this.settingItems.loginUser.text = this.$store.$auth.user;
-      this.showItems.push(this.settingItems.loginUser);
+      // this.settingItems.loginUser.text = this.$store.$auth.user;
+      this.showItems.push(this.settingItems.topPage);
       this.showItems.push(this.settingItems.logout);
       this.showItems.push(this.settingItems.contact);
+      this.showItems.push(this.settingItems.selfIntro);
     } else {
       this.showItems.push(this.settingItems.register);
       this.showItems.push(this.settingItems.login);
       this.showItems.push(this.settingItems.contact);
+      this.showItems.push(this.settingItems.selfIntro);
     }
-
   }
 
   goToTop() {
@@ -176,11 +207,19 @@ export default class Default extends Vue {
   onClickContact() {
     console.log('contact page');
     console.log(process.env.NODE_ENV);
+    console.log(this.$nuxt.$route.name);
+    if (this.$nuxt.$route.name !== 'contacting') {
+      this.$router.push('/contacting/');
+    }
   }
 
   onClickOK() {
     this.$store.$auth.logout();
     // this.$router.push('/host/login/');
+  }
+
+  handleClickSelfIntro() {
+    this.$router.push('/self/');
   }
 
 }
@@ -199,13 +238,13 @@ body {
   color: white;
   height: 100vh;
   width: 100%;
-  font-family: 'MyFont';
+  font-family: 'MyFont'!important;
 }
 
 .headerSYS {
   background-color: black;
   background-size: cover;
-  color: lightgray;
+  color: gray;
   font-family: 'myFont';
 }
 

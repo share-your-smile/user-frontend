@@ -19,7 +19,7 @@ export default class SubTitle extends Vue {
 }
 </script>
 
-<style scoped>
+<style>
 .marker {
   background: linear-gradient(to top, rgba(255,191,0,0.7) 0% 50%, rgba(0,0,0,0) 50% 100%);
   transform: rotate(-1deg);

@@ -49,10 +49,13 @@
           <v-col
             style="text-align:right"
           >
-            <NuxtLink v-if="$auth.loggedIn" to="/">
+            <!-- <NuxtLink v-if="$auth.loggedIn" to="/">
               トップページへ戻る
             </NuxtLink>
             <NuxtLink v-else to="/host/id/pariticipants/login/">
+              トップページへ戻る
+            </NuxtLink> -->
+            <NuxtLink to="/">
               トップページへ戻る
             </NuxtLink>
           </v-col>

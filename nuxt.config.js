@@ -42,6 +42,10 @@ export default {
             method: 'post',
             propertyName: 'token',
           },
+          logout: {
+            url: '/api/v1/logout',
+            method: 'post',
+          },
           user: {
             url: `/api/v1/user`,
             method: 'get',
@@ -123,9 +127,9 @@ export default {
           success: colors.green.accent3
         },
         light: {
-          primary: colors.purple.lighten1,
+          primary: colors.deepPurple.lighten2,
           accent: colors.grey.darken3,
-          secondary: colors.amber.darken1,
+          secondary: colors.amber.lighten1,
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,

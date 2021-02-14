@@ -16,8 +16,7 @@
     "@nuxtjs/axios": "^5.12.5",
     "axios": "^0.21.0",
     "core-js": "^3.6.5",
-    "nuxt": "^2.14.6",
-    "vue-web-cam": "^1.9.0"
+    "nuxt": "^2.14.6"
   },
   "devDependencies": {
     "@nuxt/types": "^2.14.6",

@@ -14,9 +14,22 @@ import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
 export default class HostUser extends Vue{
   @Prop({ default: '' })
   name!: string;
+
+  @Prop({ default: true })
+  isRuled!: boolean
   
-  rules: Object = {
+  baseRules: Object = {
     required: (value: string) => !!value || '入力してください'
+  }
+
+  get rules (): object {
+    if (this.isRuled) {
+      return this.baseRules
+    } else {
+      return {
+        required: (value: string) => !!value,
+      }
+    }
   }
 
   get innerVal () {

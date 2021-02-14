@@ -87,7 +87,7 @@ export default class HowToUse extends Vue {
     },
     {
       title: "写真が共有されます" as string,
-      text: "投稿された写真が順次表示されます！皆さんが楽しめる素敵な会を演出しましょう！" as string,
+      text: "投稿された写真が順次表示されます！みんなが楽しめる素敵な会を演出しましょう！" as string,
       src: '/howToUse/show.png' as string
     }
   ];
