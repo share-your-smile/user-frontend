@@ -125,14 +125,10 @@ import SubTitle from '~/components/SubTitle.vue';
   }
 })
 export default class HostRegister extends Vue {
-  name: string = process.env.NODE_ENV === 'development' ? 'test' : '';
-  email: string = process.env.NODE_ENV === 'development' ? 'first_test@gmail.com' : '';
-  password: string = process.env.NODE_ENV === 'development' ? '01234567' : '';
-  confirm_password: string = process.env.NODE_ENV === 'development' ? '01234567' : '';
-  // name: string = '';
-  // email: string = '';
-  // password: string = '';
-  // confirm_password: string = '';
+  name: string = '';
+  email: string = '';
+  password: string = '';
+  confirm_password: string = '';
   error_message: string = '';
   // buttonState: boolean = true;
   title: any = {
@@ -155,6 +151,13 @@ export default class HostRegister extends Vue {
       }
     }
     return true;
+  }
+
+  created() {
+    this.name = process.env.NODE_ENV === 'development' ? 'test' : '';
+    this.email = process.env.NODE_ENV === 'development' ? 'first_test@gmail.com' : '';
+    this.password = process.env.NODE_ENV === 'development' ? '01234567' : '';
+    this.confirm_password = process.env.NODE_ENV === 'development' ? '01234567' : '';
   }
 
   async checkWithNuxtAuth() {

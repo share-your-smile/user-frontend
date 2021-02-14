@@ -95,13 +95,18 @@ import SubTitle from '~/components/SubTitle.vue';
   middleware: 'host-authenticated'
 })
 export default class HostLogin extends Vue {
-  email: string = process.env.NODE_ENV === 'development' ? 'first_test@gmail.com' : '';
-  password: string = process.env.NODE_ENV === 'development' ? 'password' : '';
+  email: string = '';
+  password: string = '';
   error_message: string = '';
   title: any = {
     login: 'ログイン'
   };
   loginState: boolean = false;
+
+  created() {
+    this.email = process.env.NODE_ENV === 'development' ? 'first_test@gmail.com' : '';
+    this.password = process.env.NODE_ENV === 'development' ? 'password' : '';
+  }
 
   get refs(): any {
     // eslint-disable-next-line
