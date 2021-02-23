@@ -11,7 +11,7 @@
     <v-row
       justify="center"
     >
-      <div>{{ words.description }}</div>
+      <div v-html="words.description"></div>
     </v-row>
 
     <v-row justify="center">

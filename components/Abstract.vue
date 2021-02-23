@@ -7,34 +7,57 @@
         v-bind:title="words.title"
       />
     </v-row>
-    <v-row
-      style="height:80px"
-    />
-    <v-row>
-      <v-col
-        cols=12
-        md=6
-        lg=6
-        xl=6
+    
+    <template v-for="(description, index) in descriptions">
+      <v-row
+        :key="index"
+        justify="center"
+        align="center"
       >
-        <div
-          v-html="words.description1"
-        />
-        <div
-          v-html="words.description"
-        />
-      </v-col>
-      <v-col
-        cols=12
-        md=6
-        lg=6
-        xl=6
-      >
-        <v-img
-          src="/568004_s.jpg"
-        />
-      </v-col>
-    </v-row>
+        <!-- <v-col
+          cols=12
+          md=6
+          lg=6
+          xl=6
+        >
+          <div v-if="index % 2 === 0"
+            v-html="description.text"
+          />
+          <div v-else>
+            <v-img class="waku02 rotate01"
+              width="500"
+              height="300"
+              :src="description.img"
+            />
+          </div>
+        </v-col>
+        <v-col
+          cols=12
+          md=6
+          lg=6
+          xl=6
+        >
+          <div v-if="index % 2 === 0">
+            <v-img class="waku02 rotate01"
+              width="500"
+              height="300"
+              :src="description.img"
+            />
+          </div>
+          <div v-else
+            v-html="description.text"
+          />
+        </v-col> -->
+        <template v-if="index % 2 === 0">
+          <message :text="description.text" />
+          <sample-image :img="description.img" />
+        </template>
+        <template v-else>
+          <sample-image :img="description.img" />
+          <message :text="description.text" />
+        </template>
+      </v-row>
+    </template>
   </v-container>
 </template>
 
@@ -42,15 +65,35 @@
 import { Vue, Component } from "vue-property-decorator";
 
 import SubTitle from "~/components/SubTitle.vue";
+import Message from '~/components/abstract/Message.vue';
+import SampleImage from '~/components/abstract/SampleImage.vue';
 
-@Component({})
+@Component({
+  components: {
+    SubTitle,
+    Message,
+    SampleImage,
+  }
+})
 export default class Abstract extends Vue {
   words: any = {
     title: "Share Your Smileとは",
-    description1: "ブラウザだけでできる<strong>リアルタイムスライドショーアプリ</strong>です。<br>QRコードを配布するだけで撮った写真をその場でスライドショーに！<br><strong>結婚式</strong>や<strong>イベント</strong>にご活用ください！",
-    description: "PCとネット環境があれば、どこでも使用可能！<br>みんなが撮った写真をその場で共有して盛り上がろう。<br>参加者の手持ち無沙汰な時間を削減できます！",
-  }
+  };
   
+  descriptions: any = [
+    {
+      text: 'ブラウザだけでできる<strong>リアルタイムスライドショーアプリ</strong>です。<br>QRコードを配布するだけ！撮った写真をその場でスライドショーに！',
+      img: '/abstract/1.jpg'
+    },
+    {
+      text: '<strong>結婚式</strong>や<strong>イベント</strong>にご活用ください！',
+      img: '/abstract/2.jpg',
+    },
+    {
+      text: 'PCとネット環境があれば、どこでも使用可能！<br>みんなが撮った写真をその場で共有して盛り上がろう。',
+      img: '/abstract/3.jpg',
+    }
+  ];
 }
 </script>
 

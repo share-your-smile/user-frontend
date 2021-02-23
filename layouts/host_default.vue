@@ -129,7 +129,7 @@ export default class Default extends Vue {
       func: this.onClickContact
     },
     selfIntro: {
-      text: 'このアプリについて',
+      text: '運営元について',
       icon: 'mdi-emoticon-excited',
       func: this.handleClickSelfIntro,
     }

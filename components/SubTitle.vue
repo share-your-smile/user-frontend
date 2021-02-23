@@ -1,11 +1,15 @@
 <template>
-  <div
-    class="marker"
-  >
-    <h2
-      class="moji"
-      v-text="title"
-    />
+  <div>
+    <div style="height:80px;width:100%"/>
+    <div
+      class="marker"
+    >
+      <h2
+        class="moji"
+        v-text="title"
+      />
+    </div>
+    <div style="height:40px;width:100%"/>
   </div>
 </template>
 

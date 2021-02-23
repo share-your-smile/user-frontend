@@ -6,8 +6,6 @@
       <sub-title v-bind:title="title.thanks" />
     </v-row>
 
-    <v-row style="height:100px;"></v-row>
-
     <!-- <h2>下記のリンクから参加者用投稿ページのQRコードを取得してください</h2> -->
     <v-row
       justify="center"

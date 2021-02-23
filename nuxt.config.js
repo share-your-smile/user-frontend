@@ -102,11 +102,11 @@ export default {
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
     'nuxt-typed-vuex',
+    '@nuxtjs/google-analytics',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
-    'vue-web-cam/nuxt',
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
   ],
@@ -151,5 +151,10 @@ export default {
     POST_PAGE_BASE_URL,
     POST_BUCKET_NAME,
     GET_BUCKET_NAME
+  },
+
+  googleAnalytics: {
+    // Options
+    id: 'G-1XRE4MQFS9',
   }
 }

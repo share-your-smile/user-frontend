@@ -1,7 +1,6 @@
 <template>
   <div class="host_top_top">
 
-
     <v-container>
 
       <v-row
@@ -11,10 +10,6 @@
           v-bind:title="title.slideShow"
         />
       </v-row>
-
-      <v-row
-        style="height:60px;"
-      ></v-row>
 
       <v-row
         justify="center"
@@ -32,10 +27,6 @@
           スライドショーを開始する！
         </v-btn>
       </v-row>
-
-      <v-row
-        style="height:60px;"
-      ></v-row>
 
       <v-row
         justify="center"
@@ -99,7 +90,7 @@
         </v-col>
       </v-row>
 
-      <a :href="participantsURL">参加者ページ</a>
+      <!-- <a :href="participantsURL">参加者ページ</a> -->
     </v-container>
     
     <how-to-use />
