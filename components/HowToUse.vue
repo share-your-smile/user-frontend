@@ -64,6 +64,12 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <v-row>
+      <div style="margin: 0 0 0 auto">
+        <a class="text-caption" href="http://www.freepik.com">Designed by pikisuperstar,pch.vector / Freepik</a>
+      </div>
+    </v-row>
   </v-container>
 </template>
 
