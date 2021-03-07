@@ -44,11 +44,34 @@
       <v-row style="height:40px;" />
 
       <v-row justify="center">
-        <div class="test-subtitle-1" v-html="words.introductions.name"></div>
+        <div class="text-h6" style="font-family: 'myFont'!important" v-html="words.introductions.name"></div>
       </v-row>
 
       <v-row justify="center">
         <div v-html="words.introductions.job"></div>
+      </v-row>
+      <v-row justify="center">
+        <div v-html="words.introductions.detail"></div>
+      </v-row>
+      <v-row justify="center">
+        <div v-html="words.introductions.tech"></div>
+      </v-row>
+      <v-row justify="center">
+        <div v-html="words.introductions.lisence"></div>
+      </v-row>
+      <v-row>
+        <v-spacer />
+        <v-col cols=4>
+          <v-row justify="center">
+            <v-btn depressed icon style="background-color: rgba(0,0,0,0)" href="https://twitter.com/thoughtbleachi1" target="_blank">
+              <v-icon color="primary">mdi-twitter</v-icon>
+            </v-btn>
+            <v-btn depressed icon style="background-color: rgba(0,0,0,0)" href="https://github.com/yason0319" target="_blank">
+              <v-icon color="primary">mdi-github</v-icon>
+            </v-btn>
+          </v-row>
+        </v-col>
+        <v-spacer />
       </v-row>
 
     </v-container>
@@ -90,7 +113,8 @@ export default class SelfIntroduction extends Vue {
       name: 'Izuru Nomura',
       job: 'webエンジニア',
       detail: '主にフロントエンドの開発をしています。',
-      lisence: 'AWS SAA'
+      tech: 'Vue.js / node.js / C++',
+      lisence: '保有資格: AWS SAA'
     }
   }
 }

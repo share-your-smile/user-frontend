@@ -61,20 +61,9 @@
                     rounded
                     :disabled="buttonState"
                     color="primary"
-                    @click="checkPass"
+                    @click="onClickRegister"
                   >
                     登録
-                  </v-btn>
-
-                  <v-btn
-                    v-if="!loginState"
-                    depressed
-                    outlined
-                    rounded
-                    color="primary"
-                    @click="checkPass"
-                  >
-                    test
                   </v-btn>
 
                   <v-progress-circular
@@ -99,6 +88,10 @@
       v-bind:error_message="error_message"
       ref="alertWindow"
     />
+    <confirm-policy
+      @handle-agree="checkPass"
+      ref="confirmPolicy"
+    />
   </div>
 </template>
 
@@ -114,6 +107,7 @@ import FormEmail from '~/components/forms/email.vue';
 import FormPassword from '~/components/forms/password.vue';
 import AlertWindow from '~/components/AlertWindow.vue';
 import SubTitle from '~/components/SubTitle.vue';
+import ConfirmPolicy from '~/components/ConfirmPolicy.vue'
 
 @Component({
   layout: 'host_default',
@@ -121,7 +115,9 @@ import SubTitle from '~/components/SubTitle.vue';
     FormUser,
     FormEmail,
     FormPassword,
-    AlertWindow
+    AlertWindow,
+    SubTitle,
+    ConfirmPolicy
   }
 })
 export default class HostRegister extends Vue {
@@ -135,6 +131,8 @@ export default class HostRegister extends Vue {
     register: '新規登録'
   };
   loginState: boolean = false;
+
+  confirmPoricy: boolean = true;
 
   get refs(): any {
     // eslint-disable-next-line
@@ -184,7 +182,12 @@ export default class HostRegister extends Vue {
     })
   }
 
+  onClickRegister () {
+    this.refs.confirmPolicy.show()
+  } 
+
   async checkPass () {
+    console.log('check')
     // validateチェックOKでtrueが帰ってくる
     if (this.refs.form.validate()) {
       this.loginState = true;
@@ -221,10 +224,6 @@ export default class HostRegister extends Vue {
   }
 
   resetValidate () {
-    console.log(this.name);
-    console.log(this.email);
-    console.log(this.password);
-    
     this.refs.form.resetValidation();
   }
 }

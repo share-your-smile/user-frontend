@@ -10,6 +10,12 @@
     <requirement />
 
     <contact />
+
+    <v-row justify="center">
+      <nuxt-link to="/policies/service/">利用規約</nuxt-link>
+      <div>&nbsp;|&nbsp;</div>
+      <nuxt-link to="/policies/privacy/">プライバシーポリシー</nuxt-link>
+    </v-row>
     
   </div>
 </template>
