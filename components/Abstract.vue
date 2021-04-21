@@ -114,14 +114,6 @@ export default class Abstract extends Vue {
       img: '/abstract/3.jpg',
     }
   ];
-
-  get device (): any {
-    return this.$device
-  }
-
-  mounted () {
-    console.log(this.device)
-  }
 }
 </script>
 
