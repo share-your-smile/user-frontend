@@ -27,31 +27,21 @@
         <v-row
           class="title-mergin"
         />
-        <v-row
-          justify="center"
-          class="btn-pos"
-        >
-          <v-col
-            class="center"
-          >
-            <v-btn
-              depressed
-              color="primary"
-              rounded
-              v-text="btn_dscr"
-              @click="goRegister"
-            />
-          </v-col>
-        </v-row>
+        <register-btn />
       </div>
     </v-container>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import RegisterBtn from '~/components/RegisterBtn.vue'
 
-@Component({})
+@Component({
+  components: {
+    RegisterBtn
+  }
+})
 export default class Hero extends Vue {
   description: string = "ブラウザだけでできるリアルタイムスライドショーアプリです。<br>QRコードを配布するだけで撮った写真をその場でスライドショーに！<br>結婚式やイベントにご活用ください！"
   btn_dscr: string = "シェアする！";
@@ -112,18 +102,12 @@ export default class Hero extends Vue {
   height: 40%;
 }
 
-.btn-pos {
-  height: 20%;
-}
 @media screen and (max-width: 600px) {
   .back {
     height: 40vh;
   }
   .title-mergin {
     height: 10%;
-  }
-  .btn-pos {
-    height: 40%;
   }
 }
 </style>

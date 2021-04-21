@@ -7,6 +7,10 @@
     <!-- 使い方紹介 -->
     <how-to-use />
 
+    <v-container>
+      <register-btn />
+    </v-container>
+
     <requirement />
 
     <contact />
@@ -27,6 +31,7 @@ import Abstract from "~/components/Abstract.vue";
 import HowToUse from "~/components/HowToUse.vue";
 import Requirement from "~/components/Requirement.vue";
 import Contact from '~/components/Contact.vue';
+import RegisterBtn from '~/components/RegisterBtn.vue'
 
 @Component({
   layout: 'host_default',
@@ -35,13 +40,10 @@ import Contact from '~/components/Contact.vue';
     HowToUse,
     Requirement,
     Contact,
+    RegisterBtn
   }
 })
 export default class Index extends Vue {
 
 }
 </script>
-
-<style scoped>
-
-</style>

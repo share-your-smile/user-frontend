@@ -8,55 +8,75 @@
       />
     </v-row>
     
-    <template v-for="(description, index) in descriptions">
+    <template v-if="$device.isMobile">
+      <template v-for="(description, index) in descriptions">
+        <v-row
+          :key="`message ${index}`"
+          justify="center"
+          align="center"
+        >
+          <message :text="description.text" />
+        </v-row>
+      </template>
       <v-row
-        :key="index"
         justify="center"
         align="center"
       >
-        <!-- <v-col
-          cols=12
-          md=6
-          lg=6
-          xl=6
-        >
-          <div v-if="index % 2 === 0"
-            v-html="description.text"
-          />
-          <div v-else>
-            <v-img class="waku02 rotate01"
-              width="500"
-              height="300"
-              :src="description.img"
-            />
-          </div>
-        </v-col>
-        <v-col
-          cols=12
-          md=6
-          lg=6
-          xl=6
-        >
-          <div v-if="index % 2 === 0">
-            <v-img class="waku02 rotate01"
-              width="500"
-              height="300"
-              :src="description.img"
-            />
-          </div>
-          <div v-else
-            v-html="description.text"
-          />
-        </v-col> -->
-        <template v-if="index % 2 === 0">
-          <message :text="description.text" />
-          <sample-image :img="description.img" />
-        </template>
-        <template v-else>
-          <sample-image :img="description.img" />
-          <message :text="description.text" />
-        </template>
+        <sample-image :img="descriptions[0].img" />
       </v-row>
+    </template>
+
+    <template v-else>
+      <template v-for="(description, index) in descriptions">
+        <v-row
+          :key="index"
+          justify="center"
+          align="center"
+        >
+          <!-- <v-col
+            cols=12
+            md=6
+            lg=6
+            xl=6
+          >
+            <div v-if="index % 2 === 0"
+              v-html="description.text"
+            />
+            <div v-else>
+              <v-img class="waku02 rotate01"
+                width="500"
+                height="300"
+                :src="description.img"
+              />
+            </div>
+          </v-col>
+          <v-col
+            cols=12
+            md=6
+            lg=6
+            xl=6
+          >
+            <div v-if="index % 2 === 0">
+              <v-img class="waku02 rotate01"
+                width="500"
+                height="300"
+                :src="description.img"
+              />
+            </div>
+            <div v-else
+              v-html="description.text"
+            />
+          </v-col> -->
+          <template v-if="index % 2 === 0">
+            <message :text="description.text" />
+            <sample-image :img="description.img" />
+          </template>
+          <template v-else>
+            <sample-image :img="description.img" />
+            <message :text="description.text" />
+          </template>
+        </v-row>
+      </template>
     </template>
   </v-container>
 </template>
@@ -94,6 +114,14 @@ export default class Abstract extends Vue {
       img: '/abstract/3.jpg',
     }
   ];
+
+  get device (): any {
+    return this.$device
+  }
+
+  mounted () {
+    console.log(this.device)
+  }
 }
 </script>
 

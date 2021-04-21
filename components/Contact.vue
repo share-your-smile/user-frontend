@@ -11,12 +11,18 @@
     <v-row
       justify="center"
     >
-      <div v-html="words.description"></div>
+      <v-col>
+        <div v-html="words.description"></div>
+      </v-col>
     </v-row>
 
     <v-row justify="center">
       <v-col class="text-right"
-        cols="6"
+        cols="10"
+        sm="8"
+        md="6"
+        lg="6"
+        xl="6"
       >
         <v-form
           ref="form"

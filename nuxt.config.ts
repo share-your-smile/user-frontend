@@ -89,7 +89,6 @@ export default {
     { src: '~plugins/axios.ts', ssr: false },
     { src: '~plugins/injection/user-info-utils.ts', ssr: false },
     { src: '~plugins/injection/s3-connect.ts', ssr: false },
-    { src: '~plugins/axios.ts', ssr: false },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -103,12 +102,13 @@ export default {
     '@nuxtjs/vuetify',
     'nuxt-typed-vuex',
     '@nuxtjs/google-analytics',
+    '@nuxtjs/device'
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     '@nuxtjs/axios',
-    '@nuxtjs/auth-next',
+    '@nuxtjs/auth-next'
   ],
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
