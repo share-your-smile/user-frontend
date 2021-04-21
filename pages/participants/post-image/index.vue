@@ -1,14 +1,23 @@
 <template>
   <v-container>
-      <div style="text-align:right"
+      <!-- <div style="text-align:right"
         v-text="`${title.participants} さん`"
-      />
+      /> -->
 
     <v-row
       justify="center"
     >
-      <sub-title v-bind:title="title.postImage" />
+      <div
+        class="marker"
+      >
+        <h2
+          class="moji"
+          v-text="title.postImage"
+        />
+      </div>
     </v-row>
+
+    
 
     <!-- <v-row>
       <v-btn @click="debug" style="z-index:800;"> debug button </v-btn>
@@ -479,8 +488,11 @@ export default class PostImage extends Vue{
   box-shadow: 0 0 0 8px #ffc6c6;
   border: 2px dashed #ffffff;
   color: #000000; */
+  border-radius: 5px;
+  border: 1px solid;
+  border-color: gray;
   background-color: 	#FFF9E6;
-  box-shadow: 2px 2px 2px 2px rgba(0,0,0,0.4);
+  /* box-shadow: 2px 2px 2px 2px rgba(0,0,0,0.4); */
 }
 
 .operation-icon-container {
@@ -488,5 +500,14 @@ export default class PostImage extends Vue{
   right: 5px;
   top: 5px;
   z-index: 600;
+}
+
+.marker {
+  background: linear-gradient(to top, rgba(255,191,0,0.7) 0% 50%, rgba(0,0,0,0) 50% 100%);
+  transform: rotate(-1deg);
+}
+
+.moji {
+  transform: rotate(1deg);
 }
 </style>

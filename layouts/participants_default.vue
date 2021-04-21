@@ -6,7 +6,6 @@
       color="secondary"
       fixed
       app
-      v-show="isShow"
     >
       <v-toolbar-title class="titleStyle" v-text="title" />
       <v-spacer />

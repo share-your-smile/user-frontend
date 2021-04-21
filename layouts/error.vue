@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar
       class="headerSYS"
-      color="primary"
+      color="secondary"
       fixed
       app
     >

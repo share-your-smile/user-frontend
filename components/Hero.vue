@@ -6,48 +6,43 @@
       style="height:100%;"
       class="center"
     >
-      <!-- <v-row
-        justify="center"
-      >
-        <div
-          class="descri"
-          v-html="description"
-        ></div>
-      </v-row> -->
-      <div style="height:100%">
-      <v-row
-        justify="center"
-        style="height:40%"
-      >
-        <v-col
-          cols=6
-          class="center"
+      <div style="height:100%;width:100%">
+        <v-row style="height:10%;" />
+        <v-row
+          justify="center"
         >
-        <v-img
-          src="/logo/main_logo.png"
+          <v-col
+            cols="10"
+            sm="6"
+            md="6"
+            lg="6"
+            xl="6"
+          >
+            <v-img
+              contain
+              src="/logo/main_logo.png"
+            />
+          </v-col>
+        </v-row>
+        <v-row
+          class="title-mergin"
         />
-        </v-col>
-      </v-row>
-      <v-row
-        class="title-mergin"
-      />
-      <v-row
-        justify="center"
-        style="height:20%"
-      >
-        <v-col
-          class="center"
+        <v-row
+          justify="center"
+          class="btn-pos"
         >
-          <v-btn
-            x-large
-            depressed
-            color="primary"
-            rounded
-            v-text="btn_dscr"
-            @click="goRegister"
-          />
-        </v-col>
-      </v-row>
+          <v-col
+            class="center"
+          >
+            <v-btn
+              depressed
+              color="primary"
+              rounded
+              v-text="btn_dscr"
+              @click="goRegister"
+            />
+          </v-col>
+        </v-row>
       </div>
     </v-container>
   </div>
@@ -115,5 +110,20 @@ export default class Hero extends Vue {
 
 .title-mergin {
   height: 40%;
+}
+
+.btn-pos {
+  height: 20%;
+}
+@media screen and (max-width: 600px) {
+  .back {
+    height: 40vh;
+  }
+  .title-mergin {
+    height: 10%;
+  }
+  .btn-pos {
+    height: 40%;
+  }
 }
 </style>
