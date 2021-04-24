@@ -5,7 +5,14 @@
     lg=6
     xl=6
   >
-    <v-img class="waku02 rotate01"
+    <v-img
+      v-if="$device.isMobile"
+      class="waku02 rotate01"
+      :src="img"
+    />
+    <v-img
+      v-else
+      class="waku02 rotate01"
       width="500"
       height="300"
       :src="img"

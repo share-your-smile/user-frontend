@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="height:80px;width:100%"/>
+    <div v-if="!$device.isMobileOrTablet" style="height:80px;width:100%"/>
     <div
       class="marker"
     >

@@ -64,21 +64,6 @@ export default class Hero extends Vue {
   justify-content: center;
   align-items: center;
 }
-.back:before{
-  content: '';
-  background: inherit;
-  -webkit-filter: blur(5px);
-  -moz-filter: blur(5px);
-  -o-filter: blur(5px);
-  -ms-filter: blur(5px);
-  filter: blur(5px);
-  position: absolute;
-  top: -5px;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
-  z-index: -1;
-}
 .center {
   display: flex;
   justify-content: center;
@@ -104,7 +89,7 @@ export default class Hero extends Vue {
 
 @media screen and (max-width: 600px) {
   .back {
-    height: 40vh;
+    height: 30vh;
   }
   .title-mergin {
     height: 10%;

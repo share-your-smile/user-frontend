@@ -46,7 +46,7 @@
       <v-col
         v-for="procedure in procedures"
         :key="procedure.title"
-        col=12
+        col=4
         md=4
         lg=4
         xl=4

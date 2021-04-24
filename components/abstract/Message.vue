@@ -6,6 +6,12 @@
     xl=6
   >
     <div
+      v-if="$device.isMobile"
+      style="font-size:14px;"
+      v-html="text"
+    />
+    <div
+      v-else
       v-html="text"
     />
   </v-col>

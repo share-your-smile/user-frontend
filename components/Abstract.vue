@@ -4,6 +4,7 @@
       justify="center"
     >
       <sub-title
+        v-if="$device.isDesktop"
         v-bind:title="words.title"
       />
     </v-row>
@@ -33,40 +34,6 @@
           justify="center"
           align="center"
         >
-          <!-- <v-col
-            cols=12
-            md=6
-            lg=6
-            xl=6
-          >
-            <div v-if="index % 2 === 0"
-              v-html="description.text"
-            />
-            <div v-else>
-              <v-img class="waku02 rotate01"
-                width="500"
-                height="300"
-                :src="description.img"
-              />
-            </div>
-          </v-col>
-          <v-col
-            cols=12
-            md=6
-            lg=6
-            xl=6
-          >
-            <div v-if="index % 2 === 0">
-              <v-img class="waku02 rotate01"
-                width="500"
-                height="300"
-                :src="description.img"
-              />
-            </div>
-            <div v-else
-              v-html="description.text"
-            />
-          </v-col> -->
           <template v-if="index % 2 === 0">
             <message :text="description.text" />
             <sample-image :img="description.img" />
