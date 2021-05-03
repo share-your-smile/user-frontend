@@ -18,16 +18,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
 
-@Component({})
-export default class RegisterBtn extends Vue {
-  btn_dscr: string = "シェアする！"
-
-  goRegister() {
-    this.$router.push('/host/register/');
+export default Vue.extend({
+  data () {
+    return {
+      btn_dscr: 'シェアする' as String
+    }
+  },
+  methods: {
+    goRegister() {
+      this.$router.push('/host/register/');
+    }
   }
-}
+})
 </script>
 
 <style scoped>

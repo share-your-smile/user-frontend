@@ -10,24 +10,20 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import Vue from 'vue'
 
 import PolicyTemplate from '~/components/PolicyTemplate.vue'
-
 import servicePolicy from '@/assets/json/servicePolicy.json'
 
-@Component ({
+export default Vue.extend({
   layout: 'host_default',
   components: {
     PolicyTemplate
+  },
+  data () {
+    return {
+      servicePolicy: servicePolicy as Object
+    }
   }
 })
-export default class Service extends Vue {
-  servicePolicy: object = servicePolicy
-
-  mounted () {
-    console.log('call?')
-    console.log(this.servicePolicy)
-  }
-}
 </script>

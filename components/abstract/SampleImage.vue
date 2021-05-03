@@ -21,13 +21,16 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import Vue from 'vue'
 
-@Component({})
-export default class SampleImage extends Vue{
-  @Prop({default: ''})
-  img!: string;
-}
+export default Vue.extend({
+  props: {
+    img: {
+      type: String,
+      default: ''
+    }
+  }
+})
 </script>
 
 <style scoped>

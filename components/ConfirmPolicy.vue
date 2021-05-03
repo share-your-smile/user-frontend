@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="confirmPoricy"
+    v-model="confirmPolicy"
     persistent
   >
     <v-card>
@@ -35,35 +35,59 @@
 </template>
 
 <script lang="ts">
-import { Vue, Prop, Component } from 'vue-property-decorator';
+import Vue from 'vue'
 
 import PolicyTemplate from '~/components/PolicyTemplate.vue'
-
 import privacyPolicy from '@/assets/json/privacyPolicy.json'
 
-@Component ({
+export default Vue.extend({
   layout: 'host_default',
   components: {
     PolicyTemplate
+  },
+  data () {
+    return {
+      privacyPolicy: privacyPolicy as Object,
+      confirmPolicy: false as Boolean
+    }
+  },
+  methods: {
+    show () {
+      this.confirmPolicy = true
+    },
+    onClickCancel () {
+      this.confirmPolicy = false
+    },
+    onClickOK () {
+      this.confirmPolicy = false
+      this.$emit('handle-agree')
+    }
   }
 })
-export default class Service extends Vue {
-  privacyPolicy: object = privacyPolicy
 
-  confirmPoricy: boolean = false
+// @Component ({
+//   layout: 'host_default',
+//   components: {
+//     PolicyTemplate
+//   }
+// })
+// export default class Service extends Vue {
+//   privacyPolicy: object = privacyPolicy
 
-  show () {
-    this.confirmPoricy = true
-  }
+//   confirmPoricy: boolean = false
 
-  onClickCancel () {
-    this.confirmPoricy = false
-  }
+//   show () {
+//     this.confirmPoricy = true
+//   }
 
-  onClickOK () {
-    this.confirmPoricy = false
-    console.log('ok')
-    this.$emit('handle-agree')
-  }
-}
+//   onClickCancel () {
+//     this.confirmPoricy = false
+//   }
+
+//   onClickOK () {
+//     this.confirmPoricy = false
+//     console.log('ok')
+//     this.$emit('handle-agree')
+//   }
+// }
 </script>

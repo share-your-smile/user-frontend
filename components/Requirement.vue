@@ -20,21 +20,22 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import Vue from 'vue'
 
-import SubTitle from "~/components/SubTitle.vue";
-
-@Component({})
-export default class Requirement extends Vue {
-  words: any = {
-    title: "必要なもの",
-    texts: [
-      "写真共有用モニタorプロジェクター",
-      "スライド表示用PC",
-      "ネットワーク環境（スライド表示用PCをネットワークに接続するために必要です）",
-    ]
+export default Vue.extend({
+  data () {
+    return {
+      words: {
+        title: "必要なもの" as String,
+        texts: [
+          "写真共有用モニタorプロジェクター" as String,
+          "スライド表示用PC" as String,
+          "ネットワーク環境（スライド表示用PCをネットワークに接続するために必要です）" as String,
+        ]
+      }
+    }
   }
-}
+})
 </script>
 
 <style scoped>

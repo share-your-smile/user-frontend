@@ -79,150 +79,158 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
-import { mapGetters } from 'vuex';
+import Vue from 'vue'
 
 import Hero from "~/components/Hero.vue";
 import ConfirmDialog from "~/components/ConfirmDialog.vue";
 
-@Component({
+export default Vue.extend({
   components: {
     Hero,
     ConfirmDialog
-  }
-})
-export default class Default extends Vue {
-  clipped: boolean = false;
-  drawer: boolean = false;
-  fixed: boolean = false;
+  },
+  data () {
+    return {
+      clipped: false as Boolean,
+      drawer: false as Boolean,
+      fixed: false as Boolean,
+      title: 'Share Your Smile' as String,
+      confirmMessage: 'ログアウトしますか？' as String,
+      showItems: [] as any,
 
-  title: string = 'Share Your Smile';
-
-  confirmMessage: string = "ログアウトしますか？"
-
-  showItems: any = [];
-
-  settingItems: any = {
-    login: {
-      text: 'ログイン',
-      icon: 'mdi-login',
-      func: this.onClickLogin
-    },
-    logout: {
-      text: 'ログアウト',
-      icon: 'mdi-logout',
-      func: this.onClickLogout
-    },
-    register: {
-      text: '新規登録',
-      icon: 'mdi-account-plus',
-      func: this.onClickRegister
-    },
-    topPage: {
-      text: 'ホーム',
-      icon: 'mdi-home',
-      func: this.onClickLoginUser
-    },
-    contact: {
-      text: 'お問い合わせ',
-      icon: 'mdi-email',
-      func: this.onClickContact
-    },
-    selfIntro: {
-      text: '運営元について',
-      icon: 'mdi-emoticon-excited',
-      func: this.handleClickSelfIntro,
+      settingItems: {
+        login: {
+          text: 'ログイン',
+          icon: 'mdi-login',
+          func: null as any
+        },
+        logout: {
+          text: 'ログアウト',
+          icon: 'mdi-logout',
+          func: null as any
+        },
+        register: {
+          text: '新規登録',
+          icon: 'mdi-account-plus',
+          func: null as any
+        },
+        topPage: {
+          text: 'ホーム',
+          icon: 'mdi-home',
+          func: null as any
+        },
+        contact: {
+          text: 'お問い合わせ',
+          icon: 'mdi-email',
+          func: null as any
+        },
+        selfIntro: {
+          text: '運営元について',
+          icon: 'mdi-emoticon-excited',
+          func: null as any
+        }
+      },
+      pageTitle: this.$nuxt.$route.name as String,
+      showHero: false as Boolean
     }
-  };
-  pageTitle: string = this.$nuxt.$route.name!;
-  showHero: boolean = false;
-  
-  get refs(): any {
-    // eslint-disable-next-line
-    return this.$refs;
-  }
-
-  @Watch('$route')
-  pageTransition(to: any, from: any) {
-    if(to.path !== from.path) {
-      this.pageTitle = this.$nuxt.$route.name!;
-      this.loginState();
+  },
+  computed: {
+    refs: {
+      get () {
+        return this.$refs
+      }
     }
-    this.changeHero();
-  }
-
+  },
+  watch: {
+    '$route'(to: any, from: any) {
+      if(to.path !== from.path) {
+        this.pageTitle = this.$nuxt.$route.name!;
+        this.loginState();
+      }
+      this.changeHero();
+    }
+  },
   mounted() {
+    this.setFunc()
     this.loginState();
     this.changeHero();
-    console.log(this.$auth.user);
-  }
+  },
+  methods: {
+    setFunc () {
+      this.settingItems.login.func = this.onClickLogin
+      this.settingItems.logout.func = this.onClickLogout
+      this.settingItems.register.func = this.onClickRegister
+      this.settingItems.topPage.func = this.onClickLoginUser
+      this.settingItems.contact.func = this.onClickContact
+      this.settingItems.selfIntro.func = this.handleClickSelfIntro
+    },
 
-  changeHero() {
-    if (this.$nuxt.$route.name === 'index') {
-      this.showHero = true;
-    } else {
-      this.showHero = false;
+    changeHero() {
+      if (this.$nuxt.$route.name === 'index') {
+        this.showHero = true;
+      } else {
+        this.showHero = false;
+      }
+    },
+
+    loginState() {
+      this.showItems = [];
+      if ( this.$store.$auth.loggedIn ) {
+        console.log(`login user : ${this.$store.$auth.user}`);
+        // this.settingItems.loginUser.text = this.$store.$auth.user;
+        this.showItems.push(this.settingItems.topPage);
+        this.showItems.push(this.settingItems.logout);
+        this.showItems.push(this.settingItems.contact);
+        this.showItems.push(this.settingItems.selfIntro);
+      } else {
+        this.showItems.push(this.settingItems.register);
+        this.showItems.push(this.settingItems.login);
+        this.showItems.push(this.settingItems.contact);
+        this.showItems.push(this.settingItems.selfIntro);
+      }
+    },
+
+    goToTop() {
+      this.$router.push('/');
+    },
+
+    onClickLogin() {
+      this.$router.push('/host/login/');
+    },
+
+    onClickLoginUser() {
+      if (this.$store.$auth.loggedIn) {
+        this.$router.push({ path: `/host/id/top/` });
+      }
+    },
+
+    onClickLogout() {
+      this.refs.confirmDialog.show();
+    },
+
+    onClickRegister() {
+      this.$router.push('/host/register/');
+    },
+
+    onClickContact() {
+      console.log('contact page');
+      console.log(process.env.NODE_ENV);
+      console.log(this.$nuxt.$route.name);
+      if (this.$nuxt.$route.name !== 'contacting') {
+        this.$router.push('/contacting/');
+      }
+    },
+
+    onClickOK() {
+      this.$store.$auth.logout();
+      // this.$router.push('/host/login/');
+    },
+
+    handleClickSelfIntro() {
+      this.$router.push('/self/');
     }
   }
-
-  loginState() {
-    this.showItems = [];
-    if ( this.$store.$auth.loggedIn ) {
-      console.log(`login user : ${this.$store.$auth.user}`);
-      // this.settingItems.loginUser.text = this.$store.$auth.user;
-      this.showItems.push(this.settingItems.topPage);
-      this.showItems.push(this.settingItems.logout);
-      this.showItems.push(this.settingItems.contact);
-      this.showItems.push(this.settingItems.selfIntro);
-    } else {
-      this.showItems.push(this.settingItems.register);
-      this.showItems.push(this.settingItems.login);
-      this.showItems.push(this.settingItems.contact);
-      this.showItems.push(this.settingItems.selfIntro);
-    }
-  }
-
-  goToTop() {
-    this.$router.push('/');
-  }
-
-  onClickLogin() {
-    this.$router.push('/host/login/');
-  }
-
-  onClickLoginUser() {
-    if (this.$store.$auth.loggedIn) {
-      this.$router.push({ path: `/host/id/top/` });
-    }
-  }
-
-  onClickLogout() {
-    this.refs.confirmDialog.show();
-  }
-
-  onClickRegister() {
-    this.$router.push('/host/register/');
-  }
-
-  onClickContact() {
-    console.log('contact page');
-    console.log(process.env.NODE_ENV);
-    console.log(this.$nuxt.$route.name);
-    if (this.$nuxt.$route.name !== 'contacting') {
-      this.$router.push('/contacting/');
-    }
-  }
-
-  onClickOK() {
-    this.$store.$auth.logout();
-    // this.$router.push('/host/login/');
-  }
-
-  handleClickSelfIntro() {
-    this.$router.push('/self/');
-  }
-
-}
+})
 </script>
 
 <style scoped>

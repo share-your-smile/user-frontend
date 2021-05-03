@@ -45,45 +45,47 @@
 <script lang='ts'>
 // 参加者ログインページ
 // ログイン後は画像投稿ページにリダイレクトする
-import Component from "vue-class-component";
-import { Vue, Watch } from "vue-property-decorator";
+import Vue from 'vue'
 
 import FormUser from '~/components/forms/name.vue';
 import AlertWindow from '~/components/AlertWindow.vue';
 import SubTitle from '~/components/SubTitle.vue';
 
-@Component({
+export default Vue.extend({
   components: {
     FormUser,
     AlertWindow
   },
   layout: 'participants_default',
-  middleware: 'participants-authenticated'
-})
-export default class ParticipantsLogin extends Vue {
-  name: string = 'test';
-  disableButton: boolean = false;
-  title: any = {
-    naming: 'あなたの名前は？'
-  }
-
-  get buttonState () {
-    console.log('computed');
-    return this.name === '' ? true : false;
-  }
-
+  middleware: 'participants-authenticated',
+  data () {
+    return {
+      name: 'test' as String,
+      disableButton: false as Boolean,
+      title: {
+        naming: 'あなたの名前は？'
+      }
+    }
+  },
+  computed: {
+    buttonState: {
+      get () {
+        return this.name === '' ? true : false;
+      }
+    }
+  },
   created() {
     const query = this.$route.fullPath.split('?')[1];
     const hostId = query.split('=')[1];
     this.$store.dispatch('participants/setHostId', hostId);
+  },
+  methods: {
+    register () {
+      this.$store.commit('participants/login', this.name);
+      this.$router.push({ path: `/participants/post-image/`});
+    }
   }
-  
-  register () {
-    this.$store.commit('participants/login', this.name);
-    this.$router.push({ path: `/participants/post-image/`});
-  }
-  
-};
+})
 </script>
 
 <style scoped>

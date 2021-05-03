@@ -24,17 +24,38 @@
 </template>
 
 <script lang='ts'>
-import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
+import Vue from 'vue'
 
-@Component
-export default class AlertWindow extends Vue {
-  @Prop({ default: '' })
-  error_message!: string;
-
-  dialog: boolean = false;
-
-  show() {
-    this.dialog = true;
+export default Vue.extend({
+  props: {
+    error_message: {
+      type: String,
+      default: ''
+    }
+  },
+  data () {
+    return {
+      dialog: false as Boolean
+    }
+  },
+  methods: {
+    show () {
+      this.dialog = true
+    }
   }
-}
+})
+
+// import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
+
+// @Component
+// export default class AlertWindow extends Vue {
+//   @Prop({ default: '' })
+//   error_message!: string;
+
+//   dialog: boolean = false;
+
+//   show() {
+//     this.dialog = true;
+//   }
+// }
 </script>

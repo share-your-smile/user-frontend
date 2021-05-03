@@ -49,39 +49,68 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import Vue from 'vue'
 
 import SubTitle from "~/components/SubTitle.vue";
 import Message from '~/components/abstract/Message.vue';
 import SampleImage from '~/components/abstract/SampleImage.vue';
 
-@Component({
+export default Vue.extend({
   components: {
     SubTitle,
     Message,
     SampleImage,
+  },
+  data () {
+    return {
+      words: {
+        title: 'Share Your Smileとは' as String
+      },
+      descriptions: [
+        {
+          text: 'ブラウザだけでできる<strong>リアルタイムスライドショーアプリ</strong>です。<br>QRコードを配布するだけ！撮った写真をその場でスライドショーに！',
+          img: '/abstract/1.jpg'
+        },
+        {
+          text: '<strong>結婚式</strong>や<strong>イベント</strong>にご活用ください！',
+          img: '/abstract/2.jpg',
+        },
+        {
+          text: 'PCとネット環境があれば、どこでも使用可能！<br>みんなが撮った写真をその場で共有して盛り上がろう。',
+          img: '/abstract/3.jpg',
+        }
+      ]
+    }
   }
 })
-export default class Abstract extends Vue {
-  words: any = {
-    title: "Share Your Smileとは",
-  };
+
+// @Component({
+//   components: {
+//     SubTitle,
+//     Message,
+//     SampleImage,
+//   }
+// })
+// export default class Abstract extends Vue {
+//   words: any = {
+//     title: "Share Your Smileとは",
+//   };
   
-  descriptions: any = [
-    {
-      text: 'ブラウザだけでできる<strong>リアルタイムスライドショーアプリ</strong>です。<br>QRコードを配布するだけ！撮った写真をその場でスライドショーに！',
-      img: '/abstract/1.jpg'
-    },
-    {
-      text: '<strong>結婚式</strong>や<strong>イベント</strong>にご活用ください！',
-      img: '/abstract/2.jpg',
-    },
-    {
-      text: 'PCとネット環境があれば、どこでも使用可能！<br>みんなが撮った写真をその場で共有して盛り上がろう。',
-      img: '/abstract/3.jpg',
-    }
-  ];
-}
+//   descriptions: any = [
+//     {
+//       text: 'ブラウザだけでできる<strong>リアルタイムスライドショーアプリ</strong>です。<br>QRコードを配布するだけ！撮った写真をその場でスライドショーに！',
+//       img: '/abstract/1.jpg'
+//     },
+//     {
+//       text: '<strong>結婚式</strong>や<strong>イベント</strong>にご活用ください！',
+//       img: '/abstract/2.jpg',
+//     },
+//     {
+//       text: 'PCとネット環境があれば、どこでも使用可能！<br>みんなが撮った写真をその場で共有して盛り上がろう。',
+//       img: '/abstract/3.jpg',
+//     }
+//   ];
+// }
 </script>
 
 <style scoped>

@@ -14,13 +14,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import Vue from 'vue'
 
-@Component({})
-export default class SubTitle extends Vue {
-  @Prop({ default: '' })
-  title!: string;
-}
+export default Vue.extend({
+  props: {
+    title: {
+      type: String,
+      default: ''
+    }
+  }
+})
 </script>
 
 <style>

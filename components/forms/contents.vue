@@ -7,25 +7,30 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
+import Vue from 'vue'
 
-@Component
-export default class Contents extends Vue {
-  @Prop({ default: '' })
-  contents!: string;
-
-  get innerVal () {
-    return this.contents;
+export default Vue.extend({
+  props: {
+    contents: {
+      type: String,
+      default: ''
+    }
+  },
+  computed: {
+    innerVal: {
+      get (): String {
+        return this.contents
+      },
+      set (val: String) {
+        this.updateContents(val)
+      }
+    }
+  },
+  methods: {
+    updateContents (contents: String) {
+      this.$emit('update:contents', contents)
+    }
   }
-
-  set innerVal (val) {
-    this.updateContents(val);
-  }
-
-  @Emit('update:contents')
-  updateContents (contents: string) {
-    return contents;
-  }
-}
+})
 
 </script>

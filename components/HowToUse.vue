@@ -74,34 +74,59 @@
 </template>
 
 <script lang='ts'>
-import { Vue, Component } from "vue-property-decorator";
+import Vue from 'vue'
 
-import SubTitle from '~/components/SubTitle.vue';
-
-@Component({})
-export default class HowToUse extends Vue {
-  procedures: any = [
-    {
-      title: "QRコードを共有" as string,
-      text: "QRコードをダウンロードして招待状に載せたり、イベント会場に貼り出しましょう。" as string,
-      src: '/howToUse/share.jpg' as string
-    },
-    {
-      title: "写真を投稿" as string,
-      text: "出席者の皆さんに、その場で撮った写真や思い出の写真などを投稿してもらいましょう。" as string,
-      src: '/howToUse/post.png' as string
-    },
-    {
-      title: "写真が共有されます" as string,
-      text: "投稿された写真が順次表示されます！みんなが楽しめる素敵な会を演出しましょう！" as string,
-      src: '/howToUse/show.png' as string
+export default Vue.extend({
+  data () {
+    return {
+      procedures: [
+        {
+          title: "QRコードを共有" as string,
+          text: "QRコードをダウンロードして招待状に載せたり、イベント会場に貼り出しましょう。" as string,
+          src: '/howToUse/share.jpg' as string
+        },
+        {
+          title: "写真を投稿" as string,
+          text: "出席者の皆さんに、その場で撮った写真や思い出の写真などを投稿してもらいましょう。" as string,
+          src: '/howToUse/post.png' as string
+        },
+        {
+          title: "写真が共有されます" as string,
+          text: "投稿された写真が順次表示されます！みんなが楽しめる素敵な会を演出しましょう！" as string,
+          src: '/howToUse/show.png' as string
+        }
+      ],
+      title: {
+        howTo: '使い方' as string
+      }
     }
-  ];
-  title: any = {
-    howTo: '使い方' as string
-  };
+  }
+})
 
-}
+// @Component({})
+// export default class HowToUse extends Vue {
+//   procedures: any = [
+//     {
+//       title: "QRコードを共有" as string,
+//       text: "QRコードをダウンロードして招待状に載せたり、イベント会場に貼り出しましょう。" as string,
+//       src: '/howToUse/share.jpg' as string
+//     },
+//     {
+//       title: "写真を投稿" as string,
+//       text: "出席者の皆さんに、その場で撮った写真や思い出の写真などを投稿してもらいましょう。" as string,
+//       src: '/howToUse/post.png' as string
+//     },
+//     {
+//       title: "写真が共有されます" as string,
+//       text: "投稿された写真が順次表示されます！みんなが楽しめる素敵な会を演出しましょう！" as string,
+//       src: '/howToUse/show.png' as string
+//     }
+//   ];
+//   title: any = {
+//     howTo: '使い方' as string
+//   };
+
+// }
 </script>
 
 <style scoped>

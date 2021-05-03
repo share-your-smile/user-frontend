@@ -34,22 +34,40 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+
 import RegisterBtn from '~/components/RegisterBtn.vue'
 
-@Component({
+export default Vue.extend({
   components: {
     RegisterBtn
+  },
+  data () {
+    return {
+      description: "ブラウザだけでできるリアルタイムスライドショーアプリです。<br>QRコードを配布するだけで撮った写真をその場でスライドショーに！<br>結婚式やイベントにご活用ください！",
+      btn_dscr: "シェアする！"
+    }
+  },
+  methods: {
+    goRegister() {
+      this.$router.push('/host/register/');
+    }
   }
 })
-export default class Hero extends Vue {
-  description: string = "ブラウザだけでできるリアルタイムスライドショーアプリです。<br>QRコードを配布するだけで撮った写真をその場でスライドショーに！<br>結婚式やイベントにご活用ください！"
-  btn_dscr: string = "シェアする！";
 
-  goRegister() {
-    this.$router.push('/host/register/');
-  }
-}
+// @Component({
+//   components: {
+//     RegisterBtn
+//   }
+// })
+// export default class Hero extends Vue {
+//   description: string = "ブラウザだけでできるリアルタイムスライドショーアプリです。<br>QRコードを配布するだけで撮った写真をその場でスライドショーに！<br>結婚式やイベントにご活用ください！"
+//   btn_dscr: string = "シェアする！";
+
+//   goRegister() {
+//     this.$router.push('/host/register/');
+//   }
+// }
 </script>
 
 <style scoped>

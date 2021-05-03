@@ -98,9 +98,7 @@
 <script lang='ts'>
 // 新規ユーザー登録画面
 // MongoDBにユーザーを登録する
-import { ComponentOptions } from 'vue';
-import Component from "vue-class-component";
-import { Vue, Watch } from "vue-property-decorator";
+import Vue from 'vue'
 
 import FormUser from '~/components/forms/name.vue';
 import FormEmail from '~/components/forms/email.vue';
@@ -109,7 +107,7 @@ import AlertWindow from '~/components/AlertWindow.vue';
 import SubTitle from '~/components/SubTitle.vue';
 import ConfirmPolicy from '~/components/ConfirmPolicy.vue'
 
-@Component({
+export default Vue.extend({
   layout: 'host_default',
   components: {
     FormUser,
@@ -118,115 +116,119 @@ import ConfirmPolicy from '~/components/ConfirmPolicy.vue'
     AlertWindow,
     SubTitle,
     ConfirmPolicy
-  }
-})
-export default class HostRegister extends Vue {
-  name: string = '';
-  email: string = '';
-  password: string = '';
-  confirm_password: string = '';
-  error_message: string = '';
-  // buttonState: boolean = true;
-  title: any = {
-    register: '新規登録'
-  };
-  loginState: boolean = false;
-
-  confirmPoricy: boolean = true;
-
-  get refs(): any {
-    // eslint-disable-next-line
-    return this.$refs;
-  }
-
-  get buttonState () {
-    if (this.name !== '' &&
-        this.email !== '' &&
-        this.password !== '' &&
-        this.confirm_password !== '') {
-      if (this.refs.form !== undefined) {
-        return !this.refs.form.validate();
+  },
+  data () {
+    return {
+      name: '' as String,
+      email: '' as String,
+      password: '' as String,
+      confirm_password: '' as String,
+      error_message: '' as String,
+      title: {
+        register: '新規登録'
+      },
+      loginState: false as Boolean,
+      confirmPoricy: true as Boolean
+    }
+  },
+  computed: {
+    refs: {
+      get (): any {
+        // eslint-disable-next-line
+        return this.$refs;
+      }
+    },
+    buttonState: {
+      get () {
+        if (this.name !== '' &&
+          this.email !== '' &&
+          this.password !== '' &&
+          this.confirm_password !== '') {
+          if (this.refs.form !== undefined) {
+            return !this.refs.form.validate();
+          }
+        }
+        return true;
       }
     }
-    return true;
-  }
-
+  },
   created() {
     this.name = process.env.NODE_ENV === 'development' ? 'test' : '';
     this.email = process.env.NODE_ENV === 'development' ? 'first_test@gmail.com' : '';
     this.password = process.env.NODE_ENV === 'development' ? '01234567' : '';
     this.confirm_password = process.env.NODE_ENV === 'development' ? '01234567' : '';
-  }
-
-  async checkWithNuxtAuth() {
-    const userData = {
-      email: 'first_test@gmail.com',
-      password: 'password',
-    };
-    const res = await this.$auth.loginWith('local', { data: userData });
-    console.log(res);
-    console.log(this.$auth);
-    console.log(this.$store.state.auth.user);
-  }
-
-  async registerUser(params: any) {
-    return await new Promise((resolve, reject) => {
-      this.$axios
-        .$post(`/api/v1/user`, params)
-        .then((response) => {
-          resolve(response);
-        })
-        .catch((err) => {
-          reject(err);
-        })
-    })
-  }
-
-  onClickRegister () {
-    this.refs.confirmPolicy.show()
-  } 
-
-  async checkPass () {
-    console.log('check')
-    // validateチェックOKでtrueが帰ってくる
-    if (this.refs.form.validate()) {
-      this.loginState = true;
-      // ユーザ追加要求
-      const reqUserInfo: any = {
-        name: this.name,
-        email: this.email,
-        password: this.password
+  },
+  methods: {
+    async checkWithNuxtAuth() {
+      const userData = {
+        email: 'first_test@gmail.com',
+        password: 'password',
       };
-      try {
-        // await this.$store.dispatch('host/registerUserInfo',reqUserInfo);
-        // const res = this.$store.getters['host/getLoginUser'];
-        await this.registerUser(reqUserInfo);
-        await this.$auth.loginWith('local', { data: reqUserInfo });
-        this.$router.push({ path: `/host/id/welcome/` });
-      } catch(error) {
-        this.loginState = false;
-        if (error.response.data.error_message) {
-          switch (error.response.data.error_message) {
-            case 'SAME_USER_EXIST':
-              this.error_message = '同じメールアドレスのユーザが登録されています';
-              break;
-            default:
-              this.error_message = 'エラーが発生しました。リトライしてください';
-              break;
+      const res = await this.$auth.loginWith('local', { data: userData });
+      console.log(res);
+      console.log(this.$auth);
+      console.log(this.$store.state.auth.user);
+    },
+
+    async registerUser(params: any) {
+      return await new Promise((resolve, reject) => {
+        this.$axios
+          .$post(`/api/v1/user`, params)
+          .then((response) => {
+            resolve(response);
+          })
+          .catch((err) => {
+            reject(err);
+          })
+      })
+    },
+
+    onClickRegister () {
+      this.refs.confirmPolicy.show()
+    },
+
+    async checkPass () {
+      console.log('check')
+      // validateチェックOKでtrueが帰ってくる
+      if (this.refs.form.validate()) {
+        this.loginState = true;
+        // ユーザ追加要求
+        const reqUserInfo: any = {
+          name: this.name,
+          email: this.email,
+          password: this.password
+        };
+        try {
+          // await this.$store.dispatch('host/registerUserInfo',reqUserInfo);
+          // const res = this.$store.getters['host/getLoginUser'];
+          await this.registerUser(reqUserInfo);
+          await this.$auth.loginWith('local', { data: reqUserInfo });
+          this.$router.push({ path: `/host/id/welcome/` });
+        } catch(error) {
+          this.loginState = false;
+          if (error.response.data.error_message) {
+            switch (error.response.data.error_message) {
+              case 'SAME_USER_EXIST':
+                this.error_message = '同じメールアドレスのユーザが登録されています';
+                break;
+              default:
+                this.error_message = 'エラーが発生しました。リトライしてください';
+                break;
+            }
+            this.refs.alertWindow.show();
+          } else {
+            this.error_message = 'エラーが発生しました。リトライしてください';
+            this.refs.alertWindow.show();
           }
-          this.refs.alertWindow.show();
-        } else {
-          this.error_message = 'エラーが発生しました。リトライしてください';
-          this.refs.alertWindow.show();
         }
       }
+    },
+
+    resetValidate () {
+      this.refs.form.resetValidation();
     }
   }
-
-  resetValidate () {
-    this.refs.form.resetValidation();
-  }
-}
+})
 </script>
 
 <style scoped>

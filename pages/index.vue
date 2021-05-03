@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import Vue from 'vue'
 
 import Abstract from "~/components/Abstract.vue";
 import HowToUse from "~/components/HowToUse.vue";
@@ -33,7 +33,7 @@ import Requirement from "~/components/Requirement.vue";
 import Contact from '~/components/Contact.vue';
 import RegisterBtn from '~/components/RegisterBtn.vue'
 
-@Component({
+export default Vue.extend({
   layout: 'host_default',
   components: {
     Abstract,
@@ -43,7 +43,4 @@ import RegisterBtn from '~/components/RegisterBtn.vue'
     RegisterBtn
   }
 })
-export default class Index extends Vue {
-
-}
 </script>

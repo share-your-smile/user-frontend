@@ -26,21 +26,21 @@
 </template>
 
 <script lang='ts'>
-import Component from "vue-class-component";
-import { Vue, Watch } from "vue-property-decorator";
+import Vue from 'vue'
 
-import SubTitle from '~/components/SubTitle.vue';
-
-@Component({
+export default Vue.extend({
   layout: 'host_default',
-})
-export default class Welcome extends Vue {
-  title: any = {
-    thanks: '登録ありがとうございます！'
-  };
-
-  toMakePage () {
-    this.$router.push('top/');
+  data () {
+    return {
+      title: {
+        thanks: '登録ありがとうございます！'
+      }
+    }
+  },
+  methods: {
+    toMakePage () {
+      this.$router.push('top/');
+    }
   }
-}
+})
 </script>

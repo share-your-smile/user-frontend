@@ -32,13 +32,20 @@
 </template>
 
 <script lang="ts">
-import { Vue, Prop, Component } from 'vue-property-decorator';
+import Vue from 'vue'
 
-@Component({})
-export default class PolicyTemplate extends Vue {
-  @Prop({ default: [] })
-  article!: any
+type Article = {
+  title?: String,
+  main?: String
 }
+
+export default Vue.extend({
+  props: {
+    article: {
+      default: []
+    }
+  }
+})
 </script>
 
 <style scoped>

@@ -18,11 +18,14 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import Vue from 'vue'
 
-@Component({})
-export default class Message extends Vue{
-  @Prop({default: ''})
-  text!: string;
-}
+export default Vue.extend({
+  props: {
+    text: {
+      type: String,
+      default: ''
+    }
+  }
+})
 </script>

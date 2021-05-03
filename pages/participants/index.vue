@@ -5,16 +5,10 @@
 </template>
 
 <script lang='ts'>
-import Component from "vue-class-component";
-import { Vue, Watch } from "vue-property-decorator";
+import Vue from 'vue'
 
-@Component({
+export default Vue.extend({
   layout: 'participants_default',
   middleware: 'participants-authenticated'
 })
-export default class Participants extends Vue {
-  created() {
-    console.log(this.$route.params.id);
-  }
-}
 </script>

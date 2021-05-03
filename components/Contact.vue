@@ -76,80 +76,153 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator';
+import Vue from 'vue'
 
 import SubTitle from '~/components/SubTitle.vue';
 import FormUser from '~/components/forms/name.vue';
 import FormEmail from '~/components/forms/email.vue';
 import FormContents from '~/components/forms/contents.vue';
 
-@Component({
+export default Vue.extend({
   components: {
     SubTitle,
     FormUser,
     FormEmail,
     FormContents,
+  },
+  data () {
+    return {
+      words: {
+        title: 'お問い合わせ',
+        description: '使い方についての質問や使いたい場合の相談など、<br>お気軽にお問い合わせください！',
+        thanks: 'お問い合わせありがとうございました！',
+        err: '送信できませんでした。もう一度送信してください。'
+      },
+      name: '' as String,
+      email: '' as String,
+      contents: '' as String,
+      isSending: false as Boolean,
+      sendingStatus: 'inputing' as String
+    }
+  },
+  watch: {
+    name (val: String) {
+      this.$store.dispatch('contact/setName', val)
+    },
+    email (val: String) {
+      this.$store.dispatch('contact/setFrom', val)
+    },
+    contents (val: String) {
+      this.$store.dispatch('contact/setContents', val)
+    }
+  },
+  computed: {
+    refs(): any {
+      return this.$refs
+    },
+    buttonState: {
+      get (): Boolean {
+        if (this.email !== '' && this.name !== '') {
+          if (this.refs.form !== undefined) {
+            return !this.refs.form.validate();
+          }
+        }
+        return true;
+      }
+    }
+  },
+  methods: {
+    async sendMessage() {
+      if (this.refs.form.validate()) {
+        this.sendingStatus = 'sending';
+        try {
+          await this.$store.dispatch('contact/sendMessage');
+          console.log('OK');
+          this.$store.dispatch('contact/reset');
+          this.sendingStatus = 'done';
+          this.name = '';
+          this.email = '';
+          this.contents = '';
+        } catch(err) {
+          console.log('NG');
+          this.sendingStatus = 'error';
+
+        }
+        setTimeout(function () {
+          this.sendingStatus = 'inputing';
+        }.bind(this), 5000);
+      }
+    }
   }
 })
-export default class Contact extends Vue {
-  words: any = {
-    title: 'お問い合わせ',
-    description: '使い方についての質問や使いたい場合の相談など、<br>お気軽にお問い合わせください！',
-    thanks: 'お問い合わせありがとうございました！',
-    err: '送信できませんでした。もう一度送信してください。'
-  };
-  name: string = '';
-  email: string = '';
-  contents: string = '';
-  isSending: boolean = false;
-  sendingStatus: string = 'inputing';
 
-  @Watch('name')
-  updateName(val: string) {
-    this.$store.dispatch('contact/setName', val);
-  }
-  @Watch('email')
-  updateEmail(val: string) {
-    this.$store.dispatch('contact/setFrom', val);
-  }
-  @Watch('contents')
-  updateContents(val: string) {
-    this.$store.dispatch('contact/setContents', val);
-  }
+// @Component({
+//   components: {
+//     SubTitle,
+//     FormUser,
+//     FormEmail,
+//     FormContents,
+//   }
+// })
+// export default class Contact extends Vue {
+//   words: any = {
+//     title: 'お問い合わせ',
+//     description: '使い方についての質問や使いたい場合の相談など、<br>お気軽にお問い合わせください！',
+//     thanks: 'お問い合わせありがとうございました！',
+//     err: '送信できませんでした。もう一度送信してください。'
+//   };
+//   name: string = '';
+//   email: string = '';
+//   contents: string = '';
+//   isSending: boolean = false;
+//   sendingStatus: string = 'inputing';
 
-  get refs(): any {
-    return this.$refs;
-  }
+//   @Watch('name')
+//   updateName(val: string) {
+//     this.$store.dispatch('contact/setName', val);
+//   }
+//   @Watch('email')
+//   updateEmail(val: string) {
+//     this.$store.dispatch('contact/setFrom', val);
+//   }
+//   @Watch('contents')
+//   updateContents(val: string) {
+//     this.$store.dispatch('contact/setContents', val);
+//   }
 
-  get buttonState () {
-    if (this.email !== '' && this.name !== '') {
-      if (this.refs.form !== undefined) {
-        return !this.refs.form.validate();
-      }
-    }
-    return true;
-  }
+//   get refs(): any {
+//     return this.$refs;
+//   }
 
-  async sendMessage() {
-    if (this.refs.form.validate()) {
-      this.sendingStatus = 'sending';
-      try {
-        await this.$store.dispatch('contact/sendMessage');
-        console.log('OK');
-        this.$store.dispatch('contact/reset');
-        this.sendingStatus = 'done';
-        this.name = '';
-        this.email = '';
-        this.contents = '';
-      } catch(err) {
-        console.log('NG');
-        this.sendingStatus = 'error';
+//   get buttonState () {
+//     if (this.email !== '' && this.name !== '') {
+//       if (this.refs.form !== undefined) {
+//         return !this.refs.form.validate();
+//       }
+//     }
+//     return true;
+//   }
 
-      }
-      setTimeout(function (this: Contact) {
-        this.sendingStatus = 'inputing';
-      }.bind(this), 5000);
-    }
-  }
-}
+//   async sendMessage() {
+//     if (this.refs.form.validate()) {
+//       this.sendingStatus = 'sending';
+//       try {
+//         await this.$store.dispatch('contact/sendMessage');
+//         console.log('OK');
+//         this.$store.dispatch('contact/reset');
+//         this.sendingStatus = 'done';
+//         this.name = '';
+//         this.email = '';
+//         this.contents = '';
+//       } catch(err) {
+//         console.log('NG');
+//         this.sendingStatus = 'error';
+
+//       }
+//       setTimeout(function (this: Contact) {
+//         this.sendingStatus = 'inputing';
+//       }.bind(this), 5000);
+//     }
+//   }
+// }
 </script>

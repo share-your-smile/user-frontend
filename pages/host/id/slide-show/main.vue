@@ -60,48 +60,52 @@
 </template>
 
 <script lang="ts">
-import Component from "vue-class-component";
-import { Vue, Watch, Mixins } from "vue-property-decorator";
-import NewPost from '~/components/NewPost.vue';
+import Vue from 'vue'
 
+export default Vue.extend({
+  data () {
+    return {
+      showNum: -1 as Number, // 現在表示されている画像の番号
+      isSlideShow: true as Boolean, // スライドショー表示状態
+      totalPostNum: 0 as Number, // 総画像枚数
+      showNumber: 10 as Number, // ランダムに表示させる写真の枚数
 
-// スライドショー実行画面
-@Component({})
-export default class SlideMain extends Vue {
-  showNum: number = -1; // 現在表示されている画像の番号
-  isSlideShow: boolean = true; // スライドショー表示状態
-  totalPostNum: number = 0; // 総画像枚数
-  showNumber: number = 10; // ランダムに表示させる写真の枚数
+      slideLoop: null as any, // スライド切り替えループ
+      newPostLoop: null as any, // jsonチェックループ
 
-  slideLoop: any = null; // スライド切り替えループ
-  newPostLoop: any = null; // jsonチェックループ
+      images: [] as any[], // 全画像データ
 
-  images: any[] = []; // 全画像データ
-
-  image: any = { // 1枚の画像データ
-    url: '',
-    name: {
-      last: '',
-      first: ''
-    },
-    post_no: 0,
-    active: false,
-    finishShow: false
-  };
-  newPost: any = { // 新規投稿画像データ
-    url: '',
-    name: {
-      last: '',
-      first: ''
+      image: { // 1枚の画像データ
+        url: '',
+        name: {
+          last: '',
+          first: ''
+        },
+        post_no: 0,
+        active: false,
+        finishShow: false
+      },
+      newPost: { // 新規投稿画像データ
+        url: '',
+        name: {
+          last: '',
+          first: ''
+        }
+      },
+      listLen: 0 as Number,
+      lowerNumber: 0 as Number
     }
-  };
-  listLen: number = 0;
-  lowerNumber: number = 0;
-
+  },
+  computed: {
+    refs: {
+      get (): any {
+        return this.$refs
+      }
+    }
+  },
   mounted () {
     this.startSlideShow()
-  };
-
+  },
   beforeDestroy () {
     if (this.slideLoop != null) {
       console.log('slide loop')
@@ -111,260 +115,255 @@ export default class SlideMain extends Vue {
       console.log('new post loop')
       clearInterval(this.newPostLoop)
     }
-  };
+  },
+  methods: {
+    async startSlideShow () {
+      this.changeSlide();
+      await this.getImageJson();
+      this.isSlideShow = true;
+      // change slide loop
+      this.slideLoop = setInterval(function () { this.changeSlide() }.bind(this), 6000);
+      // check new post loop
+      this.newPostLoop = setInterval(function () { this.getImageJson() }.bind(this), 10000);
+    },
 
-  get refs(): any {
-    // eslint-disable-next-line
-    return this.$refs;
-  }
+    changeSlide () {
+      if (this.images.length > 1) {
+        // debug
+        // this.nextSlide()
+        var dispIndex = -1;
+        var nowDispArryNum = 0;
+        var nextDispArryNum = 0;
 
-  async startSlideShow () {
-    this.changeSlide();
-    await this.getImageJson();
-    this.isSlideShow = true;
-    // change slide loop
-    this.slideLoop = setInterval(function (this: SlideMain) { this.changeSlide() }.bind(this), 6000);
-    // check new post loop
-    this.newPostLoop = setInterval(function (this: SlideMain) { this.getImageJson() }.bind(this), 10000);
-  };
+        // ①ランダム表示枚数の中で乱数を発生させる
+        // ②現在の登録数
+        if (this.images.length < this.showNumber) { // showNumber以下の登録数
+          do {
+            dispIndex = Math.floor(Math.random() * (this.images.length)) + 1;
+          } while (dispIndex === -1 || dispIndex === this.showNum);
+          console.log(dispIndex);
+        } else {
+          do {
+            let random = Math.floor(Math.random() * (this.showNumber));
+            // console.log(`random ${random}`);
+            dispIndex = this.images.length - random;
+            console.log(`dispIndex ${dispIndex}`);
+          } while (dispIndex === -1 || dispIndex === this.showNum);
+        }
 
-  changeSlide () {
-    if (this.images.length > 1) {
-      // debug
-      // this.nextSlide()
-      var dispIndex = -1;
-      var nowDispArryNum = 0;
-      var nextDispArryNum = 0;
-
-      // ①ランダム表示枚数の中で乱数を発生させる
-      // ②現在の登録数
-      if (this.images.length < this.showNumber) { // showNumber以下の登録数
-        do {
-          dispIndex = Math.floor(Math.random() * (this.images.length)) + 1;
-        } while (dispIndex === -1 || dispIndex === this.showNum);
-        console.log(dispIndex);
-      } else {
-        do {
-          let random = Math.floor(Math.random() * (this.showNumber));
-          // console.log(`random ${random}`);
-          dispIndex = this.images.length - random;
-          console.log(`dispIndex ${dispIndex}`);
-        } while (dispIndex === -1 || dispIndex === this.showNum);
+        for (let arryNum = 0; arryNum < this.images.length; arryNum++) {
+          if (this.images[arryNum].post_no + 1 - this.lowerNumber === dispIndex) { // 新しく表示するものをtrueに
+            // console.log('next disp : ' + arryNum)
+            nextDispArryNum = arryNum
+          } else if (this.images[arryNum].post_no + 1 - this.lowerNumber === this.showNum) { // これまで表示されていたものはfalseに
+            // console.log('hide disp : ' + arryNum)
+            nowDispArryNum = arryNum
+          }
+        }
+        this.images[nowDispArryNum].active = false;
+        this.images[nextDispArryNum].active = true;
+        this.showNum = dispIndex;
+        // console.log(this.images[dispIndex].islongwidth)
+        this.changeAction()
+      } else if (this.images.length === 1) {
+        this.images[0].active = true;
       }
+    },
 
-      for (let arryNum = 0; arryNum < this.images.length; arryNum++) {
-        if (this.images[arryNum].post_no + 1 - this.lowerNumber === dispIndex) { // 新しく表示するものをtrueに
-          // console.log('next disp : ' + arryNum)
-          nextDispArryNum = arryNum
-        } else if (this.images[arryNum].post_no + 1 - this.lowerNumber === this.showNum) { // これまで表示されていたものはfalseに
-          // console.log('hide disp : ' + arryNum)
-          nowDispArryNum = arryNum
+    async getImageJson () {
+      try {
+        await this.$store.dispatch('imagesList/getImagesList', 'resized');
+        const list = this.$store.getters['imagesList/getList'];
+        await this.setImages(list);
+        this.listLen = list.length;
+      } catch {
+        
+      }
+    },
+
+    debugAdd() {
+      const debugList: any = [
+        "resized-media/20201206015942_testuser.png",
+        "resized-media/20201206111259_testuser.png",
+        "resized-media/20201206115533_testuser.png",
+        "resized-media/20201206173714_testuser.jpeg",
+        "resized-media/20201206195957_testuser.png",
+        "resized-media/20201206215113_testuser.jpeg",
+        "resized-media/20201206220016_testuser.jpeg",
+        "resized-media/20201214120702_test.jpeg",
+        "resized-media/20201214122545_test.jpeg",
+        "resized-media/20201218180741_gorigori-kun.jpeg",
+        "resized-media/20201218180752_gorigori-kun.jpeg",
+        "resized-media/20210102145533_test.png",
+        "resized-media/20210102154326_test.png",
+        "resized-media/20210102161238_test.png",
+        "resized-media/20210102162125_なは.png",
+        "media/20210102161238_test.png",
+        "media/20210102162125_なは.png",
+      ];
+      this.setImages(debugList);
+    },
+
+    async setImages (data: string[]) {
+      // imagesに既に値が格納されているか？
+      if (this.listLen === 0) { // initialize images
+        const results = [];
+        this.lowerNumber = (data.length > this.showNumber) ? (data.length - this.showNumber) : 0;
+        console.log(`lower number ${this.lowerNumber}`);
+        for (let i = this.lowerNumber; i < data.length; i++) {
+          results.push(this.setImageInfo(data[i], i));
+        }
+        await Promise.all(results);
+        console.log('loading finish');
+
+        // set the first image
+        let firstShowNum = 0
+        if (this.showNumber > this.images.length) {
+          firstShowNum = 0;
+        } else {
+          firstShowNum = this.images.length - this.showNumber - 1;
+        }
+        // 最初に表示するスライドを設定 + 表示枚数以上だった場合、古いものはすべて表示終了に倒す
+        for (let arryNum = 0; arryNum < this.images.length; arryNum++) {
+          if (this.images[arryNum].post_no === firstShowNum) {
+            this.images[arryNum].active = true;
+            this.showNum = firstShowNum;
+          } else if (this.images[arryNum].post_no <= firstShowNum) {
+            this.images[arryNum].finishShow = true;
+          }
+        }
+      } else { // update images
+        console.log(`list length ${this.listLen}: data length ${data.length}`);
+        if (this.listLen < data.length) {
+          this.addImages(data);
         }
       }
-      this.images[nowDispArryNum].active = false;
-      this.images[nextDispArryNum].active = true;
-      this.showNum = dispIndex;
-      // console.log(this.images[dispIndex].islongwidth)
-      this.changeAction()
-    } else if (this.images.length === 1) {
-      this.images[0].active = true;
-    }
-  };
+    },
 
-  async getImageJson () {
-    try {
-      await this.$store.dispatch('imagesList/getImagesList', 'resized');
-      const list = this.$store.getters['imagesList/getList'];
-      await this.setImages(list);
-      this.listLen = list.length;
-    } catch {
-      
-    }
-  };
+    async addImages (imageFiles: any) {
+      // console.log('add images')
 
-  debugAdd() {
-    const debugList: any = [
-      "resized-media/20201206015942_testuser.png",
-      "resized-media/20201206111259_testuser.png",
-      "resized-media/20201206115533_testuser.png",
-      "resized-media/20201206173714_testuser.jpeg",
-      "resized-media/20201206195957_testuser.png",
-      "resized-media/20201206215113_testuser.jpeg",
-      "resized-media/20201206220016_testuser.jpeg",
-      "resized-media/20201214120702_test.jpeg",
-      "resized-media/20201214122545_test.jpeg",
-      "resized-media/20201218180741_gorigori-kun.jpeg",
-      "resized-media/20201218180752_gorigori-kun.jpeg",
-      "resized-media/20210102145533_test.png",
-      "resized-media/20210102154326_test.png",
-      "resized-media/20210102161238_test.png",
-      "resized-media/20210102162125_なは.png",
-      "media/20210102161238_test.png",
-      "media/20210102162125_なは.png",
-    ];
-    this.setImages(debugList);
-  }
+      // 複数枚が更新された場合を想定し、更新された画像データは一旦配列に格納する
+      let unregisterdImages: any = [];
+      let oldestImageNumbers: number[] = [];
+      let newImages: any = [];
 
-  async setImages (data: string[]) {
-    // imagesに既に値が格納されているか？
-    if (this.listLen === 0) { // initialize images
-      const results = [];
-      this.lowerNumber = (data.length > this.showNumber) ? (data.length - this.showNumber) : 0;
-      console.log(`lower number ${this.lowerNumber}`);
-      for (let i = this.lowerNumber; i < data.length; i++) {
-        results.push(this.setImageInfo(data[i], i));
+      // fileNamesの末尾から新しく取得された分を取得する
+      for(let i = imageFiles.length; i > this.listLen; i--) {
+        let unregisterdImage = {
+          imageFile: imageFiles[i-1],
+          num: i-1
+        };
+        unregisterdImages.push(unregisterdImage);
       }
-      await Promise.all(results);
-      console.log('loading finish');
 
-      // set the first image
-      let firstShowNum = 0
-      if (this.showNumber > this.images.length) {
-        firstShowNum = 0;
-      } else {
-        firstShowNum = this.images.length - this.showNumber - 1;
+      for(let i = 0; i < this.images.length; i++) {
+        console.log(`[${i}]:post_no${this.images[i].post_no}`);
       }
-      // 最初に表示するスライドを設定 + 表示枚数以上だった場合、古いものはすべて表示終了に倒す
-      for (let arryNum = 0; arryNum < this.images.length; arryNum++) {
-        if (this.images[arryNum].post_no === firstShowNum) {
-          this.images[arryNum].active = true;
-          this.showNum = firstShowNum;
-        } else if (this.images[arryNum].post_no <= firstShowNum) {
-          this.images[arryNum].finishShow = true;
+
+      const threshold = imageFiles.length - this.showNumber;
+      // 古い分を取得する
+      for(let i = 0; i < this.images.length; i++) {
+        if (this.images[i].post_no < threshold) {
+          oldestImageNumbers.push(i);
+          console.log(this.images[i].post_no);
         }
       }
-    } else { // update images
-      console.log(`list length ${this.listLen}: data length ${data.length}`);
-      if (this.listLen < data.length) {
-        this.addImages(data);
-      }
-    }
-  };
 
-  async addImages (imageFiles: any) {
-    // console.log('add images')
+      console.log(unregisterdImages);
+      console.log(oldestImageNumbers.sort());
 
-    // 複数枚が更新された場合を想定し、更新された画像データは一旦配列に格納する
-    let unregisterdImages: any = [];
-    let oldestImageNumbers: number[] = [];
-    let newImages: any = [];
+      // showNumber以下の場合の条件分岐を足す。
 
-    // fileNamesの末尾から新しく取得された分を取得する
-    for(let i = imageFiles.length; i > this.listLen; i--) {
-      let unregisterdImage = {
-        imageFile: imageFiles[i-1],
-        num: i-1
-      };
-      unregisterdImages.push(unregisterdImage);
-    }
+      // 新規で追加された画像と、削除予定の画像数が正しければ、次の処理にすすむ
+      if (unregisterdImages.length === oldestImageNumbers.length) {
+        // 古い分を削除
+        for(let i = oldestImageNumbers.length; i > 0; i--) {
+          this.images.splice(oldestImageNumbers[i-1], 1);
+        }
 
-    for(let i = 0; i < this.images.length; i++) {
-      console.log(`[${i}]:post_no${this.images[i].post_no}`);
-    }
+        this.images.forEach((image: any) => {
+          console.log(image.post_no);
+        });
 
-    const threshold = imageFiles.length - this.showNumber;
-    // 古い分を取得する
-    for(let i = 0; i < this.images.length; i++) {
-      if (this.images[i].post_no < threshold) {
-        oldestImageNumbers.push(i);
-        console.log(this.images[i].post_no);
-      }
-    }
-
-    console.log(unregisterdImages);
-    console.log(oldestImageNumbers.sort());
-
-    // showNumber以下の場合の条件分岐を足す。
-
-    // 新規で追加された画像と、削除予定の画像数が正しければ、次の処理にすすむ
-    if (unregisterdImages.length === oldestImageNumbers.length) {
-      // 古い分を削除
-      for(let i = oldestImageNumbers.length; i > 0; i--) {
-        this.images.splice(oldestImageNumbers[i-1], 1);
       }
 
-      this.images.forEach((image: any) => {
-        console.log(image.post_no);
-      });
+      for(let i = 0; i < unregisterdImages.length; i++) {
+        const image = await this.setImageInfo(unregisterdImages[i].imageFile, unregisterdImages[i].num);
+        newImages.push(image);
+      }
 
+      console.log(newImages);
+
+      this.refs.refNewPost.setNewImagesInfo(newImages);
+      this.showNewPost();
+
+    },
+
+    loadDataURI(fileData: any) {
+      return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.onload = () => {
+          resolve(fileReader.result);
+        };
+        fileReader.onerror = (e) => reject(e);
+        fileReader.readAsDataURL(fileData);
+      })
+    },
+
+    // 画像のタイトルから、名前とファイルパスを取得する
+    async setImageInfo (fileName: string, no: number) {
+      let names = fileName.split('/');
+
+      if (names[1].indexOf('_') !== -1) {
+        // const fileData = await this.$s3Connect.getImage(names[0], names[1]);
+        const params = {
+          userId: names[0],
+          fileName: names[1],
+          isResizedBucket: false,
+        }
+        const fileData = await this.$store.dispatch('imagesList/fetchImage', params);
+        // const fileDataUrl = URL.createObjectURL(fileData);
+        const fileDataURI = await this.loadDataURI(fileData);
+
+        const tmpName = names[1].split('_')[1];
+        const posterName = tmpName.split('.')[0];
+        let image = {
+          url: `url("${fileDataURI}")`,
+          // url: 'assets/slideImg/' + d_image.src,
+          name: {
+            last: posterName,
+            first: no
+          },
+          post_no: no,
+          active: false,
+          finishShow: false
+        }
+        this.images.push(image);
+        console.log(`${no} done`);
+        return image;
+      }
+    },
+
+    showNewPost () { // start new post enter animation
+      this.isSlideShow = false
+      this.stopSlide()
+    },
+
+    changeAction () {
+      document.body.classList.add('is-sliding')
+
+      setTimeout(function () {
+        document.body.classList.remove('is-sliding')
+      }, 1000)
+    },
+
+    stopSlide () {
+      clearInterval(this.slideLoop)
+      clearInterval(this.newPostLoop)
     }
-
-    for(let i = 0; i < unregisterdImages.length; i++) {
-      const image = await this.setImageInfo(unregisterdImages[i].imageFile, unregisterdImages[i].num);
-      newImages.push(image);
-    }
-
-    console.log(newImages);
-
-    this.refs.refNewPost.setNewImagesInfo(newImages);
-    this.showNewPost();
-
-  };
-
-  loadDataURI(fileData: any) {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-      fileReader.onerror = (e) => reject(e);
-      fileReader.readAsDataURL(fileData);
-    })
   }
-
-  // 画像のタイトルから、名前とファイルパスを取得する
-  async setImageInfo (fileName: string, no: number) {
-    let names = fileName.split('/');
-
-    if (names[1].indexOf('_') !== -1) {
-      // const fileData = await this.$s3Connect.getImage(names[0], names[1]);
-      const params = {
-        userId: names[0],
-        fileName: names[1],
-        isResizedBucket: false,
-      }
-      const fileData = await this.$store.dispatch('imagesList/fetchImage', params);
-      // const fileDataUrl = URL.createObjectURL(fileData);
-      const fileDataURI = await this.loadDataURI(fileData);
-
-      const tmpName = names[1].split('_')[1];
-      const posterName = tmpName.split('.')[0];
-      let image = {
-        url: `url("${fileDataURI}")`,
-        // url: 'assets/slideImg/' + d_image.src,
-        name: {
-          last: posterName,
-          first: no
-        },
-        post_no: no,
-        active: false,
-        finishShow: false
-      }
-      this.images.push(image);
-      console.log(`${no} done`);
-      return image;
-    }
-  };
-
-  showNewPost () { // start new post enter animation
-    this.isSlideShow = false
-    this.stopSlide()
-  };
-
-  changeAction () {
-    document.body.classList.add('is-sliding')
-
-    setTimeout(function () {
-      document.body.classList.remove('is-sliding')
-    }, 1000)
-  };
-
-  stopSlide () {
-    clearInterval(this.slideLoop)
-    clearInterval(this.newPostLoop)
-  };
-  
-}
+})
 </script>
 
 <style>

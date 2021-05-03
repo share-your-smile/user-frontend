@@ -28,68 +28,69 @@
 </template>
 
 <script lang="ts">
-import Component from "vue-class-component";
-import { Vue, Watch } from "vue-property-decorator";
+import Vue from 'vue'
 
-@Component({})
-export default class SlideStart extends Vue {
-  counter: number = 5;
-  dispCount: number | string = 0;
-  nowState: number = 0;
-  states: any = {
-    showMessage: 1,
-    loading: 2,
-    countdown: 3
-  };
-  isShowMessage: boolean = true;
-  isStartCountdown: boolean = false;
-  isLoadingList: boolean = false;
-
+export default Vue.extend({
+  data () {
+    return {
+      counter: 5 as Number,
+      dispCount: 0 as Number | String,
+      nowState: 0 as Number,
+      states: {
+        showMessage: 1,
+        loading: 2,
+        countdown: 3
+      },
+      isShowMessage: true as Boolean,
+      isStartCountdown: false as Boolean,
+      isLoadingList: false as Boolean
+    }
+  },
   mounted () {
     this.counter = 5;
     this.nowState = this.states.showMessage;
     this.dispCount = this.counter;
-  }
+  },
+  methods: {
+    countdown() {
+      if (this.counter >= 2) {
+        setTimeout(function () {
+          this.counter = this.counter - 1;
+          this.dispCount = this.counter;
+          this.countdown();
+        }.bind(this), 1000);
+      } else if (this.counter === 1) {
+        setTimeout(function () {
+          this.counter = this.counter - 1;
+          this.dispCount = 'Start!';
+          this.countdown();
+        }.bind(this), 1000);
+      } else if (this.counter === 0) {
+        setTimeout(function () {
+          this.counter = this.counter - 1;
+          this.countdown();
+        }.bind(this), 1000);
+      } else {
+        console.log('start!!');
+        this.$router.push(`../main/`);
+      }
+    },
 
-  countdown() {
-    if (this.counter >= 2) {
-      setTimeout(function (this: SlideStart) {
-        this.counter = this.counter - 1;
-        this.dispCount = this.counter;
+    async startSlideShow () {
+      try {
+        this.nowState = this.states.loading;
+        await this.$store.dispatch('imagesList/getImagesList', 'resized');
+        const list = this.$store.getters['imagesList/getList'];
+        console.log(list);
+        this.nowState = this.states.countdown;
         this.countdown();
-      }.bind(this), 1000);
-    } else if (this.counter === 1) {
-      setTimeout(function (this: SlideStart) {
-        this.counter = this.counter - 1;
-        this.dispCount = 'Start!';
-        this.countdown();
-      }.bind(this), 1000);
-    } else if (this.counter === 0) {
-      setTimeout(function (this: SlideStart) {
-        this.counter = this.counter - 1;
-        this.countdown();
-      }.bind(this), 1000);
-    } else {
-      console.log('start!!');
-      this.$router.push(`../main/`);
-    }
-  }
-
-  async startSlideShow () {
-    try {
-      this.nowState = this.states.loading;
-      await this.$store.dispatch('imagesList/getImagesList', 'resized');
-      const list = this.$store.getters['imagesList/getList'];
-      console.log(list);
-      this.nowState = this.states.countdown;
-      this.countdown();
-    } catch {
+      } catch {
+        
+      }
       
     }
-    
   }
-
-}
+})
 </script>
 
 <style scoped>

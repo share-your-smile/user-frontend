@@ -66,40 +66,39 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import Vue from 'vue'
 
-import SubTitle from '~/components/SubTitle.vue';
-
-@Component({})
-export default class Error extends Vue{
-  @Prop({ default: null })
-  error!: any;
-
-  pageNotFound: string = 'ページが見つかりません';
-  otherError: string = 'エラーが発生しました';
-  title: string = 'Share Your Smile';
-
-  get errorMessage() {
-    let msg = '';
-    switch (this.error.statusCode) {
-      case 404: msg = this.pageNotFound; break;
-      default: msg = this.otherError; break;
+export default Vue.extend({
+  props: {
+    error: {
+      default: null
     }
-    return msg;
+  },
+  data () {
+    return {
+      pageNotFound: 'ページが見つかりません' as String,
+      otherError: 'エラーが発生しました' as String,
+      title: 'Share Your Smile' as String
+    }
+  },
+  computed: {
+    errorMessage: {
+      get (): String {
+        let msg = '';
+        switch (this.error.statusCode) {
+          case 404: msg = this.pageNotFound; break;
+          default: msg = this.otherError; break;
+        }
+        return msg;
+      }
+    }
+  },
+  methods: {
+    goToTop() {
+      this.$router.push('/');
+    }
   }
-
-  goToTop() {
-    this.$router.push('/');
-  }
-
-  // head () {
-  //   const title =
-  //     this.error.statusCode === 404 ? this.pageNotFound : this.otherError
-  //   return {
-  //     title
-  //   }
-  // }
-}
+})
 </script>
 
 <style scoped>

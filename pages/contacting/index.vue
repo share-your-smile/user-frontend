@@ -7,19 +7,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import Vue from 'vue'
 
 import ContactForm from '~/components/Contact.vue';
 
-@Component({
+export default Vue.extend({
   layout: 'host_default',
   components: {
     ContactForm,
   }
 })
-export default class Index extends Vue {
-
-}
 </script>
 
 <style scoped>

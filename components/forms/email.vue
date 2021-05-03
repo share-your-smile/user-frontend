@@ -8,47 +8,106 @@
 </template>
 
 <script lang='ts'>
-import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
+import Vue from 'vue'
 
-@Component
-export default class FormEmail extends Vue {
-  @Prop({ default: '' })
-  email!: string;
-  
-  @Prop({ default: true })
-  isRuled!: boolean
+type BaseRules = {
+  required: any,
+  email: any
+}
 
-  baseRules: Object = {
-    required: (value: string) => !!value || '入力してください',
-    email: (value: string) => {
-      const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      return pattern.test(value) || '正しいメールアドレスを記入してください'
+export default Vue.extend({
+  props: {
+    email: {
+      type: String,
+      default: ''
     },
-  }
-
-  get rules (): object {
-    if (this.isRuled) {
-      return this.baseRules
-    } else {
-      return {
-        required: (value: string) => !!value,
-        email: (value: string) => !!value,
+    isRuled: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data () {
+    return {
+      baseRules: {
+        required: (value: string) => !!value || '入力してください',
+        email: (value: string) => {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || '正しいメールアドレスを記入してください'
+        },
+      } as BaseRules
+    }
+  },
+  computed: {
+    innerVal: {
+      get () {
+        return this.email;
+      },
+      set (val: String) {
+        this.updateEmail(val)
+      }
+    },
+    rules: {
+      get (): BaseRules {
+        console.log(this.isRuled)
+        if (this.isRuled) {
+          console.log('rule?')
+          return this.baseRules
+        } else {
+          return {
+            required: (value: string) => !!value,
+            email: (value: string) => !!value,
+          }
+        }
       }
     }
+  },
+  methods: {
+    updateEmail (email: String) {
+      this.$emit('update:email', email)
+    }
   }
+})
+// import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
 
-  get innerVal () {
-    return this.email;
-  }
+// @Component
+// export default class FormEmail extends Vue {
+//   @Prop({ default: '' })
+//   email!: string;
+  
+//   @Prop({ default: true })
+//   isRuled!: boolean
 
-  set innerVal (val) {
-    this.updateEmail(val);
-  }
+//   baseRules: Object = {
+//     required: (value: string) => !!value || '入力してください',
+//     email: (value: string) => {
+//       const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+//       return pattern.test(value) || '正しいメールアドレスを記入してください'
+//     },
+//   }
 
-  @Emit('update:email')
-  updateEmail (email: string) {
-    return email;
-  }
+//   get rules (): object {
+//     if (this.isRuled) {
+//       return this.baseRules
+//     } else {
+//       return {
+//         required: (value: string) => !!value,
+//         email: (value: string) => !!value,
+//       }
+//     }
+//   }
 
-}
+//   get innerVal () {
+//     return this.email;
+//   }
+
+//   set innerVal (val) {
+//     this.updateEmail(val);
+//   }
+
+//   @Emit('update:email')
+//   updateEmail (email: string) {
+//     return email;
+//   }
+
+// }
 </script>

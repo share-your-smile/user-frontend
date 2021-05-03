@@ -37,26 +37,55 @@
 </template>
 
 <script lang='ts'>
-import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
+import Vue from 'vue'
 
-@Component
-export default class AlertWindow extends Vue {
-  @Prop({ default: '' })
-  confirmMessage!: string;
-
-  dialog: boolean = false;
-
-  show() {
-    this.dialog = true;
+export default Vue.extend({
+  props: {
+    confirmMessage: {
+      type: String,
+      default: '',
+      required: true
+    }
+  },
+  data () {
+    return {
+      dialog: false as Boolean
+    }
+  },
+  methods: {
+    show() {
+      this.dialog = true;
+    },
+    onClickOK() {
+      this.dialog = false;
+      this.$emit('onClickOK');
+    },
+    onClickCancel() {
+      this.dialog = false
+    }
   }
+})
 
-  onClickOK() {
-    this.dialog = false;
-    this.$emit('onClickOK');
-  }
+// import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
 
-  onClickCancel() {
-    this.dialog = false
-  }
-}
+// @Component
+// export default class AlertWindow extends Vue {
+//   @Prop({ default: '' })
+//   confirmMessage!: string;
+
+//   dialog: boolean = false;
+
+//   show() {
+//     this.dialog = true;
+//   }
+
+//   onClickOK() {
+//     this.dialog = false;
+//     this.$emit('onClickOK');
+//   }
+
+//   onClickCancel() {
+//     this.dialog = false
+//   }
+// }
 </script>

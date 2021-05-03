@@ -39,74 +39,75 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import Vue from 'vue'
 
-@Component({ components: {}})
-export default class Default extends Vue {
-  clipped: boolean = false;
-  fixed: boolean = false
-  title: string = 'Share Your Smile';
-  name: string = '';
-  dispTitle: string = 'Share Your Smile';
-  changeName: string = '名前を変更';
-  pageTitle: string = this.$nuxt.$route.name!;
-  isLoginPage: boolean = false;
-  isShow: boolean = false;
-  scrollY: number = 0;
-  
-  @Watch('scrollY')
-  scrolling (newValue: number, oldValue: number) {
-    console.log(newValue < oldValue);
-    this.$set(this, 'isShow', newValue < oldValue)
-  }
-
-  @Watch('$route')
-  pageTransition(to: any, from: any) {
-    if(to.path !== from.path) {
-      this.pageTitle = this.$nuxt.$route.name!;
-      this.checkLoginStatus(to.path);
+export default Vue.extend({
+  data () {
+    return {
+      clipped: false as Boolean,
+      fixed: false as Boolean,
+      title: 'Share Your Smile' as String,
+      name: '' as String,
+      dispTitle: 'Share Your Smile' as String,
+      changeName: '名前を変更' as String,
+      pageTitle: this.$nuxt.$route.name! as String,
+      isLoginPage: false as Boolean,
+      isShow: false as Boolean,
+      scrollY: 0 as Number
     }
-    this.setName();
-  }
-
-  mounted() {
+  },
+  watch: {
+    scrollY (newValue: number, oldValue: number) {
+      console.log(newValue < oldValue);
+      this.$set(this, 'isShow', newValue < oldValue)
+    },
+    '$route' (to: any, from: any) {
+      if(to.path !== from.path) {
+        this.pageTitle = this.$nuxt.$route.name!;
+        this.checkLoginStatus(to.path);
+      }
+      this.setName();
+    }
+  },
+  mounted () {
     this.setName();
     this.checkLoginStatus(this.$nuxt.$route.name!);
     window.addEventListener('scroll', this.onScroll)
     window.addEventListener('load', () => {
       this.onScroll()
     })
-  }
+  },
+  methods: {
+    setName() {
+      this.name = this.$store.getters['participants/getLoginUser'];
+      console.log(`name ${this.name}`)
+      if (this.name !== '') {
+        this.dispTitle = `${this.title}, ${this.name}!`;
+      } else {
+        this.dispTitle = this.title;
+      }
+    },
 
-  setName() {
-    this.name = this.$store.getters['participants/getLoginUser'];
-    console.log(`name ${this.name}`)
-    if (this.name !== '') {
-      this.dispTitle = `${this.title}, ${this.name}!`;
-    } else {
-      this.dispTitle = this.title;
+    onScroll () {
+      this.$set(this, 'scrollY', window.pageYOffset)
+      // this.scrollY = window.pageXOffset;
+    },
+
+    changeParticipantsName() {
+      this.$store.commit('participants/logout');
+      const hostId = this.$store.getters['participants/getHostId'];
+      this.$router.push({ path: '/participants/login/', query: { id: hostId }});
+    },
+
+    checkLoginStatus(path: string) {
+      if (path.indexOf('login') !== -1) {
+        this.isLoginPage = true;
+      } else {
+        this.isLoginPage = false;
+      }
     }
   }
-
-  onScroll () {
-    this.$set(this, 'scrollY', window.pageYOffset)
-    // this.scrollY = window.pageXOffset;
-  }
-
-  changeParticipantsName() {
-    this.$store.commit('participants/logout');
-    const hostId = this.$store.getters['participants/getHostId'];
-    this.$router.push({ path: '/participants/login/', query: { id: hostId }});
-  }
-
-  checkLoginStatus(path: string) {
-    if (path.indexOf('login') !== -1) {
-      this.isLoginPage = true;
-    } else {
-      this.isLoginPage = false;
-    }
-  }
-}
+})
 </script>
 
 <style scoped>
