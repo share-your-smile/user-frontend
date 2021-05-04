@@ -102,7 +102,8 @@ export default {
     '@nuxtjs/vuetify',
     'nuxt-typed-vuex',
     '@nuxtjs/google-analytics',
-    '@nuxtjs/device'
+    '@nuxtjs/device',
+    '@nuxtjs/composition-api/module'
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)

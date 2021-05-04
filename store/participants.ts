@@ -31,5 +31,8 @@ export const getters = getterTree(state, {
 export const actions = actionTree({state, mutations}, {
   setHostId(context, hostId) {
     context.commit(`setHostId`, hostId);
+  },
+  login(context, registName) {
+    context.commit('login', registName)
   }
 })

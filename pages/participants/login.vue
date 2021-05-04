@@ -42,49 +42,65 @@
   </v-container>
 </template>
 
-<script lang='ts'>
+<script>
 // 参加者ログインページ
 // ログイン後は画像投稿ページにリダイレクトする
-import Vue from 'vue'
+import { 
+  defineComponent,
+  computed,
+  useRoute,
+  useRouter,
+  ref,
+  reactive,
+  wrapProperty
+} from '@nuxtjs/composition-api'
 
 import FormUser from '~/components/forms/name.vue';
 import AlertWindow from '~/components/AlertWindow.vue';
 import SubTitle from '~/components/SubTitle.vue';
 
-export default Vue.extend({
+export const useAccessor = wrapProperty('$accessor', false)
+
+export default defineComponent({
   components: {
     FormUser,
-    AlertWindow
+    AlertWindow,
+    SubTitle
   },
   layout: 'participants_default',
   middleware: 'participants-authenticated',
-  data () {
+  setup () {
+    // const store = useStore()
+    const route = useRoute()
+    const router = useRouter()
+    const accessor = useAccessor()
+
+    console.log(accessor.participants)
+
+    const name = ref('test')
+    const title = reactive({
+      naming: 'あなたの名前は？'
+    })
+
+    const buttonState = computed(() => name.value === '' ? true : false )
+
+    const register = () => {
+      accessor.participants.login(name)
+      router.push({ path: `/participants/post-image/`});
+    } 
+
+    // created
+    const query = route.value.fullPath.split('?')[1]
+    const hostId = query.split('=')[1]
+    accessor.participants.setHostId(hostId)
+
     return {
-      name: 'test' as String,
-      disableButton: false as Boolean,
-      title: {
-        naming: 'あなたの名前は？'
-      }
+      name,
+      title,
+      buttonState,
+      register
     }
   },
-  computed: {
-    buttonState: {
-      get () {
-        return this.name === '' ? true : false;
-      }
-    }
-  },
-  created() {
-    const query = this.$route.fullPath.split('?')[1];
-    const hostId = query.split('=')[1];
-    this.$store.dispatch('participants/setHostId', hostId);
-  },
-  methods: {
-    register () {
-      this.$store.commit('participants/login', this.name);
-      this.$router.push({ path: `/participants/post-image/`});
-    }
-  }
 })
 </script>
 
