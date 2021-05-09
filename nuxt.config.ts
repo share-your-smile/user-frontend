@@ -145,6 +145,9 @@ export default {
     transpile: [
       /typed-vuex/,
     ],
+    babel: {
+      plugins: [['@babel/plugin-proposal-private-methods', { loose: true }]],
+    },
   },
 
   env: {
