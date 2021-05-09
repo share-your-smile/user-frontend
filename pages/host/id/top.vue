@@ -99,68 +99,66 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue'
+import {
+  defineComponent,
+  ref,
+  reactive,
+  wrapProperty,
+  useRouter,
+  computed
+} from '@nuxtjs/composition-api'
+
 import HowToUse from "~/components/HowToUse.vue"
 
-export default Vue.extend({
+export const useAccessor = wrapProperty('$accessor', false)
+
+export default defineComponent({
   layout: 'host_default',
   middleware: 'host-authenticated',
-  data () {
-    return {
-      qrcodePng: '' as string,
-      blobURL: '' as string,
-      title: {
-        qrcode: 'QR code',
-        slideShow: 'Start SlideShow!'
-      }
-    }
-  },
-  computed: {
-    qrcodeSVG: {
-      get () {
-        return this.$store.getters['qrcode/svg']
-      }
-    },
-    participantsURL: {
-      get () {
-        return this.$store.getters['qrcode/url']
-      }
-    }
-  },
-  created () {
-    this.download()
-    this.generateQrcode()
-  },
-  methods: {
-    getPostUrl () {
-      return `${location.origin}/participants/login/`;
-    },
 
-    generateOptions(type: string) {
+  setup (props, contenxt) {
+    const accessor = useAccessor()
+    const router = useRouter()
+
+    const qrcodePng = ref('')
+    const blobURL = ref('')
+    const title = reactive({
+      qrcode: 'QR code',
+      slideShow: 'Start SlideShow!'
+    })
+
+    const qrcodeSVG = computed(() => accessor.qrcode.svg )
+    const participantsURL = computed(() => accessor.qrcode.url )
+
+    const getPostUrl = () => {
+      return `${location.origin}/participants/login/`
+    }
+
+    const generateOptions = (type) => {
       return {
         type: type,
-        url: this.getPostUrl()
-      };
-    },
+        url: getPostUrl()
+      }
+    }
 
-    async requestQrcode (options: any) {
+    const requestQrcode = async (options) => {
       const generateURL = `${process.env.USER_DATA_API_BASE_URL}/qrcode`;
       if (options.type === 'svg') {
-        await this.$store.dispatch('qrcode/fetchSvg', options);
+        await accessor.qrcode.fetchSvg(options)
       } else {
-        await this.$store.dispatch('qrcode/fetchPng', options);
+        await accessor.qrcode.fetchPng(options)
       }
-    },
+    }
 
-    async generateQrcode () {
-      await this.requestQrcode(this.generateOptions('svg'));
-    },
+    const generateQrcode = async () => {
+      await requestQrcode(generateOptions('svg'))
+    }
 
-    async download () {
+    const download = async () => {
       try {
-        await this.requestQrcode(this.generateOptions('base64'));
-        const png = this.$store.getters['qrcode/png'];
-        this.qrcodePng = `<img src="${png}">`;
+        await requestQrcode(generateOptions('base64'));
+        const png = accessor.qrcode.png
+        qrcodePng.value = `<img src="${png}">`;
         
         const test: string[] = png.split(',');
         const data: string = window.atob(test[1]);
@@ -176,17 +174,35 @@ export default Vue.extend({
         const blobData = new Blob( [ content ], {
           type: mimeType ,
         });
-        this.blobURL = window.URL.createObjectURL(blobData);
+        blobURL.value = window.URL.createObjectURL(blobData);
       } catch(err) {
         console.log(err);
       }
-    },
+    }
 
-    goToSlideShow() {
-      // スライドショーは全部同じパスにする？
-      this.$router.push(`../slide-show/start/`);
+    const goToSlideShow = () => {
+      router.push(`../slide-show/start/`)
+    }
+
+    // created
+    download()
+    generateQrcode()
+
+    return {
+      blobURL,
+      title,
+      qrcodeSVG,
+      goToSlideShow
     }
   }
+
+  // created () {
+  //   this.download()
+  //   this.generateQrcode()
+  // },
+  // methods: {
+
+
 })
 </script>
 

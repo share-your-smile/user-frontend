@@ -49,10 +49,10 @@
                     @update:password="password=$event"
                   />
                   <form-password
-                    v-bind:password="confirm_password"
+                    v-bind:password="confirmPassword"
                     v-bind:confirm="true"
                     v-bind:base-password="password"
-                    @update:password="confirm_password=$event"
+                    @update:password="confirmPassword=$event"
                   />
                   <v-btn
                     v-if="!loginState"
@@ -85,7 +85,7 @@
       </v-row>
     </v-container>
     <alert-window
-      v-bind:error_message="error_message"
+      v-bind:error_message="errorMessage"
       ref="alertWindow"
     />
     <confirm-policy
@@ -98,16 +98,34 @@
 <script lang='ts'>
 // 新規ユーザー登録画面
 // MongoDBにユーザーを登録する
-import Vue from 'vue'
+import {
+  defineComponent,
+  ref,
+  reactive,
+  computed,
+  useRouter
+} from '@nuxtjs/composition-api'
 
-import FormUser from '~/components/forms/name.vue';
-import FormEmail from '~/components/forms/email.vue';
-import FormPassword from '~/components/forms/password.vue';
-import AlertWindow from '~/components/AlertWindow.vue';
-import SubTitle from '~/components/SubTitle.vue';
+import FormUser from '~/components/forms/name.vue'
+import FormEmail from '~/components/forms/email.vue'
+import FormPassword from '~/components/forms/password.vue'
+import AlertWindow from '~/components/AlertWindow.vue'
+import SubTitle from '~/components/SubTitle.vue'
 import ConfirmPolicy from '~/components/ConfirmPolicy.vue'
 
-export default Vue.extend({
+export interface VForm {
+  validate: () => boolean
+  reset: () => void
+  resetValidation: () => void
+}
+
+export interface UserInfo {
+  name: String
+  email: String
+  password: String
+}
+
+export default defineComponent({
   layout: 'host_default',
   components: {
     FormUser,
@@ -117,62 +135,48 @@ export default Vue.extend({
     SubTitle,
     ConfirmPolicy
   },
-  data () {
-    return {
-      name: '' as String,
-      email: '' as String,
-      password: '' as String,
-      confirm_password: '' as String,
-      error_message: '' as String,
-      title: {
-        register: '新規登録'
-      },
-      loginState: false as Boolean,
-      confirmPoricy: true as Boolean
-    }
-  },
-  computed: {
-    refs: {
-      get (): any {
-        // eslint-disable-next-line
-        return this.$refs;
-      }
-    },
-    buttonState: {
-      get () {
-        if (this.name !== '' &&
-          this.email !== '' &&
-          this.password !== '' &&
-          this.confirm_password !== '') {
-          if (this.refs.form !== undefined) {
-            return !this.refs.form.validate();
-          }
-        }
-        return true;
-      }
-    }
-  },
-  created() {
-    this.name = process.env.NODE_ENV === 'development' ? 'test' : '';
-    this.email = process.env.NODE_ENV === 'development' ? 'first_test@gmail.com' : '';
-    this.password = process.env.NODE_ENV === 'development' ? '01234567' : '';
-    this.confirm_password = process.env.NODE_ENV === 'development' ? '01234567' : '';
-  },
-  methods: {
-    async checkWithNuxtAuth() {
-      const userData = {
-        email: 'first_test@gmail.com',
-        password: 'password',
-      };
-      const res = await this.$auth.loginWith('local', { data: userData });
-      console.log(res);
-      console.log(this.$auth);
-      console.log(this.$store.state.auth.user);
-    },
 
-    async registerUser(params: any) {
+  setup (props, context) {
+    const router = useRouter()
+    
+    const name = ref('')
+    const email = ref('')
+    const password = ref('')
+    const confirmPassword = ref('')
+    const errorMessage = ref('')
+    const title = reactive({
+      register: '新規登録'
+    })
+    const loginState = ref(false)
+
+    // vuetify
+    const form = ref<VForm>()
+
+    // child component
+    const alertWindow = ref<InstanceType<typeof AlertWindow>>()
+    const confirmPolicy = ref<InstanceType<typeof ConfirmPolicy>>()
+
+    const buttonState = computed(() => {
+      if (name.value !== '' &&
+        email.value !== '' &&
+        password.value !== '' &&
+        confirmPassword.value !== '') {
+        if (form !== undefined) {
+          return !form.value?.validate();
+        }
+      }
+      return true;
+    })
+
+    // created
+    name.value = process.env.NODE_ENV === 'development' ? 'test' : '';
+    email.value = process.env.NODE_ENV === 'development' ? 'first_test@gmail.com' : '';
+    password.value = process.env.NODE_ENV === 'development' ? '01234567' : '';
+    confirmPassword.value = process.env.NODE_ENV === 'development' ? '01234567' : '';
+
+    const registerUser = async (params) => {
       return await new Promise((resolve, reject) => {
-        this.$axios
+        context.root.$axios
           .$post(`/api/v1/user`, params)
           .then((response) => {
             resolve(response);
@@ -181,51 +185,62 @@ export default Vue.extend({
             reject(err);
           })
       })
-    },
+    }
 
-    onClickRegister () {
-      this.refs.confirmPolicy.show()
-    },
+    const onClickRegister = () => {
+      confirmPolicy.value?.show()
+    }
 
-    async checkPass () {
-      console.log('check')
+    const checkPass = async () => {
       // validateチェックOKでtrueが帰ってくる
-      if (this.refs.form.validate()) {
-        this.loginState = true;
+      if (form.value?.validate()) {
+        loginState.value = true;
         // ユーザ追加要求
-        const reqUserInfo: any = {
-          name: this.name,
-          email: this.email,
-          password: this.password
+        const reqUserInfo: UserInfo = {
+          name: name.value,
+          email: email.value,
+          password: password.value
         };
         try {
           // await this.$store.dispatch('host/registerUserInfo',reqUserInfo);
           // const res = this.$store.getters['host/getLoginUser'];
-          await this.registerUser(reqUserInfo);
-          await this.$auth.loginWith('local', { data: reqUserInfo });
-          this.$router.push({ path: `/host/id/welcome/` });
+          await registerUser(reqUserInfo);
+          await context.root.$auth.loginWith('local', { data: reqUserInfo });
+          router.push({ path: `/host/id/welcome/` });
         } catch(error) {
-          this.loginState = false;
+          loginState.value = false;
           if (error.response.data.error_message) {
             switch (error.response.data.error_message) {
               case 'SAME_USER_EXIST':
-                this.error_message = '同じメールアドレスのユーザが登録されています';
+                errorMessage.value = '同じメールアドレスのユーザが登録されています';
                 break;
               default:
-                this.error_message = 'エラーが発生しました。リトライしてください';
+                errorMessage.value = 'エラーが発生しました。リトライしてください';
                 break;
             }
-            this.refs.alertWindow.show();
+            alertWindow.value?.show();
           } else {
-            this.error_message = 'エラーが発生しました。リトライしてください';
-            this.refs.alertWindow.show();
+            errorMessage.value = 'エラーが発生しました。リトライしてください';
+            alertWindow.value?.show();
           }
         }
       }
-    },
+    }
 
-    resetValidate () {
-      this.refs.form.resetValidation();
+    return {
+      name,
+      email,
+      password,
+      confirmPassword,
+      errorMessage,
+      title,
+      loginState,
+      form,
+      alertWindow,
+      confirmPolicy,
+      buttonState,
+      onClickRegister,
+      checkPass
     }
   }
 })

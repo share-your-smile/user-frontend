@@ -26,20 +26,28 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue'
+import {
+  defineComponent,
+  useRouter,
+  ref
+} from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   layout: 'host_default',
-  data () {
-    return {
-      title: {
-        thanks: '登録ありがとうございます！'
-      }
+
+  setup () {
+    const router = useRouter()
+    const title = ref({
+      thanks: '登録ありがとうございます！'
+    })
+
+    const toMakePage = () => {
+      router.push('top/')
     }
-  },
-  methods: {
-    toMakePage () {
-      this.$router.push('top/');
+
+    return {
+      title,
+      toMakePage
     }
   }
 })

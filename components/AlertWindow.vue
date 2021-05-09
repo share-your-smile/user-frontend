@@ -12,7 +12,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
-          color="green darken-1"
+          color="primary"
           text
           @click="dialog = false"
         >
@@ -26,21 +26,29 @@
 <script lang='ts'>
 import Vue from 'vue'
 
-export default Vue.extend({
+import {
+  defineComponent,
+  ref
+} from '@nuxtjs/composition-api'
+
+export default defineComponent({
   props: {
     error_message: {
       type: String,
       default: ''
     }
   },
-  data () {
-    return {
-      dialog: false as Boolean
+
+  setup (props, context) {
+    const dialog = ref(false)
+
+    const show = () => {
+      dialog.value = true
     }
-  },
-  methods: {
-    show () {
-      this.dialog = true
+
+    return {
+      dialog,
+      show
     }
   }
 })

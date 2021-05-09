@@ -96,7 +96,6 @@ export interface VForm {
   validate: () => boolean
   reset: () => void
   resetValidation: () => void
-  test: String
 }
 
 export default defineComponent({
