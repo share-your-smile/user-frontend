@@ -8,13 +8,13 @@ export const state = () => ({
 export type RootState = ReturnType<typeof state>
 
 export const mutations = mutationTree(state, {
-  login(state, registName) {
+  loginMutation(state, registName) {
     state.name = registName;
   },
   logout(state) {
     state.name = '';
   },
-  setHostId(state, hostId) {
+  setHostIdMutation(state, hostId) {
     state.hostId = hostId;
   },
 });
@@ -30,9 +30,9 @@ export const getters = getterTree(state, {
 
 export const actions = actionTree({state, mutations}, {
   setHostId(context, hostId) {
-    context.commit(`setHostId`, hostId);
+    context.commit(`setHostIdMutation`, hostId);
   },
   login(context, registName) {
-    context.commit('login', registName)
+    context.commit('loginMutation', registName)
   }
 })

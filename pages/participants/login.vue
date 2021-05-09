@@ -42,7 +42,7 @@
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
 // 参加者ログインページ
 // ログイン後は画像投稿ページにリダイレクトする
 import { 
@@ -74,8 +74,6 @@ export default defineComponent({
     const route = useRoute()
     const router = useRouter()
     const accessor = useAccessor()
-
-    console.log(accessor.participants)
 
     const name = ref('test')
     const title = reactive({
